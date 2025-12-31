@@ -23,4 +23,12 @@ public class Certificate {
     private Boolean isActive;
     private Date createdAt;
     private Date updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "course")
+    private Course course;
+
+    @ManyToOne
+    @JoinColumn(name = "user")
+    private User user;
 }

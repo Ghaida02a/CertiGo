@@ -25,4 +25,12 @@ public class QuizResult {
     private Boolean isActive;
     private Date createdAt;
     private Date updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "user")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "quiz")
+    private Quiz quiz;
 }

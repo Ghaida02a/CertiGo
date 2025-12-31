@@ -25,4 +25,8 @@ public class Question {
     private Boolean isActive;
     private Date createdAt;
     private Date updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "quiz")
+    private Quiz quiz;
 }

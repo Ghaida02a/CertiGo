@@ -26,4 +26,8 @@ public class Job {
     private Boolean isActive;
     private Date createdAt;
     private Date updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "course")
+    private Course course;
 }

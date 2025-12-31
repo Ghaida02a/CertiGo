@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -25,4 +26,10 @@ public class User {
     private Boolean isActive;
     private Date createdAt;
     private Date updatedAt;
+
+    @ManyToMany(mappedBy = "courses")
+    private List<Course> courses;
+
+    @ManyToMany(mappedBy = "jobs")
+    private List<Job> jobs;
 }
