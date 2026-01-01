@@ -18,8 +18,6 @@ public class QuizResult {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    private Integer userId;
-    private Integer quizId;
     private Integer score;
     private Boolean isPassed;
     private Boolean isActive;
