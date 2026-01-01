@@ -1,5 +1,6 @@
 package com.codeline.CertiGo.Entity;
 
+import com.codeline.CertiGo.Enum.EnrollmentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,34 +9,28 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-@Entity
-@Table
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Certificate {
-
+@Entity
+@Table
+public class Enrollment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-
-    private String certificateName;
-    private String description;
     private Boolean isActive;
     private Date createdAt;
     private Date updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "course_id")
-    private Course course;
+    @Enumerated(EnumType.STRING)
+    private EnrollmentStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "username")
     private User user;
 
-    // ✅ REQUIRED
-    @OneToOne
-    @JoinColumn(name = "quiz_result_id")
-    private QuizResult quizResult;
+    @ManyToOne
+    @JoinColumn(name = "course")
+    private Course course;
 }

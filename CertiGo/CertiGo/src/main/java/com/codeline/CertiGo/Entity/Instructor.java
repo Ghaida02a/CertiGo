@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table
@@ -14,28 +15,21 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Certificate {
+public class Instructor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    private String certificateName;
-    private String description;
+    private String name;
+    private String bio;
+    private String email;
     private Boolean isActive;
     private Date createdAt;
     private Date updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "course_id")
-    private Course course;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    // ✅ REQUIRED
-    @OneToOne
-    @JoinColumn(name = "quiz_result_id")
-    private QuizResult quizResult;
+    // 🔴 mappedBy must EXACTLY match Course field name
+    @ManyToMany(mappedBy = "instructors")
+    private List<Course> courses;
 }
+

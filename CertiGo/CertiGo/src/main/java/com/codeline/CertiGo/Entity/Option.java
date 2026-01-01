@@ -6,27 +6,23 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
 @Table
-public class Company {
+public class Option {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    private String companyName;
-    private String location;
-    private String industry;
-    private String contactEmail;
+    private String optionText;
+    private Boolean isCorrect;
     private Boolean isActive;
-    private Date createdAt;
-    private Date updatedAt;
+    private java.util.Date createdAt;
+    private java.util.Date updatedAt;
 
-    @OneToMany(mappedBy = "company")
-    private List<Course> courses;
+    @ManyToOne
+    @JoinColumn(name = "question")
+    private Question question;
 }

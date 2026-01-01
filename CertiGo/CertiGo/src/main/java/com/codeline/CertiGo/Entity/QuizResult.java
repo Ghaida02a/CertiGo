@@ -7,17 +7,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
+@Entity
+@Table
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
-@Table
 public class QuizResult {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+
     private Integer score;
     private Boolean isPassed;
     private Boolean isActive;
@@ -25,10 +28,18 @@ public class QuizResult {
     private Date updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "user")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "quiz")
+    @JoinColumn(name = "quiz_id")
     private Quiz quiz;
+
+    // ✅ Option 2: direct relation
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
+
+    @OneToMany(mappedBy = "quizResult")
+    private List<UserAnswer> userAnswers;
 }

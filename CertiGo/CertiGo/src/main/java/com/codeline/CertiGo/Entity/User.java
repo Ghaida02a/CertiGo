@@ -1,5 +1,6 @@
 package com.codeline.CertiGo.Entity;
 
+import com.codeline.CertiGo.Enum.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,17 +20,29 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    private String name;
+    private String username;
     private String email;
     private String password;
-    private String role;
+
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
     private Boolean isActive;
     private Date createdAt;
     private Date updatedAt;
 
-    @ManyToMany(mappedBy = "courses")
-    private List<Course> courses;
 
-    @ManyToMany(mappedBy = "jobs")
-    private List<Job> jobs;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Enrollment> enrollments;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Payment> payments;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<QuizResult> quizResults;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserAnswer> userAnswers;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Certificate> certificates;
 }

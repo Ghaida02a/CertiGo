@@ -7,17 +7,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
+@Entity
+@Table
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
-@Table
 public class Quiz {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+
     private Integer totalQuestions;
     private Integer passingScore;
     private Boolean isActive;
@@ -25,6 +28,12 @@ public class Quiz {
     private Date updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "course")
+    @JoinColumn(name = "course_id")
     private Course course;
+
+    @OneToMany(mappedBy = "quiz")
+    private List<Question> questions;
+
+    @OneToMany(mappedBy = "quiz")
+    private List<QuizResult> quizResults;
 }

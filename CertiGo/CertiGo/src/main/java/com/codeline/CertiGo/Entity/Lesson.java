@@ -8,34 +8,24 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-@Entity
-@Table
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Certificate {
-
+@Entity
+@Table
+public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    private String certificateName;
-    private String description;
+    private String lessonName;
+    private String pdfUrl;
     private Boolean isActive;
     private Date createdAt;
     private Date updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "course_id")
+    @JoinColumn(name = "course")
     private Course course;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    // ✅ REQUIRED
-    @OneToOne
-    @JoinColumn(name = "quiz_result_id")
-    private QuizResult quizResult;
 }
