@@ -28,7 +28,6 @@ public class Instructor {
     private Date createdAt;
     private Date updatedAt;
 
-    // 🔴 mappedBy must EXACTLY match Course field name
     @ManyToMany(mappedBy = "instructors")
     private List<Course> courses;
 }

@@ -35,7 +35,6 @@ public class QuizResult {
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 
-    // ✅ Option 2: direct relation
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;

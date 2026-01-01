@@ -34,7 +34,6 @@ public class Certificate {
     @JoinColumn(name = "user_id")
     private User user;
 
-    // ✅ REQUIRED
     @OneToOne
     @JoinColumn(name = "quiz_result_id")
     private QuizResult quizResult;

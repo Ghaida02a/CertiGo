@@ -95,7 +95,6 @@ public class Course {
     @JoinColumn(name = "company")
     private Company company;
 
-    // 🔴 FIXED: plural name
     @ManyToMany
     @JoinTable(
             name = "course_instructor",

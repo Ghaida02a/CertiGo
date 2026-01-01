@@ -67,7 +67,6 @@ public class UserAnswer {
     @JoinColumn(name = "question")
     private Question question;
 
-    // 🔴 REQUIRED
     @ManyToOne
     @JoinColumn(name = "quiz_result")
     private QuizResult quizResult;
