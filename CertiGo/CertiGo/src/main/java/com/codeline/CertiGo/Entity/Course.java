@@ -26,4 +26,8 @@ public class Course {
     private Boolean isActive;
     private Date createdAt;
     private Date updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "company")
+    private Company company;
 }

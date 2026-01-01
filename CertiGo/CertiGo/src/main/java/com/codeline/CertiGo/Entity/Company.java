@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -14,23 +15,21 @@ import java.util.Date;
 @Builder
 @Entity
 @Table
-public class Job {
+public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    private String jobTitle;
+    private String companyName;
     private String location;
-    private String jobType;
-    private Double salary;
+    private String industry;
+    private String contactEmail;
     private Boolean isActive;
     private Date createdAt;
     private Date updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "course")
-    private Course course;
+    @OneToMany(mappedBy = "company")
+    private List<Job> jobs;
 
-    @ManyToOne
-    @JoinColumn(name = "company")
-    private Company company;
+    @OneToMany(mappedBy = "company")
+    private List<Course> courses;
 }
