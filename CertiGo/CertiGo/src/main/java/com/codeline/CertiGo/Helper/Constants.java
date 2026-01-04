@@ -47,4 +47,12 @@ public class Constants {
     public final static String USER_QUIZ_RESULTS_NOT_VALID = "User quiz results are not valid";
     public final static String USER_USER_ANSWERS_NOT_VALID = "User answers are not valid";
     public final static String USER_CERTIFICATES_NOT_VALID = "User certificates are not valid";
+    public final static String USER_PAYMENT_IS_NULL = "User Payments is null";
+
+    //Payment
+    public final static String PAYMENT_IS_NULL = "Payments is null";
+    public final static String PAYMENT_AMOUNT_IS_NULL = "Payment amount is null";
+    public final static String PAYMENT_PAYMENT_METHODS_IS_NULL = "Payment methods is null";
+    public final static String PAYMENT_PAYMENT_STATUS_IS_NULL = "Payment status is null";
+
 }
