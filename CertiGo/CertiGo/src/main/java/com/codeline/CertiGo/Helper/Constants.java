@@ -33,6 +33,33 @@ public class Constants {
     //Response Messages Quiz Result Validations
     public final static String SCORE_NOT_VALID = "Score is not valid";
     public final static String IS_PASSED_NOT_VALID = "isPassed is not valid";
-    public final  static String USER_ID_NOT_VALID = "User ID is not valid";
-    public final static  String USER_ANSWERS_NOT_VALID = "User answers are not valid";
+    public final static String USER_ID_NOT_VALID = "User ID is not valid";
+    public final static String USER_ANSWERS_NOT_VALID = "User answers are not valid";
+
+
+    public final static Integer LOWER_DURATION_RANGE = 0;
+    public final static Integer UPPER_DURATION_RANGE = 300;
+    public static final int HTTP_STATUS_INTERNAL_SERVER_ERROR = 500;
+
+    //Course
+    public final static String COURSE_CREATE_REQUEST_COURSE_NAME_NOT_VALID = "NAME IS NOT VALID";
+    public final static String COURSE_CREATE_REQUEST_TYPE_NOT_VALID = "TYPE IS NOT VALID";
+    public final static String COURSE_CREATE_REQUEST_DURATION_NOT_VALID = "DURATION IS NOT VALID";
+    public final static String COURSE_CREATE_REQUEST_PRICE_NOT_VALID = "PRICE IS NOT VALID";
+    public final static String COURSE_CREATE_REQUEST_IS_COMPLETED_NOT_VALID = "IS COMPLETED IS NOT VALID";
+    public final static String COURSE_CREATE_REQUEST_COMPANY_ID_NOT_VALID = "COMPANY ID IS NOT VALID";
+    public final static String COURSE_CREATE_REQUEST_INSTRUCTORS_ID_NOT_VALID = "INSTRUCTORS ID IS NOT VALID";
+
+    //Quiz
+    public final static String QUIZ_CREATE_REQUEST_TOTAL_QUESTIONS_NOT_VALID = "TOTAL QUESTIONS IS NOT VALID";
+    public final static String QUIZ_CREATE_REQUEST_PASSING_SCORE_NOT_VALID = "PASSING SCORE IS NOT VALID";
+    public final static String QUIZ_CREATE_REQUEST_COURSE_ID_NOT_VALID = "COURSE ID IS NOT VALID";
+    public final static String QUIZ_CREATE_REQUEST_QUESTIONS_ID_NOT_VALID = "QUESTIONS ID IS NOT VALID";
+
+    //Lesson
+    public final static String LESSON_CREATE_REQUEST_ID_NOT_VALID = " ID IS NOT VALID";
+    public final static String LESSON_CREATE_REQUEST_LESSON_NAME_NOT_VALID = "LESSON NAME IS NOT VALID";
+    public final static String LESSON_CREATE_REQUEST_PDF_URL_NOT_VALID = "PDF URL IS NOT VALID";
+    public final static String LESSON_CREATE_REQUEST_COURSE_ID_NOT_VALID = "COURSE ID IS NOT VALID";
 }
+
