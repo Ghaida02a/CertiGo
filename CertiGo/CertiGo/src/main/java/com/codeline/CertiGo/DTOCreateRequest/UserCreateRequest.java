@@ -41,8 +41,22 @@ public class UserCreateRequest {
         if(Utils.isNull(dto.getRole())) {
             throw new CustomException(Constants.USER_ROLE_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
         }
+        if(Utils.isNull(dto.getEnrollments()) || dto.getEnrollments().isEmpty()) {
+            throw new CustomException(Constants.USER_ENROLLMENTS_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
+        }
+        if(Utils.isNull(dto.getPayments()) || dto.getPayments().isEmpty()) {
+            throw new CustomException(Constants.USER_PAYMENTS_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
+        }
+        if(Utils.isNull(dto.getQuizResults()) || dto.getQuizResults().isEmpty()) {
+            throw new CustomException(Constants.USER_QUIZ_RESULTS_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
+        }
+        if(Utils.isNull(dto.getUserAnswers()) || dto.getUserAnswers().isEmpty()) {
+            throw new CustomException(Constants.USER_USER_ANSWERS_NOT_VALID, Constants.HTTP_STATUS_IS);
+        }
+        if(Utils.isNull(dto.getCertificates()) || dto.getCertificates().isEmpty()) {
+            throw new CustomException(Constants.USER_CERTIFICATES_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
+        }
     }
-
 
     // Convert DTO → Entity
     public static User convertDTOToEntity(UserCreateRequest dto) {
