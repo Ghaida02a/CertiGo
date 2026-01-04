@@ -2,6 +2,12 @@ package com.codeline.CertiGo.Helper;
 
 public class Constants {
 
+    public static final String BAD_REQUEST =
+            "BAD REQUEST";
+
+    public static final String SUCCESS =
+            "SUCCESS";
+
     public static final String REVIEW_CREATE_REQUEST_NAME_NOT_VALID =
             "Reviewer name is not valid";
 
@@ -16,7 +22,6 @@ public class Constants {
 
     public static final String REVIEW_CREATE_REQUEST_USER_ID_NOT_VALID =
             "User ID is not valid";
-
 
     public static final String INSTRUCTOR_CREATE_REQUEST_NAME_NOT_VALID =
             "Instructor name must not be null or blank";
