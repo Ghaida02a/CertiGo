@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 public class EnrollmentUpdateRequest {
     private Integer id;
         private EnrollmentStatus status;
-        //private String username;
          private User username;
         private Integer courseId;
 
@@ -33,7 +32,7 @@ public class EnrollmentUpdateRequest {
         }
 
         //  validation
-        public static void validateEnrollment(com.codeline.CertiGo.DTOCreateRequest.EnrollmentCreateRequestDTO request) throws CustomException {
+        public static void validateEnrollment(EnrollmentUpdateRequest request) throws CustomException {
 
             if (Utils.isNull(request) || Utils.isBlank(request)) {
                 throw new CustomException(Constants.BAD_REQUEST, Constants.HTTP_STATUS_IS_NULL);
