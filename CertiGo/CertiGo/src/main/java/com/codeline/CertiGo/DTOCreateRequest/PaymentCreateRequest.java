@@ -1,7 +1,7 @@
 package com.codeline.CertiGo.DTOCreateRequest;
 
 import com.codeline.CertiGo.Entity.Course;
-import com.codeline.CertiGo.Entity.User;
+import com.codeline.CertiGo.Entity.Payment;
 import com.codeline.CertiGo.Enum.PaymentMethod;
 import com.codeline.CertiGo.Enum.PaymentStatus;
 import com.codeline.CertiGo.Exceptions.CustomException;
@@ -11,8 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -27,16 +25,33 @@ public class PaymentCreateRequest {
 
     //Validation
     public static void validatePaymentCreateRequested(PaymentCreateRequest dto) throws CustomException {
-        if(Utils.isNull(dto.getAmount())){
+        if (Utils.isNull(dto.getAmount())) {
             throw new CustomException(Constants.PAYMENT_AMOUNT_IS_NULL, Constants.HTTP_STATUS_IS_NULL);
         }
-        if(Utils.isNull(dto.getPaymentMethod())){
+        if (Utils.isNull(dto.getPaymentMethod())) {
             throw new CustomException(Constants.PAYMENT_PAYMENT_METHODS_IS_NULL, Constants.HTTP_STATUS_IS_NULL);
         }
-        if(Utils.isNull(dto.getPaymentStatus())){
+        if (Utils.isNull(dto.getPaymentStatus())) {
             throw new CustomException(Constants.PAYMENT_PAYMENT_STATUS_IS_NULL, Constants.HTTP_STATUS_IS_NULL);
         }
     }
 
-    //convert Payment -> Payment
+    // Convert DTO → Entity
+    public static Payment convertDTOToEntity(PaymentCreateRequest dto) {
+        Payment payment = Payment.builder()
+                .amount(dto.getAmount())
+                .paymentMethod(dto.getPaymentMethod())
+                .paymentStatus(dto.getPaymentStatus())
+                .build();
+        return payment;
+    }
+
+    // Convert Entity → DTO
+    public static PaymentCreateRequest convertEntityToDTO(Payment entity) {
+        return PaymentCreateRequest.builder()
+                .amount(entity.getAmount())
+                .paymentMethod(entity.getPaymentMethod())
+                .paymentStatus(entity.getPaymentStatus())
+                .build();
+    }
 }

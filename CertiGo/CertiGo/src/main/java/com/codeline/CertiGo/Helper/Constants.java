@@ -75,9 +75,6 @@ public class Constants {
     public final static String CONTACT_EMAIL_NOT_VALID = "Contact email is not valid";
     public final static String COURSE_LIST_NOT_VALID = "Course list is not valid";
     public final static int HTTP_STATUS_SUCCESS = 200;
-    public final static int HTTP_STATUS_BAD_REQUEST = 400;
-    public final static int HTTP_STATUS_IS_NULL = 422;
-    public final static int HTTP_STATUS_NOT_FOUND = 404;
 
     //Response Messages and Status Codes for Enrollment Validations
     public final static String ENROLLMENT_NOT_FOUND = "Enrollment not found";
@@ -119,14 +116,10 @@ public class Constants {
     public final static String PAYMENT_AMOUNT_IS_NULL = "Payment amount is null";
     public final static String PAYMENT_PAYMENT_METHODS_IS_NULL = "Payment methods is null";
     public final static String PAYMENT_PAYMENT_STATUS_IS_NULL = "Payment status is null";
-
-    public final static String USER_ID_NOT_VALID = "User ID is not valid";
-    public final static String USER_ANSWERS_NOT_VALID = "User answers are not valid";
-
+    public final static String PAYMENT_LIST_IS_NULL = "Payment list is null";
 
     public final static Integer LOWER_DURATION_RANGE = 0;
     public final static Integer UPPER_DURATION_RANGE = 300;
-    public static final int HTTP_STATUS_INTERNAL_SERVER_ERROR = 500;
 
     //Course
     public final static String COURSE_CREATE_REQUEST_COURSE_NAME_NOT_VALID = "NAME IS NOT VALID";
