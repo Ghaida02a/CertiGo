@@ -25,7 +25,7 @@ public class UserController {
         try {
             UserCreateRequest.validateUserCreateRequested(userCreateRequest);
             UserResponse createdUser = userService.saveUser(userCreateRequest);
-            return ResponseEntity.status(HttpStatus.CREATED).body(userCreateRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -34,7 +34,7 @@ public class UserController {
     //display all courses
     @GetMapping
     public ResponseEntity<List<UserResponse>> getAllUsers() {
-        List<UserResponse> response = userService.getAllUsers().stream()
+        List<UserResponse> response = userService.getAllActiveUsers().stream()
                 .map(UserResponse::entityToDTOResponse)
                 .toList();
 
@@ -49,10 +49,16 @@ public class UserController {
     }
 
     //update user
-    @PutMapping("/{id}")
-    public String updateUser(@RequestBody UserUpdateRequest updateObjFromUser) throws CustomException {
-        return userService.updateUser(updateObjFromUser);
+    @PutMapping
+    public ResponseEntity<UserResponse> updateUser(@RequestBody UserUpdateRequest updateObjFromUser) {
+        try {
+            UserResponse updatedUser = userService.updateUser(updateObjFromUser);
+            return ResponseEntity.ok(updatedUser);
+        } catch (CustomException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
+
 
     //delete user by id
     @DeleteMapping("/{id}")
