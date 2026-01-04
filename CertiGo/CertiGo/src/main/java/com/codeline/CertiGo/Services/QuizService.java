@@ -10,6 +10,8 @@ import com.codeline.CertiGo.Repositories.CourseRepository;
 import com.codeline.CertiGo.Repositories.QuizRepository;
 import com.codeline.CertiGo.DTOCreateRequest.QuizCreateRequest;
 import com.codeline.CertiGo.DTOCreateResponse.QuizCreateResponse;
+import com.codeline.CertiGo.Repository.QuestionRepository;
+import com.codeline.CertiGo.Repository.QuizResultRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
