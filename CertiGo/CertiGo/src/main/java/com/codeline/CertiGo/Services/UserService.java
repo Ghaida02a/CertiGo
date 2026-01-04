@@ -1,9 +1,14 @@
 package com.codeline.CertiGo.Services;
 
 import com.codeline.CertiGo.DTOCreateRequest.UserCreateRequest;
+import com.codeline.CertiGo.DTOCreateRequest.PaymentCreateRequest;
+import com.codeline.CertiGo.DTOCreateRequest.CertificateCreateRequest;
+import com.codeline.CertiGo.DTOCreateRequest.QuizResultCreateRequestDTO;
 import com.codeline.CertiGo.DTOResponse.UserResponse;
 import com.codeline.CertiGo.DTOUpdateRequest.UserUpdateRequest;
 import com.codeline.CertiGo.Entity.Payment;
+import com.codeline.CertiGo.Entity.Certificate;
+import com.codeline.CertiGo.Entity.QuizResult;
 import com.codeline.CertiGo.Entity.User;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
@@ -20,6 +25,7 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+
     @Autowired
     UserRepository userRepository;
 
@@ -35,7 +41,7 @@ public class UserService {
         }
     }
 
-    //Get user by ID
+    // Get user by ID
     public User getUserById(int id) throws CustomException {
         User userOpt = userRepository.getUserById(id);
         if (Utils.isNotNull(userOpt)) {
@@ -58,8 +64,6 @@ public class UserService {
         if (!Boolean.TRUE.equals(existingUser.getIsActive())) {
             throw new CustomException(Constants.BAD_REQUEST, Constants.HTTP_STATUS_BAD_REQUEST);
         }
-
-        // Apply updates
         existingUser.setUsername(updateObj.getUsername());
         existingUser.setEmail(updateObj.getEmail());
         existingUser.setPassword(updateObj.getPassword());
@@ -77,7 +81,7 @@ public class UserService {
         return UserResponse.entityToDTOResponse(savedUser);
     }
 
-    //Soft delete user
+    //Delete user
     public void deleteUser(Integer id) throws CustomException {
         User existingOpt = userRepository.getUserById(id);
 
@@ -90,77 +94,51 @@ public class UserService {
         }
     }
 
+    // Save user with relationships
     public UserResponse saveUser(UserCreateRequest userRequested) {
-        // Convert DTO to entity
         User user = UserCreateRequest.convertDTOToEntity(userRequested);
         user.setCreatedAt(new Date());
         user.setIsActive(Boolean.TRUE);
 
-//        // Handle enrollments
-//        if (Utils.isNotNull(userRequested.getEnrollments()) && !userRequested.getEnrollments().isEmpty()) {
-//            List<Enrollment> enrollments = new ArrayList<>();
-//            for (EnrollmentCreateRequestDTO enrollmentDTO : userRequested.getEnrollments()) {
-//                Enrollment enrollment = EnrollmentCreateRequestDTO.convertToEnrollment(enrollmentDTO);
-//                enrollment.setUser(user);
-//                enrollment.setStatus(enrollmentDTO.getStatus());
-//                enrollment.setIsActive(Boolean.TRUE);
-//                enrollment.setCreatedAt(new Date());
-//
-//                // If course is part of enrollment, set it here
-//                if (Utils.isNotNull(enrollmentDTO.getCourse())) {
-//                    enrollment.setCourse(enrollmentDTO.getCourse());
-//                }
-//
-//                enrollments.add(enrollment);
-//            }
-//            user.setEnrollments(enrollments);
-//        }
-
         // Handle payments
         if (Utils.isNotNull(userRequested.getPayments()) && !userRequested.getPayments().isEmpty()) {
-            List<Payment> payments = new ArrayList<>();
-            for (Payment payment : userRequested.getPayments()) {
-                payment.setUser(user);
-                payment.setIsActive(Boolean.TRUE);
-                payment.setCreatedAt(new Date());
-                payments.add(payment);
-            }
+            List<Payment> payments = userRequested.getPayments().stream()
+                    .map(PaymentCreateRequest::convertDTOToEntity)
+                    .peek(payment -> {
+                        payment.setUser(user);
+                        payment.setIsActive(Boolean.TRUE);
+                        payment.setCreatedAt(new Date());
+                    })
+                    .toList();
             user.setPayments(payments);
         }
 
         // Handle quiz results
         if (Utils.isNotNull(userRequested.getQuizResults()) && !userRequested.getQuizResults().isEmpty()) {
-            userRequested.getQuizResults().forEach(qr -> {
-                qr.setUser(user);
-                qr.setIsActive(Boolean.TRUE);
-                qr.setCreatedAt(new Date());
-            });
-            user.setQuizResults(userRequested.getQuizResults());
+            List<QuizResult> quizResults = userRequested.getQuizResults().stream()
+                    .map(QuizResultCreateRequestDTO::convertToQuizResult)
+                    .peek(qr -> {
+                        qr.setUser(user);
+                        qr.setIsActive(Boolean.TRUE);
+                        qr.setCreatedAt(new Date());
+                    })
+                    .toList();
+            user.setQuizResults(quizResults);
         }
-
-//        // Handle user answers
-//        if (Utils.isNotNull(userRequested.getUserAnswers()) && !userRequested.getUserAnswers().isEmpty()) {
-//            userRequested.getUserAnswers().forEach(ans -> {
-//                ans.setUser(user);
-//                ans.setIsActive(Boolean.TRUE);
-//                ans.setCreatedAt(new Date());
-//            });
-//            user.setUserAnswers(userRequested.getUserAnswers());
-//        }
 
         // Handle certificates
         if (Utils.isNotNull(userRequested.getCertificates()) && !userRequested.getCertificates().isEmpty()) {
-            userRequested.getCertificates().forEach(cert -> {
-                cert.setUser(user);
-                cert.setIsActive(Boolean.TRUE);
-                cert.setCreatedAt(new Date());
-            });
-            user.setCertificates(userRequested.getCertificates());
+            List<Certificate> certificates = userRequested.getCertificates().stream()
+                    .map(CertificateCreateRequest::convertDTOToEntity)
+                    .peek(cert -> {
+                        cert.setUser(user);
+                        cert.setIsActive(Boolean.TRUE);
+                        cert.setCreatedAt(new Date());
+                    })
+                    .toList();
+            user.setCertificates(certificates);
         }
-
-        // Save user
         User savedUser = userRepository.save(user);
-
         return UserResponse.entityToDTOResponse(savedUser);
     }
 }
