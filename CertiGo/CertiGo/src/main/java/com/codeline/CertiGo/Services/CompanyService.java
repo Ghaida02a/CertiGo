@@ -98,6 +98,7 @@ public class CompanyService {
         List<Company> companies = companyRepository.findAll();
         List<CompanyResponse> responseList = new ArrayList<>();
 
+<<<<<<< HEAD
         for (Company company : companies) {
             if (Boolean.TRUE.equals(company.getIsActive())) {
                 responseList.add(CompanyResponse.fromEntity(company));
@@ -131,6 +132,9 @@ public class CompanyService {
             throw new CustomException(Constants.BAD_REQUEST, 400);
         }
     }
+=======
+
+>>>>>>> 8f943c218056e41edbb4576ea421649a609600c8
 }
 
 
