@@ -1,4 +1,4 @@
-package com.codeline.CertiGo;
+package com.codeline.CertiGo.Repository;
 
 import com.codeline.CertiGo.Entity.QuizResult;
 import org.springframework.data.jpa.repository.JpaRepository;

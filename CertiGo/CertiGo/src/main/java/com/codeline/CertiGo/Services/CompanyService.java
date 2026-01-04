@@ -1,4 +1,4 @@
-package com.codeline.CertiGo;
+package com.codeline.CertiGo.Services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

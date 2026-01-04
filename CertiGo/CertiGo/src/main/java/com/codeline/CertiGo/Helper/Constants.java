@@ -1,10 +1,7 @@
 package com.codeline.CertiGo.Helper;
 
-import com.codeline.CertiGo.Enum.EnrollmentStatus;
-
 public class Constants {
     // Response Messages and Status Codes for Company Validations
-
     public final static String SUCCESS = "Success";
     public final static String BAD_REQUEST = "BAD REQUEST";
     public final static String COMPANY_NAME_NOT_VALID = "Company name is not valid";
@@ -16,12 +13,13 @@ public class Constants {
     public final static int HTTP_STATUS_BAD_REQUEST = 400;
     public final static int HTTP_STATUS_IS_NULL = 422;
     public final static int HTTP_STATUS_NOT_FOUND = 404;
-    //Response Messages and Status Codes for Enrollment Validations
 
+    //Response Messages and Status Codes for Enrollment Validations
     public final static String ENROLLMENT_NOT_FOUND = "Enrollment not found";
     public final static String ENROLLMENT_STATUS_NOT_VALID = "Enrollment status is not valid";
     public final static String USERNAME_NOT_VALID = "Username is not valid";
     public final static String COURSE_ID_NOT_VALID = "Course ID is not valid";
+
     //Response Messages Question Validations
     public final static String OPTION_NOT_FOUND = "Option not found";
     public final static String QUESTION_TEXT_CANNOT_BE_EMPTY = "Question text cannot be empty";
@@ -31,13 +29,8 @@ public class Constants {
     public final static String QUESTION_NOT_FOUND = "Question not found";
     public final static String QUESTION_TEXT_NOT_VALID = "Question text is not valid";
     public final static String QUESTION_TYPE_NOT_VALID = "Question type is not valid";
+
     //Response Messages Quiz Result Validations
-    //   private Integer score;
-    //    private Boolean isPassed;
-    //    private Integer userId;
-    //    private Integer quizId;
-    //    private Integer courseId;
-    //    private List<UserAnswer> userAnswers;
     public final static String SCORE_NOT_VALID = "Score is not valid";
     public final static String IS_PASSED_NOT_VALID = "isPassed is not valid";
     public final  static String USER_ID_NOT_VALID = "User ID is not valid";
