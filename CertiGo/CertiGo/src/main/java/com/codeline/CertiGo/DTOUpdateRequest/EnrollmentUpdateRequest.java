@@ -1,5 +1,6 @@
 package com.codeline.CertiGo.DTOUpdateRequest;
 
+import com.codeline.CertiGo.Entity.Course;
 import com.codeline.CertiGo.Entity.Enrollment;
 import com.codeline.CertiGo.Entity.User;
 import com.codeline.CertiGo.Enum.EnrollmentStatus;
@@ -27,8 +28,11 @@ public class EnrollmentUpdateRequest {
             Enrollment enrollment = new Enrollment();
             enrollment.setId(request.getId());
             enrollment.setStatus(request.getStatus());
-            // enrollment.setUser (request.getUsername());
-            // enrollment.setCourse (request.getCourseId());
+            enrollment.setUser (request.getUsername());
+            Course course = courseRepository.findById(request.getCourseId())
+                    .orElseThrow(() -> new RuntimeException("Course not found"));
+
+            enrollment.setCourse(course);
             return enrollment;
         }
 

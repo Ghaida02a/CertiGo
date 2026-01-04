@@ -23,7 +23,7 @@ public class EnrollmentResponse {
         return EnrollmentResponse.builder()
                 .id(enrollment.getId())
                 .status(enrollment.getStatus())
-              //  .username(enrollment.getUser().getUsername())
+                .username(enrollment.getUser())
                 .courseId(enrollment.getCourse().getId())
                 .build();
     }
