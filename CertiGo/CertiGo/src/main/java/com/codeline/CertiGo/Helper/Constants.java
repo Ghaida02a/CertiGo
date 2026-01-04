@@ -54,5 +54,4 @@ public class Constants {
     public final static String PAYMENT_AMOUNT_IS_NULL = "Payment amount is null";
     public final static String PAYMENT_PAYMENT_METHODS_IS_NULL = "Payment methods is null";
     public final static String PAYMENT_PAYMENT_STATUS_IS_NULL = "Payment status is null";
-
 }

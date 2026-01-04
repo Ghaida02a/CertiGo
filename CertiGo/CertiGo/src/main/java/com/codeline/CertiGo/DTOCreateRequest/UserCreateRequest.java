@@ -51,7 +51,7 @@ public class UserCreateRequest {
             throw new CustomException(Constants.USER_QUIZ_RESULTS_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
         }
         if(Utils.isNull(dto.getUserAnswers()) || dto.getUserAnswers().isEmpty()) {
-            throw new CustomException(Constants.USER_USER_ANSWERS_NOT_VALID, Constants.HTTP_STATUS_IS);
+            throw new CustomException(Constants.USER_USER_ANSWERS_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
         }
         if(Utils.isNull(dto.getCertificates()) || dto.getCertificates().isEmpty()) {
             throw new CustomException(Constants.USER_CERTIFICATES_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
