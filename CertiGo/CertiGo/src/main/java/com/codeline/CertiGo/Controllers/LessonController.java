@@ -26,7 +26,7 @@ public class LessonController {
 
     @GetMapping("getAll")
     public List<Lesson> getAllLesson() throws CustomException {
-        List<Lesson> lessonList = lessonServices.getAllLesson();
+        List<Lesson> lessonList = lessonServices.getAllLessons();
         return lessonList;
     }
 
@@ -37,13 +37,13 @@ public class LessonController {
 
     @PutMapping("update")
     public Lesson updateLesson(@RequestBody Lesson updateObjectFromUser) throws CustomException {
-        return lessonServices.updateQuiz(updateObjectFromUser);
+        return lessonServices.updateLesson(updateObjectFromUser);
 
     }
 
     @DeleteMapping("delete/{id}")
     public String deleteLesson(@PathVariable int id) throws CustomException {
-        LessonServices.deleteLesson(id);
+        lessonServices.deleteLesson(id);
         return "Success";
 
     }
