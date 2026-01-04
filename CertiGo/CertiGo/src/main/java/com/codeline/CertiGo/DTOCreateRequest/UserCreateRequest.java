@@ -21,15 +21,15 @@ public class UserCreateRequest {
     private String email;
     private String password;
     private UserRole role;
-    private List<Enrollment> enrollments;
-    private List<Payment> payments;
-    private List<QuizResult> quizResults;
-    private List<UserAnswer> userAnswers;
-    private List<Certificate> certificates;
+    private List<EnrollmentCreateRequestDTO> enrollments;
+    private List<PaymentCreateRequest> payments;
+    private List<QuizResultCreateRequestDTO> quizResults;
+    private List<UserAnswerCreateRequest> userAnswers;
+    private List<CertificateCreateRequest> certificates;
 
-    //Validation
+    // Validation
     public static void validateUserCreateRequested(UserCreateRequest dto) throws CustomException {
-        if (Utils.isNull(dto.getUserAnswers())) {
+        if (Utils.isNull(dto.getUsername()) || dto.getUsername().isBlank()) {
             throw new CustomException(Constants.USER_USER_NAME_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
         }
         if (Utils.isNull(dto.getEmail())) {
@@ -38,23 +38,8 @@ public class UserCreateRequest {
         if (Utils.isNull(dto.getPassword())) {
             throw new CustomException(Constants.USER_PASSWORD_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
         }
-        if(Utils.isNull(dto.getRole())) {
+        if (Utils.isNull(dto.getRole())) {
             throw new CustomException(Constants.USER_ROLE_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
-        }
-        if(Utils.isNull(dto.getEnrollments()) || dto.getEnrollments().isEmpty()) {
-            throw new CustomException(Constants.USER_ENROLLMENTS_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
-        }
-        if(Utils.isNull(dto.getPayments()) || dto.getPayments().isEmpty()) {
-            throw new CustomException(Constants.USER_PAYMENTS_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
-        }
-        if(Utils.isNull(dto.getQuizResults()) || dto.getQuizResults().isEmpty()) {
-            throw new CustomException(Constants.USER_QUIZ_RESULTS_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
-        }
-        if(Utils.isNull(dto.getUserAnswers()) || dto.getUserAnswers().isEmpty()) {
-            throw new CustomException(Constants.USER_USER_ANSWERS_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
-        }
-        if(Utils.isNull(dto.getCertificates()) || dto.getCertificates().isEmpty()) {
-            throw new CustomException(Constants.USER_CERTIFICATES_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
         }
     }
 
@@ -63,14 +48,36 @@ public class UserCreateRequest {
         User user = User.builder()
                 .username(dto.getUsername())
                 .email(dto.getEmail())
-                .password(dto.getPassword())
+                .password(dto.getPassword()) // hash in service layer
                 .role(dto.getRole())
-                .enrollments(dto.getEnrollments())
-                .payments(dto.getPayments())
-                .quizResults(dto.getQuizResults())
-                .userAnswers(dto.getUserAnswers())
-                .certificates(dto.getCertificates())
                 .build();
+
+        if (Utils.isNotNull(dto.getEnrollments())) {
+            user.setEnrollments(dto.getEnrollments().stream()
+                    .map(EnrollmentCreateRequestDTO::convertToEnrollment)
+                    .toList());
+        }
+        if (Utils.isNotNull(dto.getPayments())) {
+            user.setPayments(dto.getPayments().stream()
+                    .map(PaymentCreateRequest::convertDTOToEntity)
+                    .toList());
+        }
+        if (Utils.isNotNull(dto.getQuizResults())) {
+            user.setQuizResults(dto.getQuizResults().stream()
+                    .map(QuizResultCreateRequestDTO::convertToQuizResult)
+                    .toList());
+        }
+        if (Utils.isNotNull(dto.getUserAnswers())) {
+            user.setUserAnswers(dto.getUserAnswers().stream()
+                    .map(UserAnswerCreateRequest::convertToUserAnswer)
+                    .toList());
+        }
+        if (Utils.isNotNull(dto.getCertificates())) {
+            user.setCertificates(dto.getCertificates().stream()
+                    .map(CertificateCreateRequest::convertDTOToEntity)
+                    .toList());
+        }
+
         return user;
     }
 
@@ -81,11 +88,21 @@ public class UserCreateRequest {
                 .email(entity.getEmail())
                 .password(entity.getPassword())
                 .role(entity.getRole())
-                .enrollments(entity.getEnrollments())
-                .payments(entity.getPayments())
-                .quizResults(entity.getQuizResults())
-                .userAnswers(entity.getUserAnswers())
-                .certificates(entity.getCertificates())
+                .enrollments(entity.getEnrollments().stream()
+                        .map(EnrollmentCreateRequestDTO::convertToDTO)
+                        .toList())
+                .payments(entity.getPayments().stream()
+                        .map(PaymentCreateRequest::convertEntityToDTO)
+                        .toList())
+                .quizResults(entity.getQuizResults().stream()
+                        .map(QuizResultCreateRequestDTO::convertToQuizResult)
+                        .toList())
+                .userAnswers(entity.getUserAnswers().stream()
+                        .map(UserAnswerCreateRequest::convertToUserAnswerCreateRequest)
+                        .toList())
+                .certificates(entity.getCertificates().stream()
+                        .map(CertificateCreateRequest::convertEntityToDTO)
+                        .toList())
                 .build();
     }
 }
