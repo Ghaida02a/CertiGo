@@ -33,8 +33,7 @@ public class QuizResultCreateRequestDTO {
     }
 
     // validation
-    public static void validateQuizResult(
-            QuizResultCreateRequestDTO request) throws CustomException {
+    public static void validateQuizResult(QuizResultCreateRequestDTO request) throws CustomException {
 
         if (Utils.isNull(request) || Utils.isBlank(request.getIsPassed())) {
             throw new CustomException(Constants.BAD_REQUEST, Constants.HTTP_STATUS_IS_NULL);
@@ -49,14 +48,22 @@ public class QuizResultCreateRequestDTO {
         }
 
         if (Utils.isNull(request.getQuizId()) || request.getQuizId() <= 0) {
-            throw new CustomException(Constants.QUIZ_ID_NOT_VALID, Constants.HTTP_STATUS_IS_NULL
-            );
+            throw new CustomException(Constants.QUIZ_ID_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
         }
 
         if (Utils.isNull(request.getCourseId()) || request.getCourseId() <= 0) {
-            throw new CustomException(Constants.COURSE_ID_NOT_VALID, Constants.HTTP_STATUS_IS_NULL
-            );
+            throw new CustomException(Constants.COURSE_ID_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
         }
     }
 
+    public static QuizResultCreateRequestDTO convertToQuizResult(QuizResult quizResult) {
+        return QuizResultCreateRequestDTO.builder()
+                .score(quizResult.getScore())
+                .isPassed(quizResult.getIsPassed())
+                .userId(quizResult.getUser().getId())
+                .quizId(quizResult.getQuiz().getId())
+                .courseId(quizResult.getCourse().getId())
+                .userAnswers(quizResult.getUserAnswers())
+                .build();
+    }
 }

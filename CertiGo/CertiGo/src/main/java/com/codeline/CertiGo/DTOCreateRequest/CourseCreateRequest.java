@@ -54,4 +54,13 @@ public class CourseCreateRequest {
 
     }
 
+    public static CourseCreateRequest convertToCourse(Course course) {
+        return CourseCreateRequest.builder()
+                .courseName(course.getCourseName())
+                .type(course.getType())
+                .durationHours(course.getDurationHours())
+                .price(course.getPrice())
+                .isCompleted(course.getIsCompleted())
+                .build();
+    }
 }
