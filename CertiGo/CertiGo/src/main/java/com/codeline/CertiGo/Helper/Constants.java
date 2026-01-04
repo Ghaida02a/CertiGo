@@ -1,6 +1,71 @@
 package com.codeline.CertiGo.Helper;
 
 public class Constants {
+
+    public static final String REVIEW_CREATE_REQUEST_NAME_NOT_VALID =
+            "Reviewer name is not valid";
+
+    public static final String REVIEW_CREATE_REQUEST_COMMENTS_NOT_VALID =
+            "Review comments are not valid";
+
+    public static final String REVIEW_CREATE_REQUEST_RATING_NOT_VALID =
+            "Rating is not valid";
+
+    public static final String REVIEW_CREATE_REQUEST_COURSE_ID_NOT_VALID =
+            "Course ID is not valid";
+
+    public static final String REVIEW_CREATE_REQUEST_USER_ID_NOT_VALID =
+            "User ID is not valid";
+
+
+    public static final String INSTRUCTOR_CREATE_REQUEST_NAME_NOT_VALID =
+            "Instructor name must not be null or blank";
+
+    public static final String INSTRUCTOR_CREATE_REQUEST_BIO_NOT_VALID =
+            "Instructor bio must not be null or blank";
+
+    public static final String INSTRUCTOR_CREATE_REQUEST_EMAIL_NOT_VALID =
+            "Instructor email is not valid";
+
+    public static final String INSTRUCTOR_CREATE_REQUEST_COURSES_NOT_VALID =
+            "Instructor courses list is not valid";
+
+
+    public static final String USER_ANSWER_CREATE_REQUEST_SELECTED_OPTION_NOT_VALID =
+            "Selected option is not valid";
+
+    public static final String USER_ANSWER_CREATE_REQUEST_IS_CORRECT_NOT_VALID =
+            "Answer correctness flag is not valid";
+
+    public static final String USER_ANSWER_USER_ID_NOT_VALID =
+            "User ID is not valid";
+
+    public static final String USER_ANSWER_QUIZ_ID_NOT_VALID =
+            "Quiz ID is not valid";
+
+    public static final String USER_ANSWER_QUESTION_ID_NOT_VALID =
+            "Question ID is not valid";
+
+    public static final String USER_ANSWER_QUIZ_RESULT_ID_NOT_VALID =
+            "Quiz result ID is not valid";
+
+
+    public static final String OPTION_CREATE_REQUEST_OPTION_TEXT_NOT_VALID =
+            "Option text must not be null or blank";
+
+    public static final String OPTION_CREATE_REQUEST_IS_CORRECT_NOT_VALID =
+            "Option correctness flag must not be null";
+
+    public static final String OPTION_CREATE_REQUEST_QUESTION_ID_NOT_VALID =
+            "Question ID is not valid";
+
+
+    // HTTP Status Codes
+    public static final int HTTP_STATUS_IS_NULL = 422;
+    public static final int HTTP_STATUS_BAD_REQUEST = 400;
+    public static final int HTTP_STATUS_NOT_FOUND = 404;
+    public static final int HTTP_STATUS_INTERNAL_SERVER_ERROR = 500;
+
     // Response Messages and Status Codes for Company Validations
     public final static String SUCCESS = "Success";
     public final static String BAD_REQUEST = "BAD REQUEST";
@@ -33,6 +98,28 @@ public class Constants {
     //Response Messages Quiz Result Validations
     public final static String SCORE_NOT_VALID = "Score is not valid";
     public final static String IS_PASSED_NOT_VALID = "isPassed is not valid";
+    public final  static String USER_ID_NOT_VALID = "User ID is not valid";
+    public final static  String USER_ANSWERS_NOT_VALID = "User answers are not valid";
+
+    //User CreateRequest Validations
+    public final static String USER_NOT_FOUND = "User not found";
+    public final static String USER_USER_NAME_NOT_VALID = "User name is not valid";
+    public final static String USER_EMAIL_NOT_VALID = "User email is not valid";
+    public final static String USER_PASSWORD_NOT_VALID = "User password is not valid";
+    public final static String USER_ROLE_NOT_VALID = "User role is not valid";
+    public final static String USER_ENROLLMENTS_NOT_VALID = "User enrollments are not valid";
+    public final static String USER_PAYMENTS_NOT_VALID = "User payments are not valid";
+    public final static String USER_QUIZ_RESULTS_NOT_VALID = "User quiz results are not valid";
+    public final static String USER_USER_ANSWERS_NOT_VALID = "User answers are not valid";
+    public final static String USER_CERTIFICATES_NOT_VALID = "User certificates are not valid";
+    public final static String USER_PAYMENT_IS_NULL = "User Payments is null";
+
+    //Payment
+    public final static String PAYMENT_IS_NULL = "Payments is null";
+    public final static String PAYMENT_AMOUNT_IS_NULL = "Payment amount is null";
+    public final static String PAYMENT_PAYMENT_METHODS_IS_NULL = "Payment methods is null";
+    public final static String PAYMENT_PAYMENT_STATUS_IS_NULL = "Payment status is null";
+
     public final static String USER_ID_NOT_VALID = "User ID is not valid";
     public final static String USER_ANSWERS_NOT_VALID = "User answers are not valid";
 
