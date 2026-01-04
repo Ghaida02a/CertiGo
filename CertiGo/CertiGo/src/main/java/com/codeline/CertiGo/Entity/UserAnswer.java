@@ -40,6 +40,8 @@ package com.codeline.CertiGo.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -54,6 +56,9 @@ public class UserAnswer {
 
     private String selectedOption;
     private Boolean isCorrect;
+    private Boolean isActive;
+    private Date createdAt;
+    private Date updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "user")

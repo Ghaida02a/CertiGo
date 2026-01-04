@@ -20,7 +20,7 @@ public class InstructorCreateRequest {
     private String name;
     private String bio;
     private String email;
-//    private List<CourseCreateRequest> courses;
+    private List<CourseCreateRequest> courses;
 
     public static Instructor convertToInstructor(InstructorCreateRequest request) {
         Instructor instructor = new Instructor();
@@ -39,8 +39,8 @@ public class InstructorCreateRequest {
             throw new CustomException(Constants.INSTRUCTOR_CREATE_REQUEST_BIO_NOT_VALID ,Constants.HTTP_STATUS_IS_NULL);
         } else if (Utils.isNull(request.getEmail()) || request.getEmail().isBlank() || !request.getEmail().contains("@")) {
             throw new CustomException(Constants.INSTRUCTOR_CREATE_REQUEST_EMAIL_NOT_VALID ,Constants.HTTP_STATUS_IS_NULL);
-//        } else if (Utils.isNull(request.getCourses()) ||Utils.isListEmpty(request.getCourses())) {
-//            throw new CustomException(Constants.INSTRUCTOR_CREATE_REQUEST_COURSES_NOT_VALID ,Constants.HTTP_STATUS_IS_NULL);
+        } else if (Utils.isNull(request.getCourses()) ||Utils.isListEmpty(request.getCourses())) {
+            throw new CustomException(Constants.INSTRUCTOR_CREATE_REQUEST_COURSES_NOT_VALID ,Constants.HTTP_STATUS_IS_NULL);
         }
     }
 }

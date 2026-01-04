@@ -32,21 +32,22 @@ public class LessonServices {
         lesson.setCreatedAt(new Date());
         lesson.setIsActive(Boolean.TRUE);
 
-        Course course = courseRepository.getCourseById(request.getCourseId())
+        Course course = courseRepository.getCourseById(request.getCourseId());
         if (Utils.isNotNull(course)) {
-            Lesson.setCourse(course);
+            lesson.setCourse(course);
         } else {
-            throw new Exception(Constants.LESSON_CREATE_REQUEST_COURSE_ID_NOT_VALID)
+            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
         }
         return LessonCreateResponse.convertToLessonCreateResponse(lessonRepository.save(lesson));
     }
+
         public Lesson updateLesson (Lesson lesson) throws CustomException {
-            Lesson existingLesson = lessonRepository.findById(Lesson.getId()).get();
+            Lesson existingLesson = lessonRepository.findById(lesson.getId()).get();
             if (existingLesson != null && existingLesson.getIsActive()) {
-                Lesson.setUpdatedAt(new Date());
-                return lessonRepository.save(Lesson);
+                lesson.setUpdatedAt(new Date());
+                return lessonRepository.save(lesson);
             } else {
-                throw new Exception("BAD REQUEST");
+                throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
             }
         }
 
@@ -57,7 +58,7 @@ public class LessonServices {
                 existingLesson.setIsActive(Boolean.FALSE);
                 lessonRepository.save(existingLesson);
             } else {
-                throw new Exception("BAD REQUEST");
+                throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
             }
         }
 
@@ -66,7 +67,7 @@ public class LessonServices {
             if (existingLesson != null && existingLesson.getIsActive()) {
                 return existingLesson;
             } else {
-                throw new Exception("BAD REQUEST");
+                throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
             }
         }
     }

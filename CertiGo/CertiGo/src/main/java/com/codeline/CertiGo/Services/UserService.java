@@ -1,9 +1,9 @@
 package com.codeline.CertiGo.Services;
 
-import com.codeline.CertiGo.DTOCreateRequest.EnrollmentCreateRequestDTO;
 import com.codeline.CertiGo.DTOCreateRequest.UserCreateRequest;
 import com.codeline.CertiGo.DTOResponse.UserResponse;
-import com.codeline.CertiGo.Entity.Enrollment;
+import com.codeline.CertiGo.DTOUpdateRequest.UserUpdateRequest;
+import com.codeline.CertiGo.Entity.Payment;
 import com.codeline.CertiGo.Entity.User;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
@@ -27,28 +27,13 @@ public class UserService {
     EnrollmentRepository enrollmentRepository;
 
     // Get all active users
-    public List<User> getAllCourses() {
+    public List<User> getAllActiveUsers() {
         if (Utils.isListNotEmpty(userRepository.findAllActiveUsers())) {
             return userRepository.findAllActiveUsers();
         } else {
             return new ArrayList<>();
         }
     }
-//
-//    public UserResponse saveUser(UserCreateRequest userCreateRequest) {
-//        User user = UserCreateRequest.convertDTOToEntity(userCreateRequest);
-//        user.setCreatedAt(new Date());
-//        user.setIsActive(Boolean.TRUE);
-//
-////        Instructor instructor = instructorRepository.getInstructorById(courseRequested.getInstructorId());
-////        if (Utils.isNotNull(instructor)) {
-////            course.setInstructor(instructor);
-////        } else {
-////            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Constants.COURSE_CREATE_REQUEST_INSTRUCTOR_ID_NOT_VALID);
-////        }
-//
-//        return UserResponse.entityToDTOResponse(userRepository.save(user));
-//    }
 
     //Get user by ID
     public User getUserById(int id) throws CustomException {
@@ -61,28 +46,35 @@ public class UserService {
     }
 
     // Update user safely
-    public String updateUser(User updateObj) throws CustomException {
+    public UserResponse updateUser(UserUpdateRequest updateObj) throws CustomException {
         Optional<User> existingOpt = userRepository.findById(updateObj.getId());
 
-        if (existingOpt.isPresent()) {
-            User existingCourse = existingOpt.get();
-
-            if (Boolean.TRUE.equals(existingCourse.getIsActive())) {
-                existingCourse.setUsername(updateObj.getUsername());
-                existingCourse.setEmail(updateObj.getEmail());
-                existingCourse.setPassword(updateObj.getPassword());
-                existingCourse.setRole(updateObj.getRole());
-                existingCourse.setUpdatedAt(new Date());
-                existingCourse.setIsActive(Boolean.TRUE);
-
-                userRepository.save(existingCourse);
-                return Constants.SUCCESS;
-            } else {
-                throw new CustomException(Constants.BAD_REQUEST, Constants.HTTP_STATUS_BAD_REQUEST);
-            }
-        } else {
+        if (existingOpt.isEmpty()) {
             throw new CustomException(Constants.USER_NOT_FOUND, Constants.HTTP_STATUS_NOT_FOUND);
         }
+
+        User existingUser = existingOpt.get();
+
+        if (!Boolean.TRUE.equals(existingUser.getIsActive())) {
+            throw new CustomException(Constants.BAD_REQUEST, Constants.HTTP_STATUS_BAD_REQUEST);
+        }
+
+        // Apply updates
+        existingUser.setUsername(updateObj.getUsername());
+        existingUser.setEmail(updateObj.getEmail());
+        existingUser.setPassword(updateObj.getPassword());
+        existingUser.setRole(updateObj.getRole());
+        existingUser.setUpdatedAt(new Date());
+
+        // Handle relationships if provided
+        if (Utils.isNotNull(updateObj.getEnrollments())) existingUser.setEnrollments(updateObj.getEnrollments());
+        if (Utils.isNotNull(updateObj.getPayments())) existingUser.setPayments(updateObj.getPayments());
+        if (Utils.isNotNull(updateObj.getQuizResults())) existingUser.setQuizResults(updateObj.getQuizResults());
+        if (Utils.isNotNull(updateObj.getUserAnswers())) existingUser.setUserAnswers(updateObj.getUserAnswers());
+        if (Utils.isNotNull(updateObj.getCertificates())) existingUser.setCertificates(updateObj.getCertificates());
+
+        User savedUser = userRepository.save(existingUser);
+        return UserResponse.entityToDTOResponse(savedUser);
     }
 
     //Soft delete user
@@ -99,31 +91,74 @@ public class UserService {
     }
 
     public UserResponse saveUser(UserCreateRequest userRequested) {
+        // Convert DTO to entity
         User user = UserCreateRequest.convertDTOToEntity(userRequested);
         user.setCreatedAt(new Date());
         user.setIsActive(Boolean.TRUE);
 
-        //    private List<Enrollment> enrollments;
-        //    private List<Payment> payments;
-        //    private List<QuizResult> quizResults;
-        //    private List<UserAnswer> userAnswers;
-        //    private List<Certificate> certificates;
+//        // Handle enrollments
+//        if (Utils.isNotNull(userRequested.getEnrollments()) && !userRequested.getEnrollments().isEmpty()) {
+//            List<Enrollment> enrollments = new ArrayList<>();
+//            for (EnrollmentCreateRequestDTO enrollmentDTO : userRequested.getEnrollments()) {
+//                Enrollment enrollment = EnrollmentCreateRequestDTO.convertToEnrollment(enrollmentDTO);
+//                enrollment.setUser(user);
+//                enrollment.setStatus(enrollmentDTO.getStatus());
+//                enrollment.setIsActive(Boolean.TRUE);
+//                enrollment.setCreatedAt(new Date());
+//
+//                // If course is part of enrollment, set it here
+//                if (Utils.isNotNull(enrollmentDTO.getCourse())) {
+//                    enrollment.setCourse(enrollmentDTO.getCourse());
+//                }
+//
+//                enrollments.add(enrollment);
+//            }
+//            user.setEnrollments(enrollments);
+//        }
 
-        if (Utils.isNotNull(userRequested.getEnrollments()) && !userRequested.getEnrollments().isEmpty()) {
-            List<Enrollment> enrollments = new ArrayList<>();
-            for (EnrollmentCreateRequestDTO enrollmentDTO : userRequested.getEnrollments()) {
-                Enrollment mark = MarkRequestDTO.convertDTOToEntity(enrollmentDTO);
-                mark.setCourse(course);
-                mark.setIsActive(Boolean.TRUE);
-                mark.setCreatedDate(new Date());
-                // Save mark to mark table
-                Mark savedMark = markRepository.save(mark);
-                enrollments.add(savedMark);
+        // Handle payments
+        if (Utils.isNotNull(userRequested.getPayments()) && !userRequested.getPayments().isEmpty()) {
+            List<Payment> payments = new ArrayList<>();
+            for (Payment payment : userRequested.getPayments()) {
+                payment.setUser(user);
+                payment.setIsActive(Boolean.TRUE);
+                payment.setCreatedAt(new Date());
+                payments.add(payment);
             }
-
-            course.setMarks(enrollments);
+            user.setPayments(payments);
         }
 
+        // Handle quiz results
+        if (Utils.isNotNull(userRequested.getQuizResults()) && !userRequested.getQuizResults().isEmpty()) {
+            userRequested.getQuizResults().forEach(qr -> {
+                qr.setUser(user);
+                qr.setIsActive(Boolean.TRUE);
+                qr.setCreatedAt(new Date());
+            });
+            user.setQuizResults(userRequested.getQuizResults());
+        }
+
+//        // Handle user answers
+//        if (Utils.isNotNull(userRequested.getUserAnswers()) && !userRequested.getUserAnswers().isEmpty()) {
+//            userRequested.getUserAnswers().forEach(ans -> {
+//                ans.setUser(user);
+//                ans.setIsActive(Boolean.TRUE);
+//                ans.setCreatedAt(new Date());
+//            });
+//            user.setUserAnswers(userRequested.getUserAnswers());
+//        }
+
+        // Handle certificates
+        if (Utils.isNotNull(userRequested.getCertificates()) && !userRequested.getCertificates().isEmpty()) {
+            userRequested.getCertificates().forEach(cert -> {
+                cert.setUser(user);
+                cert.setIsActive(Boolean.TRUE);
+                cert.setCreatedAt(new Date());
+            });
+            user.setCertificates(userRequested.getCertificates());
+        }
+
+        // Save user
         User savedUser = userRepository.save(user);
 
         return UserResponse.entityToDTOResponse(savedUser);

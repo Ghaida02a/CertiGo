@@ -31,6 +31,15 @@ public class EnrollmentCreateRequestDTO {
         return enrollment;
     }
 
+    //convert Entity → DTO
+    public static EnrollmentCreateRequestDTO convertToDTO(Enrollment enrollment) {
+        return EnrollmentCreateRequestDTO.builder()
+                .status(enrollment.getStatus())
+               // .username(enrollment.getUser())
+               // .courseId(enrollment.getCourseId())
+                .build();
+    }
+
     //  validation
     public static void validateEnrollment(EnrollmentCreateRequestDTO request) throws CustomException {
 
