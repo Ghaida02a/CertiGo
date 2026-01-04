@@ -35,4 +35,16 @@ public class Constants {
     public final static String IS_PASSED_NOT_VALID = "isPassed is not valid";
     public final  static String USER_ID_NOT_VALID = "User ID is not valid";
     public final static  String USER_ANSWERS_NOT_VALID = "User answers are not valid";
+
+    //User CreateRequest Validations
+    public final static String USER_NOT_FOUND = "User not found";
+    public final static String USER_USER_NAME_NOT_VALID = "User name is not valid";
+    public final static String USER_EMAIL_NOT_VALID = "User email is not valid";
+    public final static String USER_PASSWORD_NOT_VALID = "User password is not valid";
+    public final static String USER_ROLE_NOT_VALID = "User role is not valid";
+    public final static String USER_ENROLLMENTS_NOT_VALID = "User enrollments are not valid";
+    public final static String USER_PAYMENTS_NOT_VALID = "User payments are not valid";
+    public final static String USER_QUIZ_RESULTS_NOT_VALID = "User quiz results are not valid";
+    public final static String USER_USER_ANSWERS_NOT_VALID = "User answers are not valid";
+    public final static String USER_CERTIFICATES_NOT_VALID = "User certificates are not valid";
 }
