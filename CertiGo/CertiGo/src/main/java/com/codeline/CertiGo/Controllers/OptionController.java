@@ -1,11 +1,11 @@
-package com.codeline.CertiGo.Controller;
+package com.codeline.CertiGo.Controllers;
 
 import com.codeline.CertiGo.DTOCreateRequest.OptionCreateRequest;
 import com.codeline.CertiGo.DTOResponse.OptionCreateResponse;
 import com.codeline.CertiGo.Entity.Option;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
-import com.codeline.CertiGo.Service.OptionService;
+import com.codeline.CertiGo.Services.OptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

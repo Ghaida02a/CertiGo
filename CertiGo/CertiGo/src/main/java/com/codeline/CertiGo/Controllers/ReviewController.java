@@ -1,11 +1,11 @@
-package com.codeline.CertiGo.Controller;
+package com.codeline.CertiGo.Controllers;
 
 import com.codeline.CertiGo.DTOCreateRequest.ReviewCreateRequest;
 import com.codeline.CertiGo.DTOResponse.ReviewCreateResponse;
 import com.codeline.CertiGo.Entity.Review;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
-import com.codeline.CertiGo.Service.ReviewService;
+import com.codeline.CertiGo.Services.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

@@ -120,7 +120,7 @@ public class Constants {
     public final static String PAYMENT_AMOUNT_IS_NULL = "Payment amount is null";
     public final static String PAYMENT_PAYMENT_METHODS_IS_NULL = "Payment methods is null";
     public final static String PAYMENT_PAYMENT_STATUS_IS_NULL = "Payment status is null";
-    
+
    // public final static String USER_ID_NOT_VALID = "User ID is not valid";
     //public final static String USER_ANSWERS_NOT_VALID = "User answers are not valid";
 

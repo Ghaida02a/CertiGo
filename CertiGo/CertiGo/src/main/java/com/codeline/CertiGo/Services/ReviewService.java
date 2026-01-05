@@ -1,4 +1,4 @@
-package com.codeline.CertiGo.Service;
+package com.codeline.CertiGo.Services;
 
 import com.codeline.CertiGo.Entity.Course;
 import com.codeline.CertiGo.Entity.Review;
