@@ -8,7 +8,8 @@ import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
 import com.codeline.CertiGo.Helper.Utils;
 import com.codeline.CertiGo.Repositories.CourseRepository;
-import com.codeline.CertiGo.Repositories.LessonRepository;
+import com.codeline.CertiGo.Repository.LessonRepository;
+import com.codeline.CertiGo.Repository.LessonRepository;
 import jdk.jshell.execution.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,9 +20,9 @@ import java.util.List;
 @Service
 public class LessonServices {
     @Autowired
-    LessonRepository lessonRepository;
-    @Autowired
     CourseRepository courseRepository;
+    @Autowired
+    LessonRepository lessonRepository;
 
     public List<Lesson> getAllLessons() {
         return lessonRepository.findAll();
@@ -32,7 +33,7 @@ public class LessonServices {
         lesson.setCreatedAt(new Date());
         lesson.setIsActive(Boolean.TRUE);
 
-        Course course = courseRepository.getCourseById(request.getCourseId());
+        Course course = courseRepository.getCourseById(request.getCoursesId());
         if (Utils.isNotNull(course)) {
             lesson.setCourse(course);
         } else {

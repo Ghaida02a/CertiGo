@@ -1,5 +1,6 @@
 package com.codeline.CertiGo.DTOCreateResponse;
 
+import com.codeline.CertiGo.DTOCreateRequest.CourseCreateRequest;
 import com.codeline.CertiGo.Entity.Lesson;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,14 +15,14 @@ public class LessonCreateResponse {
     private Integer id;
     private String lessonName;
     private String pdfUrl;
-    private Integer courseId;
+    private Integer coursesId;
 
     public static LessonCreateResponse convertToLessonCreateResponse(Lesson entity) {
         return LessonCreateResponse.builder()
                 .id(entity.getId())
                 .lessonName(entity.getLessonName())
                 .pdfUrl(entity.getPdfUrl())
-                .courseId(entity.getCourse().getId())
+                .coursesId(entity.getCourse().getId())
                 .build();
     }
 }

@@ -3,6 +3,7 @@ package com.codeline.CertiGo.DTOCreateRequest;
 import com.codeline.CertiGo.Entity.Course;
 import com.codeline.CertiGo.Entity.Question;
 import com.codeline.CertiGo.Entity.Quiz;
+import com.codeline.CertiGo.Entity.QuizResult;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
 import com.codeline.CertiGo.Helper.Utils;
@@ -21,8 +22,10 @@ import java.util.List;
 public class QuizCreateRequest {
     private Integer totalQuestions;
     private Integer passingScore;
-    private Integer courseId;
+    private Integer coursesId;
     private List<Integer> questionsId;
+    private List<Integer> quizResultsId;
+
 
     public static Quiz convertToQuiz(QuizCreateRequest request) {
         Quiz quiz = new Quiz();
@@ -31,16 +34,18 @@ public class QuizCreateRequest {
         return quiz;
 
     }
-        public static void validQuizCreateRequest(QuizCreateRequest request) throws CustomException {
-        if (Utils.isNull(request.getTotalQuestions()) || request.getTotalQuestions() <= 0) {
-            throw new CustomException(Constants.QUIZ_CREATE_REQUEST_TOTAL_QUESTIONS_NOT_VALID,Constants.HTTP_STATUS_IS_NULL);
-        }else if (Utils.isNull(request.getPassingScore()) || request.getPassingScore() <= 0) {
-            throw new CustomException(Constants.QUIZ_CREATE_REQUEST_PASSING_SCORE_NOT_VALID,Constants.HTTP_STATUS_IS_NULL);
-        } else if (Utils.isNull(request.getCourseId())|| request.getCourseId() <= 0) {
-            throw new CustomException(Constants.QUIZ_CREATE_REQUEST_COURSE_ID_NOT_VALID,Constants.HTTP_STATUS_IS_NULL);
-        } else if (Utils.isNull(request.getQuestionsId())|| Utils.isListEmpty(request.getQuestionsId())){
-            throw new CustomException(Constants.QUIZ_CREATE_REQUEST_QUESTIONS_ID_NOT_VALID,Constants.HTTP_STATUS_IS_NULL);
 
+    public static void validQuizCreateRequest(QuizCreateRequest request) throws CustomException {
+        if (Utils.isNull(request.getTotalQuestions()) || request.getTotalQuestions() <= 0) {
+            throw new CustomException(Constants.QUIZ_CREATE_REQUEST_TOTAL_QUESTIONS_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
+        } else if (Utils.isNull(request.getPassingScore()) || request.getPassingScore() <= 0) {
+            throw new CustomException(Constants.QUIZ_CREATE_REQUEST_PASSING_SCORE_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
+//        } else if (Utils.isNull(request.getCourseId())|| request.getCourseId() <= 0) {
+//            throw new CustomException(Constants.QUIZ_CREATE_REQUEST_COURSE_ID_NOT_VALID,Constants.HTTP_STATUS_IS_NULL);
+//        } else if (Utils.isNull(request.getQuestionsId())|| Utils.isListEmpty(request.getQuestionsId())){
+//            throw new CustomException(Constants.QUIZ_CREATE_REQUEST_QUESTIONS_ID_NOT_VALID,Constants.HTTP_STATUS_IS_NULL);
+//
+//        }
         }
-        }
+    }
 }

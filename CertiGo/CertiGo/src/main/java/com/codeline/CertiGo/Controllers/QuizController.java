@@ -1,8 +1,8 @@
 package com.codeline.CertiGo.Controllers;
 
+import com.codeline.CertiGo.DTOResponse.QuizCreateResponse;
 import com.codeline.CertiGo.Entity.Quiz;
 import com.codeline.CertiGo.DTOCreateRequest.QuizCreateRequest;
-import com.codeline.CertiGo.DTOCreateResponse.QuizCreateResponse;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Services.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +18,9 @@ public class QuizController {
     QuizService quizService;
 
     @PostMapping("create")
-
     public QuizCreateResponse createQuiz(@RequestBody QuizCreateRequest requestObj) throws CustomException {
         QuizCreateRequest.validQuizCreateRequest(requestObj);
         return quizService.saveQuiz(requestObj);
-
     }
 
     @GetMapping("getAll")
