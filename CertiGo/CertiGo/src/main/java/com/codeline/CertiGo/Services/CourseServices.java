@@ -38,12 +38,12 @@ public class CourseServices {
 
         Company company = companyRepository.getCompanyById(request.getCompanyId());
         if (Utils.isNotNull(company)) {
-            Course.setCompany(company);
+            course.setCompany(company);
         } else {
             throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
         }
 
-        List<Instructor> instructor = instructorRepository.findAllInstructors(request.getInstructorsId());
+        List<Instructor> instructor = instructorRepository.findAllInstructors();
         if (Utils.isNotNull(instructor) && Utils.isListNotEmpty(instructor)) {
             course.setInstructors(instructor);
         } else {

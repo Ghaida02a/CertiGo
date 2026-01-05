@@ -1,4 +1,4 @@
-package com.codeline.CertiGo.DTOCreateResponse;
+package com.codeline.CertiGo.DTOResponse;
 
 import com.codeline.CertiGo.DTOCreateRequest.CourseCreateRequest;
 import com.codeline.CertiGo.Entity.Quiz;
