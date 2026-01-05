@@ -2,6 +2,12 @@ package com.codeline.CertiGo.Helper;
 
 public class Constants {
 
+    public static final String BAD_REQUEST =
+            "BAD REQUEST";
+
+    public static final String SUCCESS =
+            "SUCCESS";
+
     public static final String REVIEW_CREATE_REQUEST_NAME_NOT_VALID =
             "Reviewer name is not valid";
 
@@ -16,7 +22,6 @@ public class Constants {
 
     public static final String REVIEW_CREATE_REQUEST_USER_ID_NOT_VALID =
             "User ID is not valid";
-
 
     public static final String INSTRUCTOR_CREATE_REQUEST_NAME_NOT_VALID =
             "Instructor name must not be null or blank";
@@ -75,7 +80,10 @@ public class Constants {
     public final static String CONTACT_EMAIL_NOT_VALID = "Contact email is not valid";
     public final static String COURSE_LIST_NOT_VALID = "Course list is not valid";
     public final static int HTTP_STATUS_SUCCESS = 200;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 15a027f574f42881ac21db900fb4b2a5a600b82a
 
     //Response Messages and Status Codes for Enrollment Validations
     public final static String ENROLLMENT_NOT_FOUND = "Enrollment not found";
@@ -118,6 +126,7 @@ public class Constants {
     public final static String PAYMENT_AMOUNT_IS_NULL = "Payment amount is null";
     public final static String PAYMENT_PAYMENT_METHODS_IS_NULL = "Payment methods is null";
     public final static String PAYMENT_PAYMENT_STATUS_IS_NULL = "Payment status is null";
+<<<<<<< HEAD
 
    // public final static String USER_ID_NOT_VALID = "User ID is not valid";
     //public final static String USER_ANSWERS_NOT_VALID = "User answers are not valid";
@@ -126,6 +135,12 @@ public class Constants {
     public final static Integer LOWER_DURATION_RANGE = 0;
     public final static Integer UPPER_DURATION_RANGE = 300;
 
+=======
+    public final static String PAYMENT_LIST_IS_NULL = "Payment list is null";
+
+    public final static Integer LOWER_DURATION_RANGE = 0;
+    public final static Integer UPPER_DURATION_RANGE = 300;
+>>>>>>> 15a027f574f42881ac21db900fb4b2a5a600b82a
 
     //Course
     public final static String COURSE_CREATE_REQUEST_COURSE_NAME_NOT_VALID = "NAME IS NOT VALID";
@@ -150,5 +165,13 @@ public class Constants {
     public final static String LESSON_CREATE_REQUEST_LESSON_NAME_NOT_VALID = "LESSON NAME IS NOT VALID";
     public final static String LESSON_CREATE_REQUEST_PDF_URL_NOT_VALID = "PDF URL IS NOT VALID";
     public final static String LESSON_CREATE_REQUEST_COURSE_ID_NOT_VALID = "COURSE ID IS NOT VALID";
+
+    //Certificate
+    public final static String CERTIFICATE_CREATE_REQUEST_CERTIFICATE_NAME_NOT_VALID = "CERTIFICATE NAME IS NOT VALID";
+    public final static String CERTIFICATE_CREATE_REQUEST_DESCRIPTION_NOT_VALID = "DESCRIPTION IS NOT VALID";
+    public final static String CERTIFICATE_NOT_FOUND = "CERTIFICATE NOT FOUND";
+    public final static String CERTIFICATE_LIST_IS_EMPTY = "Certification list is empty";
+    public final static String CERTIFICATE_CREATE_REQUEST_USER_ID_NOT_VALID = "USER ID IS NOT VALID";
+    public final static String CERTIFICATE_CREATE_REQUEST_COURSE_ID_NOT_VALID = "COURSE ID IS NOT VALID";
 }
 

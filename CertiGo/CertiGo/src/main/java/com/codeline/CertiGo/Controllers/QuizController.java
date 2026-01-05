@@ -20,8 +20,8 @@ public class QuizController {
     @PostMapping("create")
 
     public QuizCreateResponse createQuiz(@RequestBody QuizCreateRequest requestObj) throws CustomException {
-        QuizCreateRequest.validCreateQuizRequestObject(requestObj);
-        return QuizService.saveQuiz(requestObj);
+        QuizCreateRequest.validQuizCreateRequest(requestObj);
+        return quizService.saveQuiz(requestObj);
 
     }
 
