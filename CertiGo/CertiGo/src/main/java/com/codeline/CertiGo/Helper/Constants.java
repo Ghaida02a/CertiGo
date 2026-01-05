@@ -23,6 +23,10 @@ public class Constants {
     public static final String REVIEW_CREATE_REQUEST_USER_ID_NOT_VALID =
             "User ID is not valid";
 
+
+    public static final String REVIEW_LIST_IS_EMPTY =
+            "Review list is empty";
+
     public static final String INSTRUCTOR_CREATE_REQUEST_NAME_NOT_VALID =
             "Instructor name must not be null or blank";
 
@@ -35,6 +39,8 @@ public class Constants {
     public static final String INSTRUCTOR_CREATE_REQUEST_COURSES_NOT_VALID =
             "Instructor courses list is not valid";
 
+    public static final String INSTRUCTOR_LIST_IS_EMPTY =
+            "Instructor list is empty";
 
     public static final String USER_ANSWER_CREATE_REQUEST_SELECTED_OPTION_NOT_VALID =
             "Selected option is not valid";
@@ -64,6 +70,9 @@ public class Constants {
     public static final String OPTION_CREATE_REQUEST_QUESTION_ID_NOT_VALID =
             "Question ID is not valid";
 
+    public static final String OPTION_LIST_IS_EMPTY =
+            "Option list is empty";
+
 
     // HTTP Status Codes
     public static final int HTTP_STATUS_IS_NULL = 422;
@@ -72,8 +81,7 @@ public class Constants {
     public static final int HTTP_STATUS_INTERNAL_SERVER_ERROR = 500;
 
     // Response Messages and Status Codes for Company Validations
-    public final static String SUCCESS = "Success";
-    public final static String BAD_REQUEST = "BAD REQUEST";
+
     public final static String COMPANY_NAME_NOT_VALID = "Company name is not valid";
     public final static String LOCATION_NOT_VALID = "Location is not valid";
     public final static String INDUSTRY_NOT_VALID = "Industry is not valid";

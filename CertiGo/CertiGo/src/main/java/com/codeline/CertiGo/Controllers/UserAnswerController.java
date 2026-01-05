@@ -1,11 +1,12 @@
-package com.codeline.CertiGo.Controller;
+package com.codeline.CertiGo.Controllers;
 
 import com.codeline.CertiGo.DTOCreateRequest.UserAnswerCreateRequest;
+import com.codeline.CertiGo.DTOResponse.EnrollmentResponse;
 import com.codeline.CertiGo.DTOResponse.UserAnswerCreateResponse;
 import com.codeline.CertiGo.Entity.UserAnswer;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
-import com.codeline.CertiGo.Service.UserAnswerService;
+import com.codeline.CertiGo.Services.UserAnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +30,10 @@ public class UserAnswerController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @GetMapping("/getAll")
-    public List<UserAnswer> getAllAnswers(){
-        List<UserAnswer> answers= userAnswerService.getAllUSerAnswers();
-        return answers;
+    public List<UserAnswer> getAllAnswers() throws CustomException {
+        return userAnswerService.getAllUserAnswers();
     }
+
 
     @GetMapping("/getById/{id}")
     public UserAnswer getUserAnswerByUserId(@PathVariable int id) throws CustomException{

@@ -13,6 +13,6 @@ public interface ReviewRepository extends JpaRepository<Review,Integer> {
     @Query(" SELECT r FROM Review r WHERE r.id=:id AND r.isActive=true")
     Review getReviewById(Integer id);
 
-    @Query("SELECT r FROM Review r WHERE r.isActive=true AND r.id IN (:id) ")
-    List<Review> getReviewById(List<Integer> id);
+    @Query("SELECT r FROM Review r WHERE r.isActive=true ")
+    List<Review> findAllReviews();
 }
