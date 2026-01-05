@@ -72,8 +72,7 @@ public class Constants {
     public static final int HTTP_STATUS_INTERNAL_SERVER_ERROR = 500;
 
     // Response Messages and Status Codes for Company Validations
-    public final static String SUCCESS = "Success";
-    public final static String BAD_REQUEST = "BAD REQUEST";
+
     public final static String COMPANY_NAME_NOT_VALID = "Company name is not valid";
     public final static String LOCATION_NOT_VALID = "Location is not valid";
     public final static String INDUSTRY_NOT_VALID = "Industry is not valid";

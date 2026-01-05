@@ -1,4 +1,4 @@
-package com.codeline.CertiGo.Service;
+package com.codeline.CertiGo.Services;
 
 import com.codeline.CertiGo.DTOCreateRequest.UserAnswerCreateRequest;
 import com.codeline.CertiGo.DTOResponse.UserAnswerCreateResponse;
@@ -6,7 +6,7 @@ import com.codeline.CertiGo.Entity.*;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
 import com.codeline.CertiGo.Helper.Utils;
-import com.codeline.CertiGo.Repository.UserAnswerRepository;
+import com.codeline.CertiGo.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +18,14 @@ import java.util.List;
 public class UserAnswerService {
     @Autowired
     UserAnswerRepository userAnswerRepository;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    QuizRepository quizRepository;
+    @Autowired
+    QuestionRepository questionRepository;
+    @Autowired
+    QuizResultRepository quizResultRepository;
 
     public List<UserAnswer> getAllUSerAnswers() {
         return userAnswerRepository.findAll();
@@ -39,6 +47,7 @@ public class UserAnswerService {
         } else {
             throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_NOT_FOUND);
         }
+
         Question question = questionRepository.findById(answerDTO.getQuestionId()).get();
         if(Utils.isNotNull(question)){
             answer.setQuestion(question);

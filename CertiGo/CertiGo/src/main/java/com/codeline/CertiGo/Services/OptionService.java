@@ -1,4 +1,4 @@
-package com.codeline.CertiGo.Service;
+package com.codeline.CertiGo.Services;
 
 import com.codeline.CertiGo.DTOCreateRequest.OptionCreateRequest;
 import com.codeline.CertiGo.DTOResponse.OptionCreateResponse;
@@ -8,6 +8,7 @@ import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
 import com.codeline.CertiGo.Helper.Utils;
 import com.codeline.CertiGo.Repository.OptionRepository;
+import com.codeline.CertiGo.Repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,7 @@ public class OptionService {
         option.setIsCorrect(optionDTO.getIsCorrect());
         option.setOptionText(optionDTO.getOptionText());
 
-        Question question = questionRepository.findById(optionDTO.getQuestion()).get();
+        Question question = questionRepository.findById(optionDTO.getQuestionId()).get();
         if(Utils.isNotNull(question)){
             option.setQuestion(question);
         } else {
