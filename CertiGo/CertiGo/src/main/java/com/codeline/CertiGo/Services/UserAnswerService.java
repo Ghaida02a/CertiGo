@@ -6,6 +6,7 @@ import com.codeline.CertiGo.Entity.*;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
 import com.codeline.CertiGo.Helper.Utils;
+import com.codeline.CertiGo.Repository.UserAnswerRepository;
 import com.codeline.CertiGo.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

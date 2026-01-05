@@ -17,10 +17,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 @Service
 public class CompanyService {
     @Autowired
     private CompanyRepository companyRepository;
+
 
     // SAVE
     public CompanyResponse saveCompany(CompanyCreateRequestDTO request) throws CustomException {
@@ -141,6 +143,7 @@ public class CompanyService {
         } else {
             throw new CustomException(Constants.BAD_REQUEST, 400);
         }
+
     }
 }
 
