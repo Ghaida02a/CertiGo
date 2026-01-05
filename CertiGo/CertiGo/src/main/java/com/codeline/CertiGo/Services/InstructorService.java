@@ -1,4 +1,4 @@
-package com.codeline.CertiGo.Service;
+package com.codeline.CertiGo.Services;
 
 import com.codeline.CertiGo.DTOCreateRequest.InstructorCreateRequest;
 import com.codeline.CertiGo.DTOResponse.InstructorCreateResponse;

@@ -6,12 +6,11 @@ import com.codeline.CertiGo.Entity.Instructor;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
 import com.codeline.CertiGo.Helper.Utils;
-import com.codeline.CertiGo.Repositories.CompanyRepository;
+import com.codeline.CertiGo.Repository.CompanyRepository;
 import com.codeline.CertiGo.Repositories.CourseRepository;
-import com.codeline.CertiGo.Repositories.InstructorRepository;
+import com.codeline.CertiGo.Repository.InstructorRepository;
 import com.codeline.CertiGo.DTOCreateRequest.CourseCreateRequest;
 import com.codeline.CertiGo.DTOCreateResponse.CourseCreateResponse;
-import org.apache.tomcat.util.bcel.classfile.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +38,7 @@ public class CourseServices {
 
         Company company = companyRepository.getCompanyById(request.getCompanyId());
         if (Utils.isNotNull(company)) {
-            Course.setCompany(company);
+            course.setCompany(company);
         } else {
             throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
         }
@@ -56,7 +55,7 @@ public class CourseServices {
     }
     public Course updateCourse(Course course) throws CustomException {
         Course existingCourse = courseRepository.findById(course.getId()).get();
-        if (existingCourse != null && existingCourse.getIsActive()) {
+        if (Utils.isNotNull(existingCourse) && existingCourse.getIsActive()) {
             course.setUpdatedAt(new Date());
             return courseRepository.save(course);
         } else {
@@ -66,7 +65,7 @@ public class CourseServices {
 
     public void deleteCourse(Integer id) throws CustomException {
         Course existingCourse = courseRepository.findById(id).get();
-        if (existingCourse != null && existingCourse.getIsActive()) {
+        if (Utils.isNotNull(existingCourse) && existingCourse.getIsActive()) {
             existingCourse.setUpdatedAt(new Date());
             existingCourse.setIsActive(Boolean.FALSE);
             courseRepository.save(existingCourse);
@@ -77,7 +76,7 @@ public class CourseServices {
 
     public Course getCourseById(Integer id) throws CustomException {
         Course existingCourse = courseRepository.findById(id).get();
-        if (existingCourse != null && existingCourse.getIsActive()) {
+        if (Utils.isNotNull(existingCourse)&& existingCourse.getIsActive()) {
             return existingCourse;
         } else {
             throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
