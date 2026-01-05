@@ -6,9 +6,11 @@ import com.codeline.CertiGo.Entity.User;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
 import com.codeline.CertiGo.Helper.Utils;
+import com.codeline.CertiGo.Repository.CourseRepository;
 import com.codeline.CertiGo.Repository.ReviewRepository;
 import com.codeline.CertiGo.DTOCreateRequest.ReviewCreateRequest;
 import com.codeline.CertiGo.DTOResponse.ReviewCreateResponse;
+import com.codeline.CertiGo.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,12 @@ import java.util.List;
 public class ReviewService {
     @Autowired
     ReviewRepository reviewRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    CourseRepository courseRepository;
 
     public List<Review> getAllReviews() {
         return reviewRepository.findAll();

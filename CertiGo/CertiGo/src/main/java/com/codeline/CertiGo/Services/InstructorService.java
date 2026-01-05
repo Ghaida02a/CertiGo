@@ -1,5 +1,6 @@
 package com.codeline.CertiGo.Services;
 
+import com.codeline.CertiGo.DTOCreateRequest.CourseCreateRequest;
 import com.codeline.CertiGo.DTOCreateRequest.InstructorCreateRequest;
 import com.codeline.CertiGo.DTOResponse.InstructorCreateResponse;
 import com.codeline.CertiGo.Entity.Course;
@@ -7,6 +8,7 @@ import com.codeline.CertiGo.Entity.Instructor;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
 import com.codeline.CertiGo.Helper.Utils;
+import com.codeline.CertiGo.Repository.CourseRepository;
 import com.codeline.CertiGo.Repository.InstructorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,9 @@ public class InstructorService {
 
     @Autowired
     InstructorRepository instructorRepository;
+
+    @Autowired
+    CourseRepository courseRepository;
 
     public List<Instructor> getAllInstructor() {
         return instructorRepository.findAll();

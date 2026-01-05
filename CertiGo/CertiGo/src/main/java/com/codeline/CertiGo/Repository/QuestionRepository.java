@@ -13,5 +13,5 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
     Question getQuestionById(Integer id);
 
     @Query("SELECT q FROM Question q WHERE q.isActive = true")
-    List<Question> findAllActiveQuestions();
+    List<Question> findAllActiveQuestions(List<Integer> questionsId);
 }

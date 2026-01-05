@@ -29,8 +29,8 @@ public class UserAnswerController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @GetMapping("/getAll")
-    public List<UserAnswer> getAllAnswers(){
-        List<UserAnswer> answers= userAnswerService.getAllUSerAnswers();
+    public List<UserAnswer> getAllAnswers() throws CustomException{
+        List<UserAnswer> answers= userAnswerService.getAllUserAnswers();
         return answers;
     }
 

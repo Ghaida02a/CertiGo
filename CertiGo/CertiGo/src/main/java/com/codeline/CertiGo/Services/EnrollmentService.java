@@ -10,7 +10,7 @@ import com.codeline.CertiGo.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.codeline.CertiGo.Repository.EnrollmentRepository;
-import com.codeline.CertiGo.Repositories.CourseRepository;
+import com.codeline.CertiGo.Repository.CourseRepository;
 
 import java.util.ArrayList;
 import java.util.Date;

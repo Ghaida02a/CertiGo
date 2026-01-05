@@ -7,9 +7,8 @@ import com.codeline.CertiGo.Entity.Lesson;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
 import com.codeline.CertiGo.Helper.Utils;
-import com.codeline.CertiGo.Repositories.CourseRepository;
+import com.codeline.CertiGo.Repository.CourseRepository;
 import com.codeline.CertiGo.Repositories.LessonRepository;
-import jdk.jshell.execution.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +19,7 @@ import java.util.List;
 public class LessonServices {
     @Autowired
     LessonRepository lessonRepository;
+
     @Autowired
     CourseRepository courseRepository;
 

@@ -1,4 +1,4 @@
-package com.codeline.CertiGo.Repositories;
+package com.codeline.CertiGo.Repository;
 
 import com.codeline.CertiGo.Entity.Company;
 import com.codeline.CertiGo.Entity.Course;

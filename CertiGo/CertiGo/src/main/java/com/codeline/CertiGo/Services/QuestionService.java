@@ -9,11 +9,10 @@ import com.codeline.CertiGo.Entity.Quiz;
 import com.codeline.CertiGo.Entity.UserAnswer;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
-import com.codeline.CertiGo.DTOResponse.QuestionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.codeline.CertiGo.Repository.QuestionRepository;
-import com.codeline.CertiGo.Repositories.QuizRepository;
+import com.codeline.CertiGo.Repository.QuizRepository;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -64,6 +63,7 @@ public class QuestionService {
         Question savedQuestion = questionRepository.save(question);
         return QuestionResponse.fromEntity(savedQuestion);
     }
+
     public List<QuestionResponse> getAllQuestions() {
 
         List<Question> questions = questionRepository.findAll();
@@ -76,6 +76,7 @@ public class QuestionService {
         }
         return responseList;
     }
+
     public QuestionResponse getQuestionById(Integer id) throws CustomException {
 
         Question question = questionRepository.findById(id)
@@ -87,6 +88,7 @@ public class QuestionService {
             throw new CustomException(Constants.BAD_REQUEST, 400);
         }
     }
+
     public void deleteQuestion(Integer id) throws CustomException {
 
         Question question = questionRepository.findById(id)
@@ -100,6 +102,7 @@ public class QuestionService {
             throw new CustomException(Constants.BAD_REQUEST, 400);
         }
     }
+
     // UPDATE
     public QuestionResponse updateQuestion(QuestionUpdateRequest request) throws CustomException {
 
@@ -147,23 +150,4 @@ public class QuestionService {
 
         return QuestionResponse.fromEntity(savedQuestion);
     }
-
-    QuestionRepository questionRepository;
-//    public StudentResponseDTO saveStudent(StudentCreateRequestDTO studentDTO) throws Exception {
-//        Student student = new Student();
-//        student.setFirstName(studentDTO.getFirstName());
-//        student.setLastName(studentDTO.getLastName());
-//        student.setEmail(studentDTO.getEmail());
-//        student.setDateOfBirth(studentDTO.getDateOfBirth());
-//        student.setGender(studentDTO.getGender());
-//        student.setCreatedDate(new Date());
-//        student.setIsActive(true);
-//       // student.setAddress(AddressCreateRequestDTO.convertToAddress(studentDTO.getAddressRequestDTO()));
-//        student.setPhoneNumbers(PhoneNumberRequestDTO.convertToPhoneNumber(studentDTO.getPhoneNumbers()));
-//        return  StudentResponseDTO.convertToDto(studentRepository.save(student));
-//    }
-    public QuestionResponse saveQuestion(QuestionResponse questionDTO) throws Exception {
-        return QuestionResponse.convertToDto(questionRepository.save(QuestionResponse.convertToQuestion(questionDTO)));
-    }
-
 }
