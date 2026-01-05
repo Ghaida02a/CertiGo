@@ -24,32 +24,20 @@ public class CompanyService {
 
     // SAVE
     public CompanyResponse saveCompany(CompanyCreateRequestDTO request) throws CustomException {
+        CompanyCreateRequestDTO.validCreateCompanyRequest(request);
 
-        // Create company entity
-        Company company = new Company();
-        company.setCompanyName(request.getCompanyName());
-        company.setLocation(request.getLocation());
-        company.setIndustry(request.getIndustry());
-        company.setContactEmail(request.getContactEmail());
+        Company company = CompanyCreateRequestDTO.convertToCompany(request);
         company.setIsActive(true);
         company.setCreatedAt(new Date());
 
-        // Attach courses (full Course objects from DTO)
-        List<Course> courses = new ArrayList<>();
-        if (request.getCourses() != null && !request.getCourses().isEmpty()) {
-            for (Course course : request.getCourses()) {
-                course.setCompany(company); // set the relationship
-                courses.add(course);
-            }
+        if (Utils.isNotNull(company.getCourses()) && !company.getCourses().isEmpty()) {
+            company.getCourses().forEach(course -> course.setCompany(company));
         }
-        company.setCourses(courses);
 
-        // Save company
         Company savedCompany = companyRepository.save(company);
-
-        // Convert to response DTO
         return CompanyResponse.fromEntity(savedCompany);
     }
+
 
     public CompanyResponse updateCompany(CompanyUpdateRequest request) throws CustomException {
 
