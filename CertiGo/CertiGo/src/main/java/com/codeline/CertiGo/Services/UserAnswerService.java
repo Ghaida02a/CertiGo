@@ -116,5 +116,4 @@ public class UserAnswerService {
             throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
         }
     }
-
 }
