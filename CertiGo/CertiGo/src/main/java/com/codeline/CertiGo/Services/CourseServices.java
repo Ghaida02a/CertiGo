@@ -8,6 +8,7 @@ import com.codeline.CertiGo.Helper.Constants;
 import com.codeline.CertiGo.Helper.Utils;
 import com.codeline.CertiGo.Repository.CompanyRepository;
 import com.codeline.CertiGo.Repositories.CourseRepository;
+import com.codeline.CertiGo.Repository.CourseRepository;
 import com.codeline.CertiGo.Repository.InstructorRepository;
 import com.codeline.CertiGo.DTOCreateRequest.CourseCreateRequest;
 import com.codeline.CertiGo.DTOCreateResponse.CourseCreateResponse;
@@ -43,7 +44,7 @@ public class CourseServices {
             throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
         }
 
-        List<Instructor> instructor = instructorRepository.getInstructorById(request.getInstructorsId());
+        List<Instructor> instructor = instructorRepository.findAllInstructors(request.getInstructorsId());
         if (Utils.isNotNull(instructor) && Utils.isListNotEmpty(instructor)) {
             course.setInstructors(instructor);
         } else {
@@ -78,6 +79,18 @@ public class CourseServices {
         Course existingCourse = courseRepository.findById(id).get();
         if (Utils.isNotNull(existingCourse)&& existingCourse.getIsActive()) {
             return existingCourse;
+        } else {
+            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
+        }
+    }
+    //    // Get Course By Name
+    public Course getCourseByName(String name) throws CustomException {
+        Course course = courseRepository.getCourseByName(name);
+        if (Utils.isNull(course)) {
+            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
+        }
+        if (Boolean.TRUE.equals(course.getIsActive())) {
+            return course;
         } else {
             throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
         }

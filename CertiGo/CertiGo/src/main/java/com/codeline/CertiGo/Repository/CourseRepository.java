@@ -1,4 +1,4 @@
-package com.codeline.CertiGo.Repositories;
+package com.codeline.CertiGo.Repository;
 
 import com.codeline.CertiGo.Entity.Company;
 import com.codeline.CertiGo.Entity.Course;
@@ -16,5 +16,7 @@ public interface CourseRepository extends JpaRepository<Course,Integer> {
     @Query("SELECT c FROM Course c WHERE c.isActive=true AND c.id IN (:id) ")
     List<Course> getCourseById(List<Integer> id);
 
+    @Query("SELECT c FROM Course c WHERE c.courseName=:name AND c.isActive=true")
+    Course getCourseByName(String name);
 }
 

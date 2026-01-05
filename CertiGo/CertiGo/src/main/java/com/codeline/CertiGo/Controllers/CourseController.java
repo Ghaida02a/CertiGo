@@ -25,6 +25,10 @@ public class CourseController {
         return courseServices.saveCourse(requestObj);
 
     }
+    @GetMapping("getByName")
+    public Course getCourseByName(@RequestParam String name) throws CustomException {
+        return courseServices.getCourseByName(name);
+    }
 
     @GetMapping("getAll")
     public List<Course> getAllCourses() {
