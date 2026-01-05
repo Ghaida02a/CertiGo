@@ -2,6 +2,7 @@ package com.codeline.CertiGo.DTOCreateRequest;
 
 import com.codeline.CertiGo.Entity.Enrollment;
 
+import com.codeline.CertiGo.Entity.User;
 import com.codeline.CertiGo.Enum.EnrollmentStatus;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
@@ -17,17 +18,26 @@ import lombok.NoArgsConstructor;
 @Data
 public class EnrollmentCreateRequestDTO {
     private EnrollmentStatus status;
-    private String username;
-  //  private User username;
+    //private String username;
+   private User username;
     private Integer courseId;
 
     //   convert DTO → Entity
     public static Enrollment convertToEnrollment(EnrollmentCreateRequestDTO request) {
         Enrollment enrollment = new Enrollment();
         enrollment.setStatus(request.getStatus());
-       // enrollment.setUser (request.getUsername());
-      //  enrollment.setCourseId(request.getCourseId());
+       enrollment.setUser (request.getUsername());
+      // enrollment.setCourseId(request.getCourseId());
         return enrollment;
+    }
+
+    //convert Entity → DTO
+    public static EnrollmentCreateRequestDTO convertToDTO(Enrollment enrollment) {
+        return EnrollmentCreateRequestDTO.builder()
+                .status(enrollment.getStatus())
+               // .username(enrollment.getUser())
+               // .courseId(enrollment.getCourseId())
+                .build();
     }
 
     //  validation

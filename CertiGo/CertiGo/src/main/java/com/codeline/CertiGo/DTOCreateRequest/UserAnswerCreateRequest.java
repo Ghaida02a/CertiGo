@@ -21,7 +21,7 @@ public class UserAnswerCreateRequest {
     private Integer questionId;
     private Integer quizResultId;
 
-
+    // Convert DTO → Entity
     public static UserAnswer convertToUserAnswer(UserAnswerCreateRequest request) {
         UserAnswer answer = new UserAnswer();
         if (request != null) {
@@ -29,6 +29,18 @@ public class UserAnswerCreateRequest {
            answer.setIsCorrect(request.getIsCorrect());
         }
         return answer;
+    }
+
+    //Convert Entity → DTO
+    public static UserAnswerCreateRequest convertToUserAnswerCreateRequest(UserAnswer entity) {
+        return UserAnswerCreateRequest.builder()
+                .selectedOption(entity.getSelectedOption())
+                .isCorrect(entity.getIsCorrect())
+                .userId(entity.getUser().getId())
+                .quizId(entity.getQuiz().getId())
+                .questionId(entity.getQuestion().getId())
+                .quizResultId(entity.getQuizResult().getId())
+                .build();
     }
 
     public static void validCreateUSerAnswerRequest(UserAnswerCreateRequest request) throws CustomException {

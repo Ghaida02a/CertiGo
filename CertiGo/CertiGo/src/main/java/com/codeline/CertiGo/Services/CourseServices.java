@@ -37,18 +37,18 @@ public class CourseServices {
         course.setCreatedAt(new Date());
         course.setIsActive(Boolean.TRUE);
 
-        Company company = CompanyRepository.getComanyById(request.getCompanyId());
+        Company company = companyRepository.getCompanyById(request.getCompanyId());
         if (Utils.isNotNull(company)) {
             Course.setCompany(company);
         } else {
-            throw new Exception(Constant.COURSE_CREATE_REQUEST_COMPANY_ID_IS_NOT_VALID,Constants.HTTP_STATUS_IS_NULL);
+            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
         }
 
         List<Instructor> instructor = instructorRepository.getInstructorById(request.getInstructorsId());
         if (Utils.isNotNull(instructor) && Utils.isListNotEmpty(instructor)) {
             course.setInstructors(instructor);
         } else {
-            throw new Exception(Constants.COURSE_CREATE_REQUEST_INSTRUCTOR_ID_NOT_VALID,Constants.HTTP_STATUS_IS_NULL);
+            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
         }
 
         return CourseCreateResponse.convertToCourseCreateResponse(courseRepository.save(course));
@@ -60,7 +60,7 @@ public class CourseServices {
             course.setUpdatedAt(new Date());
             return courseRepository.save(course);
         } else {
-            throw new CustomException(Constants.HTTP_STATUS_BAD_REQUEST);
+            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
         }
     }
 
@@ -71,7 +71,7 @@ public class CourseServices {
             existingCourse.setIsActive(Boolean.FALSE);
             courseRepository.save(existingCourse);
         } else {
-            throw new CustomException(Constants.HTTP_STATUS_BAD_REQUEST);
+            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
         }
     }
 
@@ -80,7 +80,7 @@ public class CourseServices {
         if (existingCourse != null && existingCourse.getIsActive()) {
             return existingCourse;
         } else {
-            throw new CustomException("BAD REQUEST");
+            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
         }
     }
 }

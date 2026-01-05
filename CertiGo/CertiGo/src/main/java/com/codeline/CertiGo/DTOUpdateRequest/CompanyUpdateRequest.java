@@ -31,7 +31,7 @@ public class CompanyUpdateRequest {
         company.setLocation(dto.getLocation());
         company.setIndustry(dto.getIndustry());
         company.setContactEmail(dto.getContactEmail());
-        // company.setCourses(dto.getCourses());
+         company.setCourses(dto.getCourses());
         return company;
     }
 

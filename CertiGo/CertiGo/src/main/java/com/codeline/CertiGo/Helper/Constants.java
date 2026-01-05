@@ -145,5 +145,13 @@ public class Constants {
     public final static String LESSON_CREATE_REQUEST_LESSON_NAME_NOT_VALID = "LESSON NAME IS NOT VALID";
     public final static String LESSON_CREATE_REQUEST_PDF_URL_NOT_VALID = "PDF URL IS NOT VALID";
     public final static String LESSON_CREATE_REQUEST_COURSE_ID_NOT_VALID = "COURSE ID IS NOT VALID";
+
+    //Certificate
+    public final static String CERTIFICATE_CREATE_REQUEST_CERTIFICATE_NAME_NOT_VALID = "CERTIFICATE NAME IS NOT VALID";
+    public final static String CERTIFICATE_CREATE_REQUEST_DESCRIPTION_NOT_VALID = "DESCRIPTION IS NOT VALID";
+    public final static String CERTIFICATE_NOT_FOUND = "CERTIFICATE NOT FOUND";
+    public final static String CERTIFICATE_LIST_IS_EMPTY = "Certification list is empty";
+    public final static String CERTIFICATE_CREATE_REQUEST_USER_ID_NOT_VALID = "USER ID IS NOT VALID";
+    public final static String CERTIFICATE_CREATE_REQUEST_COURSE_ID_NOT_VALID = "COURSE ID IS NOT VALID";
 }
 

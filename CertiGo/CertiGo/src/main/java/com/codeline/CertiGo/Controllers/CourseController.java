@@ -33,7 +33,7 @@ public class CourseController {
     }
 
     @GetMapping("getById")
-    public Course getCourseById(@RequestParam int id)throws CustomException
+    public Course getCourseById(@RequestParam int id)throws CustomException{
         return courseServices.getCourseById(id);
     }
 

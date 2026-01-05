@@ -1,5 +1,6 @@
 package com.codeline.CertiGo.DTOUpdateRequest;
 
+import com.codeline.CertiGo.Entity.Course;
 import com.codeline.CertiGo.Entity.Enrollment;
 import com.codeline.CertiGo.Entity.User;
 import com.codeline.CertiGo.Enum.EnrollmentStatus;
@@ -18,7 +19,6 @@ import lombok.NoArgsConstructor;
 public class EnrollmentUpdateRequest {
     private Integer id;
         private EnrollmentStatus status;
-        //private String username;
          private User username;
         private Integer courseId;
 
@@ -27,13 +27,16 @@ public class EnrollmentUpdateRequest {
             Enrollment enrollment = new Enrollment();
             enrollment.setId(request.getId());
             enrollment.setStatus(request.getStatus());
-            // enrollment.setUser (request.getUsername());
-            // enrollment.setCourse (request.getCourseId());
+            enrollment.setUser (request.getUsername());
+            Course course = courseRepository.findById(request.getCourseId())
+                    .orElseThrow(() -> new RuntimeException("Course not found"));
+
+            enrollment.setCourse(course);
             return enrollment;
         }
 
         //  validation
-        public static void validateEnrollment(com.codeline.CertiGo.DTOCreateRequest.EnrollmentCreateRequestDTO request) throws CustomException {
+        public static void validateEnrollment(EnrollmentUpdateRequest request) throws CustomException {
 
             if (Utils.isNull(request) || Utils.isBlank(request)) {
                 throw new CustomException(Constants.BAD_REQUEST, Constants.HTTP_STATUS_IS_NULL);
