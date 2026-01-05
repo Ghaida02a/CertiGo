@@ -35,12 +35,12 @@ public class UserAnswerController {
     }
 
 
-    @GetMapping("/getById/{id}")
+    @GetMapping("/getByUserId/{id}")
     public UserAnswer getUserAnswerByUserId(@PathVariable int id) throws CustomException{
         return userAnswerService.getUserAnswerByUserId(id);
     }
 
-    @GetMapping("/getById/{id}")
+    @GetMapping("/getByQuizId/{id}")
     public UserAnswer getUserAnswerByQuizId(@PathVariable int id) throws CustomException{
         return userAnswerService.getUserAnswerByQuizId(id);
     }

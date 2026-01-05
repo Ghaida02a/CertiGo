@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table
+@Table(name = "options")
 public class Option {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

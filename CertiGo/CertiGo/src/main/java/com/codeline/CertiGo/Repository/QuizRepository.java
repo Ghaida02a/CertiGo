@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface QuizRepository extends JpaRepository<Quiz, Integer> {
-    @Query("SELECT q FROM Quize q WHERE q.id =:id AND q.isActive = true")
+    @Query("SELECT q FROM Quiz q WHERE q.id =:id AND q.isActive = true")
     Quiz getQuizById(Integer id);
 
     @Query("SELECT q FROM Quiz q WHERE q.isActive=true AND q.id IN (:id) ")

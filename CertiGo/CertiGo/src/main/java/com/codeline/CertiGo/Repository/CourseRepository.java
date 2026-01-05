@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface CourseRepository extends JpaRepository<Course,Integer> {
-    @Query("SELECT c FROM Course c WHERE c.orderId=:id and c.isActive=true")
+    @Query("SELECT c FROM Course c WHERE c.id=:id and c.isActive=true")
     Course getCourseById(Integer id);
 
     @Query("SELECT c FROM Course c WHERE c.isActive=true AND c.id IN (:id) ")
