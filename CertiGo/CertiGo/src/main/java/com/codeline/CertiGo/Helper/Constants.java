@@ -23,6 +23,10 @@ public class Constants {
     public static final String REVIEW_CREATE_REQUEST_USER_ID_NOT_VALID =
             "User ID is not valid";
 
+
+    public static final String REVIEW_LIST_IS_EMPTY =
+            "Review list is empty";
+
     public static final String INSTRUCTOR_CREATE_REQUEST_NAME_NOT_VALID =
             "Instructor name must not be null or blank";
 
@@ -35,6 +39,8 @@ public class Constants {
     public static final String INSTRUCTOR_CREATE_REQUEST_COURSES_NOT_VALID =
             "Instructor courses list is not valid";
 
+    public static final String INSTRUCTOR_LIST_IS_EMPTY =
+            "Instructor list is empty";
 
     public static final String USER_ANSWER_CREATE_REQUEST_SELECTED_OPTION_NOT_VALID =
             "Selected option is not valid";
@@ -63,6 +69,9 @@ public class Constants {
 
     public static final String OPTION_CREATE_REQUEST_QUESTION_ID_NOT_VALID =
             "Question ID is not valid";
+
+    public static final String OPTION_LIST_IS_EMPTY =
+            "Option list is empty";
 
 
     // HTTP Status Codes

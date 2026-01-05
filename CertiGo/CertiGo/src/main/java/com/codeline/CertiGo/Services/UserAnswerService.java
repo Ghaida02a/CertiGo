@@ -27,49 +27,59 @@ public class UserAnswerService {
     @Autowired
     QuizResultRepository quizResultRepository;
 
-    public List<UserAnswer> getAllUSerAnswers() {
-        return userAnswerRepository.findAll();
+    public List<UserAnswer> getAllUserAnswers() throws CustomException {
+        List<UserAnswer> answers = userAnswerRepository.findUserAnswers();
+        if (Utils.isListNotEmpty(answers)) {
+            return answers;
+        } else {
+            throw new CustomException(Constants.USER_ANSWER_NOT_VALID, Constants.HTTP_STATUS_NOT_FOUND);
+        }
     }
 
     public UserAnswerCreateResponse saveAnswer(UserAnswerCreateRequest answerDTO) throws CustomException {
+        UserAnswerCreateRequest.validCreateUSerAnswerRequest(answerDTO);
         UserAnswer answer = UserAnswerCreateRequest.convertToUserAnswer(answerDTO);
         answer.setIsCorrect(answerDTO.getIsCorrect());
         answer.setSelectedOption(answerDTO.getSelectedOption());
-        User user = userRepository.findById(answerDTO.getUserId()).get();
-        if(Utils.isNotNull(user)){
-            answer.setUser(user);
-        } else {
-            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_NOT_FOUND);
-        }
-        Quiz quiz = quizRepository.findById(answerDTO.getQuizId()).get();
-        if(Utils.isNotNull(quiz)){
-            answer.setQuiz(quiz);
-        } else {
-            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_NOT_FOUND);
-        }
 
-        Question question = questionRepository.findById(answerDTO.getQuestionId()).get();
-        if(Utils.isNotNull(question)){
-            answer.setQuestion(question);
-        } else {
-            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_NOT_FOUND);
-        }
-        QuizResult quizResult = quizResultRepository.findById(answerDTO.getQuizResultId()).get();
-        if(Utils.isNotNull(quizResult)){
-            answer.setQuizResult(quizResult);
-        } else {
-            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_NOT_FOUND);
+        if (Utils.isNotNull(answerDTO)) {
+            User user = userRepository.getUserById(answerDTO.getUserId());
+            if (Utils.isNotNull(user)) {
+                answer.setUser(user);
+            } else {
+                throw new CustomException(Constants.BAD_REQUEST, Constants.HTTP_STATUS_NOT_FOUND);
+            }
+
+            Quiz quiz = quizRepository.getQuizById(answerDTO.getQuizId());
+            if (Utils.isNotNull(quiz)) {
+                answer.setQuiz(quiz);
+            } else {
+                throw new CustomException(Constants.BAD_REQUEST, Constants.HTTP_STATUS_NOT_FOUND);
+            }
+
+            Question question = questionRepository.getQuestionById(answerDTO.getQuestionId());
+            if (Utils.isNotNull(question)) {
+                answer.setQuestion(question);
+            } else {
+                throw new CustomException(Constants.BAD_REQUEST, Constants.HTTP_STATUS_NOT_FOUND);
+            }
+            QuizResult quizResult = quizResultRepository.getQuizResultById(answerDTO.getQuizResultId());
+            if (Utils.isNotNull(quizResult)) {
+                answer.setQuizResult(quizResult);
+            } else {
+                throw new CustomException(Constants.BAD_REQUEST, Constants.HTTP_STATUS_NOT_FOUND);
+            }
         }
 
         answer.setCreatedAt(new Date());
         answer.setIsActive(Boolean.TRUE);
-        return UserAnswerCreateResponse.convertToUserAnswerResponse(userAnswerRepository.save(answer));
 
+        return UserAnswerCreateResponse.convertToUserAnswerResponse(userAnswerRepository.save(answer));
     }
 
     public UserAnswer updateUserAnswer(UserAnswer answer) throws CustomException {
-        UserAnswer existingAnswer = userAnswerRepository.findById(answer.getId()).get();
-        if (existingAnswer != null && existingAnswer.getIsActive()) {
+        UserAnswer existingAnswer = userAnswerRepository.getUserAnswerById(answer.getId());
+        if (Utils.isNotNull(existingAnswer) && existingAnswer.getIsActive()) {
             answer.setUpdatedAt(new Date());
             return userAnswerRepository.save(answer);
         } else {
@@ -78,8 +88,8 @@ public class UserAnswerService {
     }
 
     public void deleteUserAnswer(Integer id) throws CustomException {
-        UserAnswer existingAnswer = userAnswerRepository.findById(id).get();
-        if (existingAnswer != null && existingAnswer.getIsActive()) {
+        UserAnswer existingAnswer = userAnswerRepository.getUserAnswerById(id);
+        if (Utils.isNotNull(existingAnswer) && existingAnswer.getIsActive()) {
             existingAnswer.setUpdatedAt(new Date());
             existingAnswer.setIsActive(Boolean.FALSE);
             userAnswerRepository.save(existingAnswer);
@@ -89,8 +99,8 @@ public class UserAnswerService {
     }
 
     public UserAnswer getUserAnswerByUserId(Integer id) throws CustomException{
-        UserAnswer existingAnswer = userAnswerRepository.findById(id).get();
-        if (existingAnswer != null && existingAnswer.getIsActive()){
+        UserAnswer existingAnswer = userAnswerRepository.getUserAnswerById(id);
+        if (Utils.isNotNull(existingAnswer) && existingAnswer.getIsActive()){
             return existingAnswer;
         } else {
             throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
@@ -98,11 +108,12 @@ public class UserAnswerService {
     }
 
     public UserAnswer getUserAnswerByQuizId(Integer id) throws CustomException{
-        UserAnswer existingAnswer = userAnswerRepository.findById(id).get();
-        if (existingAnswer != null && existingAnswer.getIsActive()){
+        UserAnswer existingAnswer = userAnswerRepository.getUserAnswerById(id);
+        if (Utils.isNotNull(existingAnswer) && existingAnswer.getIsActive()){
             return existingAnswer;
         } else {
             throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
         }
     }
+
 }

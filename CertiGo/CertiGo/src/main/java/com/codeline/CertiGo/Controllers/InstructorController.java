@@ -29,8 +29,8 @@ public class InstructorController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @GetMapping("/getAll")
-    public List<Instructor> getAllInstructors(){
-        List<Instructor> instructors= instructorService.getAllInstructor();
+    public List<Instructor> getAllInstructors() throws CustomException {
+        List<Instructor> instructors= instructorService.getAllInstructors();
         return instructors;
     }
 

@@ -26,22 +26,32 @@ public class InstructorService {
     CourseRepository courseRepository;
 
 
-    public List<Instructor> getAllInstructor() {
-        return instructorRepository.findAll();
+    public List<Instructor> getAllInstructors() throws CustomException {
+        List<Instructor> instructors = instructorRepository.findAllInstructors();
+        if (Utils.isListNotEmpty(instructors)) {
+            return instructors;
+        } else {
+            throw new CustomException(Constants.INSTRUCTOR_LIST_IS_EMPTY, Constants.HTTP_STATUS_NOT_FOUND);
+        }
     }
 
-
     public InstructorCreateResponse saveInstructor(InstructorCreateRequest instructorDTO) throws CustomException {
+        InstructorCreateRequest.validCreateInstructorRequest(instructorDTO);
         Instructor instructor = InstructorCreateRequest.convertToInstructor(instructorDTO);
-        if(Utils.isNotNull(instructorDTO.getCourses()) && !instructorDTO.getCourses().isEmpty()){
+
+        if (Utils.isNotNull(instructorDTO.getCourses()) && !instructorDTO.getCourses().isEmpty()) {
             List<Course> courses = new ArrayList<>();
             for (CourseCreateRequest courseDTO : instructorDTO.getCourses()) {
-                if(Utils.isNull(courseDTO.getCourseName()) || courseDTO.getCourseName().isBlank() || courseDTO.getCourseName().isEmpty()) {
-                    throw new CustomException(Constants.COURSE_CREATE_REQUEST_COURSE_NAME_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
+                if (Utils.isNull(courseDTO.getId()) || courseDTO.getId() <= 0) {
+                    throw new CustomException(Constants.COURSE_ID_NOT_VALID, Constants.HTTP_STATUS_NOT_FOUND);
                 }
-                Course course = courseRepository.findById(courseDTO.getCourseName()).get();
-                    courses.add(course);
-                    throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_NOT_FOUND);
+
+                Course course = courseRepository.getCourseById(courseDTO.getId());
+                if (Utils.isNull(course)) {
+                     throw new CustomException(Constants.COURSE_ID_NOT_VALID, Constants.HTTP_STATUS_NOT_FOUND);
+                }
+
+                courses.add(course);
             }
             instructor.setCourses(courses);
         }
@@ -49,12 +59,11 @@ public class InstructorService {
         instructor.setIsActive(Boolean.TRUE);
 
         return InstructorCreateResponse.convertToInstructorResponse(instructorRepository.save(instructor));
-
     }
 
     public Instructor updateInstructor(Instructor inst) throws CustomException {
-        Instructor existingInstructor = instructorRepository.findById(inst.getId()).get();
-        if (existingInstructor != null && existingInstructor.getIsActive()) {
+        Instructor existingInstructor = instructorRepository.getInstructorById(inst.getId());
+        if (Utils.isNotNull(existingInstructor) && existingInstructor.getIsActive()) {
             inst.setUpdatedAt(new Date());
             return instructorRepository.save(inst);
         } else {
@@ -63,8 +72,8 @@ public class InstructorService {
     }
 
     public void deleteInstructor(Integer id) throws CustomException {
-        Instructor existingInstructor = instructorRepository.findById(id).get();
-        if (existingInstructor != null && existingInstructor.getIsActive()) {
+        Instructor existingInstructor = instructorRepository.getInstructorById(id);
+        if (Utils.isNotNull(existingInstructor)  && existingInstructor.getIsActive()) {
             existingInstructor.setUpdatedAt(new Date());
             existingInstructor.setIsActive(Boolean.FALSE);
             instructorRepository.save(existingInstructor);
@@ -74,8 +83,8 @@ public class InstructorService {
     }
 
     public Instructor getInstructorById(Integer id) throws CustomException {
-        Instructor existingInstructor = instructorRepository.findById(id).get();
-        if (existingInstructor != null && existingInstructor.getIsActive()) {
+        Instructor existingInstructor = instructorRepository.getInstructorById(id);
+        if (Utils.isNotNull(existingInstructor)  && existingInstructor.getIsActive()) {
             return existingInstructor;
         } else {
             throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
@@ -83,8 +92,8 @@ public class InstructorService {
     }
 
     public Instructor getInstructorByCourseId(Integer id) throws CustomException {
-        Instructor existingInstructor = instructorRepository.findById(id).get();
-        if (existingInstructor != null && existingInstructor.getIsActive()) {
+        Instructor existingInstructor = instructorRepository.getInstructorByCourseId(id);
+        if (Utils.isNotNull(existingInstructor)  && existingInstructor.getIsActive()) {
             return existingInstructor;
         } else {
             throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);

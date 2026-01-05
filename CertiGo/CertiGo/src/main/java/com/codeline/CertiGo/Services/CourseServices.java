@@ -11,7 +11,6 @@ import com.codeline.CertiGo.Repository.CourseRepository;
 import com.codeline.CertiGo.Repository.InstructorRepository;
 import com.codeline.CertiGo.DTOCreateRequest.CourseCreateRequest;
 import com.codeline.CertiGo.DTOCreateResponse.CourseCreateResponse;
-import org.apache.tomcat.util.bcel.classfile.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +43,7 @@ public class CourseServices {
             throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
         }
 
-        List<Instructor> instructor = instructorRepository.getInstructorById(request.getInstructorsId());
+        List<Instructor> instructor = instructorRepository.findAllInstructors(request.getInstructorsId());
         if (Utils.isNotNull(instructor) && Utils.isListNotEmpty(instructor)) {
             course.setInstructors(instructor);
         } else {
