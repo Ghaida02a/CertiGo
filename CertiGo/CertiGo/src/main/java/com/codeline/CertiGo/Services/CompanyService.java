@@ -131,6 +131,7 @@ public class CompanyService {
         }
     }
 
+
     // DELETE (SOFT)
     public void deleteCompany(Integer id) throws CustomException {
         Company company = companyRepository.findById(id)

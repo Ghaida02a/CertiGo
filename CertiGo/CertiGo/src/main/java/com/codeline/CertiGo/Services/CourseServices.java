@@ -38,7 +38,7 @@ public class CourseServices {
 
         Company company = companyRepository.getCompanyById(request.getCompanyId());
         if (Utils.isNotNull(company)) {
-            Course.setCompany(company);
+            course.setCompany(company);
         } else {
             throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
         }
@@ -78,6 +78,18 @@ public class CourseServices {
         Course existingCourse = courseRepository.findById(id).get();
         if (existingCourse != null && existingCourse.getIsActive()) {
             return existingCourse;
+        } else {
+            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
+        }
+    }
+    //    // Get Course By Name
+    public Course getCourseByName(String name) throws CustomException {
+        Course course = courseRepository.getCourseByName(name);
+        if (Utils.isNull(course)) {
+            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
+        }
+        if (Boolean.TRUE.equals(course.getIsActive())) {
+            return course;
         } else {
             throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
         }
