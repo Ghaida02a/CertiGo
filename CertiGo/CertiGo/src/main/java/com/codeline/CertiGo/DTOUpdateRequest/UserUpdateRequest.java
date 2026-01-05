@@ -24,9 +24,6 @@ public class UserUpdateRequest {
     private String email;
     private String password;
     private UserRole role;
-    private Boolean isActive;
-    private Date createdAt;
-    private Date updatedAt;
     private List<Enrollment> enrollments;
     private List<Payment> payments;
     private List<QuizResult> quizResults;
