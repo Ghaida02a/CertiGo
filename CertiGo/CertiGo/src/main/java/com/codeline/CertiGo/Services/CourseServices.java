@@ -6,9 +6,9 @@ import com.codeline.CertiGo.Entity.Instructor;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
 import com.codeline.CertiGo.Helper.Utils;
-import com.codeline.CertiGo.Repositories.CompanyRepository;
-import com.codeline.CertiGo.Repositories.CourseRepository;
-import com.codeline.CertiGo.Repositories.InstructorRepository;
+import com.codeline.CertiGo.Repository.CompanyRepository;
+import com.codeline.CertiGo.Repository.CourseRepository;
+import com.codeline.CertiGo.Repository.InstructorRepository;
 import com.codeline.CertiGo.DTOCreateRequest.CourseCreateRequest;
 import com.codeline.CertiGo.DTOCreateResponse.CourseCreateResponse;
 import org.apache.tomcat.util.bcel.classfile.Constant;
@@ -39,7 +39,7 @@ public class CourseServices {
 
         Company company = companyRepository.getCompanyById(request.getCompanyId());
         if (Utils.isNotNull(company)) {
-            Course.setCompany(company);
+            course.setCompany(company);
         } else {
             throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
         }
@@ -79,6 +79,18 @@ public class CourseServices {
         Course existingCourse = courseRepository.findById(id).get();
         if (existingCourse != null && existingCourse.getIsActive()) {
             return existingCourse;
+        } else {
+            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
+        }
+    }
+    //    // Get Course By Name
+    public Course getCourseByName(String name) throws CustomException {
+        Course course = courseRepository.getCourseByName(name);
+        if (Utils.isNull(course)) {
+            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
+        }
+        if (Boolean.TRUE.equals(course.getIsActive())) {
+            return course;
         } else {
             throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
         }

@@ -118,8 +118,11 @@ public class CompanyService {
 
     // GET BY NAME
     public CompanyResponse getCompanyByName(String name) throws CustomException {
-        Company company = companyRepository.getCompanyByName(name)
-                .orElseThrow(() -> new CustomException(Constants.BAD_REQUEST, 404));
+        Company company = companyRepository.getCompanyByName(name);
+
+        if (company == null) {
+            throw new CustomException(Constants.BAD_REQUEST, 404);
+        }
 
         if (Boolean.TRUE.equals(company.getIsActive())) {
             return CompanyResponse.fromEntity(company);
@@ -127,6 +130,7 @@ public class CompanyService {
             throw new CustomException(Constants.BAD_REQUEST, 400);
         }
     }
+
 
     // DELETE (SOFT)
     public void deleteCompany(Integer id) throws CustomException {
