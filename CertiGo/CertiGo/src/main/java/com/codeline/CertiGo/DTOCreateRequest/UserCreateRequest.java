@@ -77,7 +77,6 @@ public class UserCreateRequest {
                     .map(CertificateCreateRequest::convertDTOToEntity)
                     .toList());
         }
-
         return user;
     }
 
