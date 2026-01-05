@@ -29,9 +29,8 @@ public class ReviewController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @GetMapping("/getAll")
-    public List<Review> getAllReviews(){
-        List<Review> reviews= reviewService.getAllReviews();
-        return reviews;
+    public List<Review> getAllReviews() throws CustomException {
+        return reviewService.getAllReviews();
     }
 
     @GetMapping("/getById/{id}")
