@@ -75,9 +75,7 @@ public class Constants {
     public final static String CONTACT_EMAIL_NOT_VALID = "Contact email is not valid";
     public final static String COURSE_LIST_NOT_VALID = "Course list is not valid";
     public final static int HTTP_STATUS_SUCCESS = 200;
-    public final static int HTTP_STATUS_BAD_REQUEST = 400;
-    public final static int HTTP_STATUS_IS_NULL = 422;
-    public final static int HTTP_STATUS_NOT_FOUND = 404;
+
 
     //Response Messages and Status Codes for Enrollment Validations
     public final static String ENROLLMENT_NOT_FOUND = "Enrollment not found";
@@ -100,6 +98,7 @@ public class Constants {
     public final static String IS_PASSED_NOT_VALID = "isPassed is not valid";
     public final  static String USER_ID_NOT_VALID = "User ID is not valid";
     public final static  String USER_ANSWERS_NOT_VALID = "User answers are not valid";
+    public final static String QUIZ_RESULT_NOT_ACTIVE = "QuizResult not active" ;
 
     //User CreateRequest Validations
     public final static String USER_NOT_FOUND = "User not found";
@@ -120,13 +119,13 @@ public class Constants {
     public final static String PAYMENT_PAYMENT_METHODS_IS_NULL = "Payment methods is null";
     public final static String PAYMENT_PAYMENT_STATUS_IS_NULL = "Payment status is null";
 
-    public final static String USER_ID_NOT_VALID = "User ID is not valid";
-    public final static String USER_ANSWERS_NOT_VALID = "User answers are not valid";
+   // public final static String USER_ID_NOT_VALID = "User ID is not valid";
+    //public final static String USER_ANSWERS_NOT_VALID = "User answers are not valid";
 
 
     public final static Integer LOWER_DURATION_RANGE = 0;
     public final static Integer UPPER_DURATION_RANGE = 300;
-    public static final int HTTP_STATUS_INTERNAL_SERVER_ERROR = 500;
+
 
     //Course
     public final static String COURSE_CREATE_REQUEST_COURSE_NAME_NOT_VALID = "NAME IS NOT VALID";
@@ -138,10 +137,13 @@ public class Constants {
     public final static String COURSE_CREATE_REQUEST_INSTRUCTORS_ID_NOT_VALID = "INSTRUCTORS ID IS NOT VALID";
 
     //Quiz
+    public final static String QUIZ_NOT_FOUND = "Quiz not found";
     public final static String QUIZ_CREATE_REQUEST_TOTAL_QUESTIONS_NOT_VALID = "TOTAL QUESTIONS IS NOT VALID";
     public final static String QUIZ_CREATE_REQUEST_PASSING_SCORE_NOT_VALID = "PASSING SCORE IS NOT VALID";
     public final static String QUIZ_CREATE_REQUEST_COURSE_ID_NOT_VALID = "COURSE ID IS NOT VALID";
     public final static String QUIZ_CREATE_REQUEST_QUESTIONS_ID_NOT_VALID = "QUESTIONS ID IS NOT VALID";
+    public final static String QUIZ_RESULT_NOT_FOUND = "Quiz Result not found";
+    public final static String QUIZ_RESULT_ALREADY_INACTIVE = "Quiz Result is already inactive";
 
     //Lesson
     public final static String LESSON_CREATE_REQUEST_ID_NOT_VALID = " ID IS NOT VALID";

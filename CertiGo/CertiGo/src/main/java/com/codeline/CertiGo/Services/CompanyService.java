@@ -4,7 +4,6 @@ import com.codeline.CertiGo.DTOCreateRequest.CompanyCreateRequestDTO;
 import com.codeline.CertiGo.DTOResponse.CompanyResponse;
 import com.codeline.CertiGo.DTOUpdateRequest.CompanyUpdateRequest;
 import com.codeline.CertiGo.Entity.Company;
-import com.codeline.CertiGo.Entity.Course;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +21,7 @@ public class CompanyService {
     @Autowired
     private CompanyRepository companyRepository;
 
-    @Autowired
-    private CourseRepository courseRepository;
+
 
     // SAVE
     public CompanyResponse saveCompany(CompanyCreateRequestDTO request) throws CustomException {
@@ -98,7 +96,7 @@ public class CompanyService {
         List<Company> companies = companyRepository.findAll();
         List<CompanyResponse> responseList = new ArrayList<>();
 
-<<<<<<< HEAD
+
         for (Company company : companies) {
             if (Boolean.TRUE.equals(company.getIsActive())) {
                 responseList.add(CompanyResponse.fromEntity(company));
@@ -110,6 +108,17 @@ public class CompanyService {
     // GET BY ID
     public CompanyResponse getCompanyById(Integer id) throws CustomException {
         Company company = companyRepository.findById(id)
+                .orElseThrow(() -> new CustomException(Constants.BAD_REQUEST, 404));
+
+        if (Boolean.TRUE.equals(company.getIsActive())) {
+            return CompanyResponse.fromEntity(company);
+        } else {
+            throw new CustomException(Constants.BAD_REQUEST, 400);
+        }
+    }
+    // GET BY NAME
+    public CompanyResponse getCompanyByName(String name) throws CustomException {
+        Company company = companyRepository.findByCompanyName(name)
                 .orElseThrow(() -> new CustomException(Constants.BAD_REQUEST, 404));
 
         if (Boolean.TRUE.equals(company.getIsActive())) {
@@ -131,10 +140,7 @@ public class CompanyService {
         } else {
             throw new CustomException(Constants.BAD_REQUEST, 400);
         }
-    }
-=======
 
->>>>>>> 8f943c218056e41edbb4576ea421649a609600c8
 }
 
 

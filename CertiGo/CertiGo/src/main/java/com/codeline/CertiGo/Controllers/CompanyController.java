@@ -37,6 +37,10 @@ public class CompanyController {
     public CompanyResponse getCompanyById(@RequestParam int id) throws CustomException {
         return companyService.getCompanyById(id);
     }
+    @GetMapping("/getByName")
+    public CompanyResponse getCompanyByName(@RequestParam String name) throws CustomException {
+        return companyService.getCompanyByName(name);
+    }
 
     @PutMapping("/Update")
     public CompanyResponse updateCompany(@RequestBody CompanyUpdateRequest updateObjFromUser) throws CustomException {
