@@ -4,8 +4,11 @@ import com.codeline.CertiGo.DTOCreateRequest.CompanyCreateRequestDTO;
 import com.codeline.CertiGo.DTOResponse.CompanyResponse;
 import com.codeline.CertiGo.DTOUpdateRequest.CompanyUpdateRequest;
 import com.codeline.CertiGo.Entity.Company;
+import com.codeline.CertiGo.Entity.Course;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
+import com.codeline.CertiGo.Helper.Utils;
+import jdk.jshell.execution.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.codeline.CertiGo.Repository.CompanyRepository;
@@ -14,14 +17,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.codeline.CertiGo.Repositories.CourseRepository;
-
 @Service
 public class CompanyService {
     @Autowired
     private CompanyRepository companyRepository;
-
-
 
     // SAVE
     public CompanyResponse saveCompany(CompanyCreateRequestDTO request) throws CustomException {
@@ -93,10 +92,8 @@ public class CompanyService {
 
     // GET ALL
     public List<CompanyResponse> getAllCompanies() {
-        List<Company> companies = companyRepository.findAll();
+        List<Company> companies = companyRepository.findAllActiveCompanies();
         List<CompanyResponse> responseList = new ArrayList<>();
-
-
         for (Company company : companies) {
             if (Boolean.TRUE.equals(company.getIsActive())) {
                 responseList.add(CompanyResponse.fromEntity(company));
@@ -107,24 +104,28 @@ public class CompanyService {
 
     // GET BY ID
     public CompanyResponse getCompanyById(Integer id) throws CustomException {
-        Company company = companyRepository.findById(id)
-                .orElseThrow(() -> new CustomException(Constants.BAD_REQUEST, 404));
-
+        Company company = companyRepository.getCompanyById(id);
+        if (Utils.isNull(company)) {
+            throw new CustomException(Constants.BAD_REQUEST, Constants.HTTP_STATUS_BAD_REQUEST);
+        }
         if (Boolean.TRUE.equals(company.getIsActive())) {
             return CompanyResponse.fromEntity(company);
         } else {
-            throw new CustomException(Constants.BAD_REQUEST, 400);
+            throw new CustomException(Constants.BAD_REQUEST, Constants.HTTP_STATUS_BAD_REQUEST);
         }
     }
+
     // GET BY NAME
     public CompanyResponse getCompanyByName(String name) throws CustomException {
-        Company company = companyRepository.findByCompanyName(name)
-                .orElseThrow(() -> new CustomException(Constants.BAD_REQUEST, 404));
+        Company company = companyRepository.getCompanyByName(name);
+        if (Utils.isNull(company)) {
+            throw new CustomException(Constants.COURSE_CREATE_REQUEST_COMPANY_ID_NOT_VALID, Constants.HTTP_STATUS_BAD_REQUEST);
+        }
 
         if (Boolean.TRUE.equals(company.getIsActive())) {
             return CompanyResponse.fromEntity(company);
         } else {
-            throw new CustomException(Constants.BAD_REQUEST, 400);
+            throw new CustomException(Constants.BAD_REQUEST, Constants.HTTP_STATUS_BAD_REQUEST);
         }
     }
 
@@ -140,8 +141,7 @@ public class CompanyService {
         } else {
             throw new CustomException(Constants.BAD_REQUEST, 400);
         }
-
+    }
 }
-
 
 
