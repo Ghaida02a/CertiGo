@@ -72,18 +72,12 @@ public class Constants {
     public static final int HTTP_STATUS_INTERNAL_SERVER_ERROR = 500;
 
     // Response Messages and Status Codes for Company Validations
-    public final static String SUCCESS = "Success";
-    public final static String BAD_REQUEST = "BAD REQUEST";
     public final static String COMPANY_NAME_NOT_VALID = "Company name is not valid";
     public final static String LOCATION_NOT_VALID = "Location is not valid";
     public final static String INDUSTRY_NOT_VALID = "Industry is not valid";
     public final static String CONTACT_EMAIL_NOT_VALID = "Contact email is not valid";
     public final static String COURSE_LIST_NOT_VALID = "Course list is not valid";
     public final static int HTTP_STATUS_SUCCESS = 200;
-<<<<<<< HEAD
-
-=======
->>>>>>> 15a027f574f42881ac21db900fb4b2a5a600b82a
 
     //Response Messages and Status Codes for Enrollment Validations
     public final static String ENROLLMENT_NOT_FOUND = "Enrollment not found";
@@ -126,8 +120,7 @@ public class Constants {
     public final static String PAYMENT_AMOUNT_IS_NULL = "Payment amount is null";
     public final static String PAYMENT_PAYMENT_METHODS_IS_NULL = "Payment methods is null";
     public final static String PAYMENT_PAYMENT_STATUS_IS_NULL = "Payment status is null";
-<<<<<<< HEAD
-
+    
    // public final static String USER_ID_NOT_VALID = "User ID is not valid";
     //public final static String USER_ANSWERS_NOT_VALID = "User answers are not valid";
 
@@ -135,12 +128,8 @@ public class Constants {
     public final static Integer LOWER_DURATION_RANGE = 0;
     public final static Integer UPPER_DURATION_RANGE = 300;
 
-=======
     public final static String PAYMENT_LIST_IS_NULL = "Payment list is null";
 
-    public final static Integer LOWER_DURATION_RANGE = 0;
-    public final static Integer UPPER_DURATION_RANGE = 300;
->>>>>>> 15a027f574f42881ac21db900fb4b2a5a600b82a
 
     //Course
     public final static String COURSE_CREATE_REQUEST_COURSE_NAME_NOT_VALID = "NAME IS NOT VALID";

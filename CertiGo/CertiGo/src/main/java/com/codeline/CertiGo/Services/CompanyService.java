@@ -4,6 +4,7 @@ import com.codeline.CertiGo.DTOCreateRequest.CompanyCreateRequestDTO;
 import com.codeline.CertiGo.DTOResponse.CompanyResponse;
 import com.codeline.CertiGo.DTOUpdateRequest.CompanyUpdateRequest;
 import com.codeline.CertiGo.Entity.Company;
+import com.codeline.CertiGo.Entity.Course;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +15,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.codeline.CertiGo.Repositories.CourseRepository;
 
 @Service
 public class CompanyService {
     @Autowired
     private CompanyRepository companyRepository;
-
 
 
     // SAVE
@@ -116,9 +115,10 @@ public class CompanyService {
             throw new CustomException(Constants.BAD_REQUEST, 400);
         }
     }
+
     // GET BY NAME
     public CompanyResponse getCompanyByName(String name) throws CustomException {
-        Company company = companyRepository.findByCompanyName(name)
+        Company company = companyRepository.getCompanyByName(name)
                 .orElseThrow(() -> new CustomException(Constants.BAD_REQUEST, 404));
 
         if (Boolean.TRUE.equals(company.getIsActive())) {
@@ -141,6 +141,7 @@ public class CompanyService {
             throw new CustomException(Constants.BAD_REQUEST, 400);
         }
 
+    }
 }
 
 
