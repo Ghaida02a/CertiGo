@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Certificate - CertiGo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 700px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .header h1::before {
+            content: "🏆";
+            font-size: 32px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group label .required {
+            color: #e74c3c;
+            margin-left: 3px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="number"]:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #11998e;
+            box-shadow: 0 0 0 3px rgba(17, 153, 142, 0.1);
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .form-section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #11998e;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #11998e;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(17, 153, 142, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            background: #2ecc71;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+            animation: slideDown 0.3s ease;
+        }
+
+        .error-alert {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+            animation: slideDown 0.3s ease;
+        }
+
+        .form-hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #1976d2;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #11998e;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Add New Certificate</h1>
+            <p>Create a certificate for course completion</p>
+        </div>
+
+        <div id="successMessage" class="success-message">
+            Certificate created successfully!
+        </div>
+
+        <div id="errorAlert" class="error-alert">
+            Failed to create certificate. Please try again.
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 10px; color: #666;">Creating certificate...</p>
+        </div>
+
+        <div class="info-box">
+            💡 <strong>Note:</strong> Make sure the course, user, and quiz result IDs exist in the system before creating a certificate.
+        </div>
+
+        <form id="certificateForm">
+            <!-- Certificate Basic Information -->
+            <div class="form-section">
+                <div class="form-section-title">Certificate Information</div>
+
+                <div class="form-group">
+                    <label for="certificateName">Certificate Name<span class="required">*</span></label>
+                    <input type="text" id="certificateName" name="certificateName" placeholder="e.g., Java Programming Certification" required>
+                    <div class="error-message" id="certificateNameError">Certificate name is required</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description<span class="required">*</span></label>
+                    <textarea id="description" name="description" placeholder="Enter certificate description..." required></textarea>
+                    <div class="form-hint">Provide a detailed description of the certificate</div>
+                    <div class="error-message" id="descriptionError">Description is required</div>
+                </div>
+            </div>
+
+            <!-- Course Information -->
+            <div class="form-section">
+                <div class="form-section-title">Course Details</div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="courseId">Course ID<span class="required">*</span></label>
+                        <input type="number" id="courseId" name="courseId" placeholder="Enter course ID" min="1" required>
+                        <div class="error-message" id="courseIdError">Valid course ID is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="courseName">Course Name</label>
+                        <input type="text" id="courseName" name="courseName" placeholder="Optional: Course name">
+                        <div class="form-hint">Optional field for reference</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Information -->
+            <div class="form-section">
+                <div class="form-section-title">User Details</div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="userId">User ID<span class="required">*</span></label>
+                        <input type="number" id="userId" name="userId" placeholder="Enter user ID" min="1" required>
+                        <div class="error-message" id="userIdError">Valid user ID is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="userName">User Name</label>
+                        <input type="text" id="userName" name="userName" placeholder="Optional: User name">
+                        <div class="form-hint">Optional field for reference</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Result Information -->
+            <div class="form-section">
+                <div class="form-section-title">Quiz Result Details</div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="quizResultId">Quiz Result ID<span class="required">*</span></label>
+                        <input type="number" id="quizResultId" name="quizResultId" placeholder="Enter quiz result ID" min="1" required>
+                        <div class="error-message" id="quizResultIdError">Valid quiz result ID is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quizScore">Quiz Score</label>
+                        <input type="number" id="quizScore" name="quizScore" placeholder="Optional: Score" min="0" max="100" step="0.01">
+                        <div class="form-hint">Optional field for reference</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-group">
+                <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                <button type="submit" class="btn btn-primary">Create Certificate</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function showError(elementId) {
+            document.getElementById(elementId).style.display = 'block';
+        }
+
+        function hideError(elementId) {
+            document.getElementById(elementId).style.display = 'none';
+        }
+
+        function hideAllErrors() {
+            const errors = document.querySelectorAll('.error-message');
+            errors.forEach(error => error.style.display = 'none');
+        }
+
+        function validateForm() {
+            hideAllErrors();
+            let isValid = true;
+
+            const certificateName = document.getElementById('certificateName').value.trim();
+            if (!certificateName) {
+                showError('certificateNameError');
+                isValid = false;
+            }
+
+            const description = document.getElementById('description').value.trim();
+            if (!description) {
+                showError('descriptionError');
+                isValid = false;
+            }
+
+            const courseId = parseInt(document.getElementById('courseId').value);
+            if (!courseId || courseId <= 0) {
+                showError('courseIdError');
+                isValid = false;
+            }
+
+            const userId = parseInt(document.getElementById('userId').value);
+            if (!userId || userId <= 0) {
+                showError('userIdError');
+                isValid = false;
+            }
+
+            const quizResultId = parseInt(document.getElementById('quizResultId').value);
+            if (!quizResultId || quizResultId <= 0) {
+                showError('quizResultIdError');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function resetForm() {
+            document.getElementById('certificateForm').reset();
+            hideAllErrors();
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('errorAlert').style.display = 'none';
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            document.getElementById('certificateForm').style.display = show ? 'none' : 'block';
+        }
+
+        document.getElementById('certificateForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!validateForm()) {
+                return;
+            }
+
+            // Build the nested request object structure
+            const formData = {
+                certificateName: document.getElementById('certificateName').value.trim(),
+                description: document.getElementById('description').value.trim(),
+                course: {
+                    id: parseInt(document.getElementById('courseId').value),
+                    courseName: document.getElementById('courseName').value.trim() || null
+                },
+                user: {
+                    id: parseInt(document.getElementById('userId').value),
+                    userName: document.getElementById('userName').value.trim() || null
+                },
+                quizResult: {
+                    id: parseInt(document.getElementById('quizResultId').value),
+                    score: document.getElementById('quizScore').value ? parseFloat(document.getElementById('quizScore').value) : null
+                }
+            };
+
+            showLoading(true);
+
+            try {
+                const response = await fetch('http://localhost:8080/certificates', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                showLoading(false);
+
+                if (response.ok) {
+                    const result = await response.json();
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('errorAlert').style.display = 'none';
+
+                    // Scroll to top to show success message
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                    setTimeout(() => {
+                        resetForm();
+                    }, 3000);
+                } else {
+                    let errorMessage = 'Failed to create certificate. Please try again.';
+
+                    try {
+                        const error = await response.json();
+                        errorMessage = error.message || errorMessage;
+                    } catch (e) {
+                        // If response is not JSON, use default message
+                    }
+
+                    document.getElementById('errorAlert').textContent = errorMessage;
+                    document.getElementById('errorAlert').style.display = 'block';
+                    document.getElementById('successMessage').style.display = 'none';
+
+                    // Scroll to top to show error message
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            } catch (error) {
+                showLoading(false);
+                console.error('Error:', error);
+                document.getElementById('errorAlert').textContent = 'Network error. Please check your connection and try again.';
+                document.getElementById('errorAlert').style.display = 'block';
+                document.getElementById('successMessage').style.display = 'none';
+
+                // Scroll to top to show error message
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // Auto-hide messages after 5 seconds
+        function autoHideMessage(elementId) {
+            setTimeout(() => {
+                const element = document.getElementById(elementId);
+                if (element.style.display === 'block') {
+                    element.style.display = 'none';
+                }
+            }, 5000);
+        }
+
+        // Watch for success/error messages and auto-hide them
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'style') {
+                    const target = mutation.target;
+                    if (target.style.display === 'block') {
+                        autoHideMessage(target.id);
+                    }
+                }
+            });
+        });
+
+        observer.observe(document.getElementById('successMessage'), { attributes: true });
+        observer.observe(document.getElementById('errorAlert'), { attributes: true });
+    </script>
+</body>
+</html>
