@@ -1,9 +1,7 @@
 package com.codeline.CertiGo.Controllers;
 
 import com.codeline.CertiGo.DTOCreateRequest.LessonCreateRequest;
-import com.codeline.CertiGo.DTOCreateResponse.LessonCreateResponse;
 import com.codeline.CertiGo.Entity.Lesson;
-import com.codeline.CertiGo.Entity.Quiz;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Services.LessonServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +17,7 @@ public class LessonController {
     LessonServices lessonServices;
 
     @PostMapping("create")
-    public LessonCreateResponse createLesson(@RequestBody LessonCreateRequest requestObj) throws CustomException {
+    public com.codeline.CertiGo.DTOResponse.LessonCreateResponse createLesson(@RequestBody LessonCreateRequest requestObj) throws CustomException {
         LessonCreateRequest.validLessonCreateRequest(requestObj);
         return lessonServices.saveLesson(requestObj);
     }

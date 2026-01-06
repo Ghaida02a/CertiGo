@@ -21,11 +21,9 @@ import java.util.List;
 @Builder
 public class InstructorUpdateRequest {
     private Integer id;
-
     private String name;
     private String bio;
     private String email;
-    private List<Course> courses;
 
     public static void validateInstructorUpdateRequested(InstructorUpdateRequest dto) throws CustomException {
         if (Utils.isNull(dto.getId())) {
@@ -40,9 +38,6 @@ public class InstructorUpdateRequest {
         if (Utils.isNull(dto.getEmail())) {
             throw new CustomException(Constants.INSTRUCTOR_CREATE_REQUEST_EMAIL_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
         }
-        if (Utils.isNull(dto.getCourses())) {
-            throw new CustomException(Constants.INSTRUCTOR_CREATE_REQUEST_COURSES_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
-        }
     }
 
     public static Instructor convertDTOToEntity(InstructorUpdateRequest dto) {
@@ -51,7 +46,6 @@ public class InstructorUpdateRequest {
                 .name(dto.getName())
                 .bio(dto.getBio())
                 .email(dto.getEmail())
-                .courses(dto.getCourses())
                 .build();
         return instructor;
     }
@@ -62,7 +56,6 @@ public class InstructorUpdateRequest {
                 .name(entity.getName())
                 .bio(entity.getBio())
                 .email(entity.getEmail())
-                .courses(entity.getCourses())
                 .build();
     }
 }

@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,9 +22,8 @@ public class CompanyUpdateRequest {
     private String location;
     private String industry;
     private String contactEmail;
-    private List<Course> courses;
 
-    /// / DTO → Entity
+    //DTO → Entity
     public static Company covertToCompany(CompanyUpdateRequest dto) {
         Company company = new Company();
         company.setId(dto.getCompanyId());
@@ -31,7 +31,6 @@ public class CompanyUpdateRequest {
         company.setLocation(dto.getLocation());
         company.setIndustry(dto.getIndustry());
         company.setContactEmail(dto.getContactEmail());
-         company.setCourses(dto.getCourses());
         return company;
     }
 
@@ -49,7 +48,5 @@ public class CompanyUpdateRequest {
         if (Utils.isNull(dto.getContactEmail()) || Utils.isBlank(dto.getContactEmail())) {
             throw new CustomException(Constants.CONTACT_EMAIL_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
         }
-
     }
-
 }

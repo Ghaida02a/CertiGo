@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,7 +23,6 @@ public class QuizResultUpdateRequest {
     private Integer userId;
     private Integer quizId;
     private Integer courseId;
-    private List<UserAnswer> userAnswers;
 
     //  convert DTO → Entity
     public static QuizResult convertToQuizResult(QuizResultUpdateRequest request) {
@@ -30,8 +30,7 @@ public class QuizResultUpdateRequest {
         quizResult.setId(request.getId());
         quizResult.setScore(request.getScore());
         quizResult.setIsPassed(request.getIsPassed());
-        quizResult.setUserAnswers(request.getUserAnswers());
-       // quizResult.setCourse();
+        // quizResult.setCourse();
         // quizResult.setUser();
         // quizResult.setQuiz();
         return quizResult;
@@ -62,5 +61,4 @@ public class QuizResultUpdateRequest {
             );
         }
     }
-
 }
