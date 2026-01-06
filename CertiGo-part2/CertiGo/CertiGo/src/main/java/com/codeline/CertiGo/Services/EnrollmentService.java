@@ -4,6 +4,7 @@ import com.codeline.CertiGo.DTOCreateRequest.EnrollmentCreateRequestDTO;
 import com.codeline.CertiGo.DTOResponse.EnrollmentResponse;
 import com.codeline.CertiGo.Entity.Course;
 import com.codeline.CertiGo.Entity.Enrollment;
+import com.codeline.CertiGo.Entity.User;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
 import com.codeline.CertiGo.Repository.UserRepository;
@@ -28,27 +29,28 @@ public class EnrollmentService {
     private CourseRepository courseRepository;
 
     // SAVE
-    public EnrollmentResponse saveEnrollment(EnrollmentCreateRequestDTO request) throws CustomException {
+    public EnrollmentResponse saveEnrollment(EnrollmentCreateRequestDTO request)
+            throws CustomException {
 
-        Enrollment enrollment = new Enrollment();
-        enrollment.setStatus(request.getStatus());
+        Enrollment enrollment = EnrollmentCreateRequestDTO.convertToEnrollment(request);
+
         enrollment.setIsActive(true);
         enrollment.setCreatedAt(new Date());
 
-        // USER
-        if (request.getUsername() == null) {
-            throw new CustomException(Constants.USER_ID_NOT_VALID, 404);
-        }
-        enrollment.setUser(request.getUsername());
+        User user = userRepository.getUserByUsername(request.getUsername())
+                .orElseThrow(() -> new CustomException(Constants.USERNAME_NOT_VALID, 404));
+        enrollment.setUser(user);
 
-        // COURSE
+
         Course course = courseRepository.findById(request.getCourseId())
-                .orElseThrow(() -> new CustomException(Constants.COURSE_ID_NOT_VALID, 404));
+                .orElseThrow(() -> new CustomException("Course not found", 404));
         enrollment.setCourse(course);
 
-        Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
-        return EnrollmentResponse.fromEntity(savedEnrollment);
+        Enrollment saved = enrollmentRepository.save(enrollment);
+        return EnrollmentResponse.fromEntity(saved);
     }
+
+
 
     //  GET ALL
     public List<EnrollmentResponse> getAllEnrollments() {

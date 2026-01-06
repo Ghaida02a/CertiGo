@@ -12,24 +12,31 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class EnrollmentCreateRequestDTO {
     private EnrollmentStatus status;
-    //private String username;
-   private User username;
+    private String username;
     private Integer courseId;
 
     //   convert DTO → Entity
     public static Enrollment convertToEnrollment(EnrollmentCreateRequestDTO request) {
         Enrollment enrollment = new Enrollment();
+
         enrollment.setStatus(request.getStatus());
-       enrollment.setUser (request.getUsername());
-      // enrollment.setCourseId(request.getCourseId());
+        //enrollment.setUser(request.getUsername());
+
+        enrollment.setIsActive(true);
+        enrollment.setCreatedAt(new Date());
+
         return enrollment;
     }
+
+
 
     //convert Entity → DTO
     public static EnrollmentCreateRequestDTO convertToDTO(Enrollment enrollment) {

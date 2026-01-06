@@ -15,4 +15,6 @@ public interface UserAnswerRepository extends JpaRepository<UserAnswer,Integer> 
 
     @Query("SELECT answer FROM UserAnswer answer WHERE answer.isActive=true")
     List<UserAnswer> findUserAnswers();
+
+
 }

@@ -46,14 +46,28 @@ public class QuizService {
     }
 
     public Quiz updateQuiz(Quiz quiz) throws CustomException {
-        Quiz existingQuiz = quizRepository.findById(quiz.getId()).get();
-        if (existingQuiz != null && existingQuiz.getIsActive()) {
-            quiz.setUpdatedAt(new Date());
-            return quizRepository.save(quiz);
-        } else {
-            throw new CustomException(Constants.BAD_REQUEST, Constants.HTTP_STATUS_BAD_REQUEST);
+
+        Quiz existingQuiz = quizRepository.findById(quiz.getId())
+                .orElseThrow(() -> new CustomException(
+                        "Quiz not found",
+                        Constants.HTTP_STATUS_BAD_REQUEST
+                ));
+
+        if (!Boolean.TRUE.equals(existingQuiz.getIsActive())) {
+            throw new CustomException("Quiz is not active", Constants.HTTP_STATUS_BAD_REQUEST);
         }
+
+        existingQuiz.setTotalQuestions(quiz.getTotalQuestions());
+        existingQuiz.setPassingScore(quiz.getPassingScore());
+        existingQuiz.setUpdatedAt(new Date());
+
+        // keep relations & audit fields
+        existingQuiz.setCourse(existingQuiz.getCourse());
+
+        return quizRepository.save(existingQuiz);
     }
+
+
 
     public void deleteQuiz(Integer id) throws CustomException {
         Quiz existingQuiz = quizRepository.findById(id).get();

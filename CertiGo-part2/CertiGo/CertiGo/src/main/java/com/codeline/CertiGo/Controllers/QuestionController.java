@@ -20,7 +20,7 @@ public class QuestionController {
     @Autowired
     QuestionService questionService;
 
-    @PostMapping("/Create")
+    @PostMapping("/create")
     public ResponseEntity<QuestionResponse> createQuestion(@Valid @RequestBody QuestionCreateRequestDTO requestDTO) throws CustomException {
         QuestionResponse question = questionService.saveQuestion(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(question);

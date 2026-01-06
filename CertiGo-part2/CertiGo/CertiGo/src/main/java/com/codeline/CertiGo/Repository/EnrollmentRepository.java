@@ -14,4 +14,5 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Integer>
 
     @Query("SELECT e FROM Enrollment e WHERE e.isActive = true")
     List<Enrollment> findAllActiveEnrollments();
+
 }
