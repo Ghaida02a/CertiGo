@@ -81,6 +81,7 @@ public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+
     private String courseName;
     private String type;
     private Integer durationHours;

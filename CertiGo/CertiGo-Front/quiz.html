@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Training Quiz | CertiGo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">
+        <img src="C:\Users\LENOVO\Desktop\logo\36986b76-9c45-4c51-8486-c25524aba893.png" alt="CertiGo Logo">
+        <h2>CertiGo</h2>
+    </div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="companies.html">Companies</a>
+    </nav>
+</div>
+
+<div class="course-container">
+
+    <!-- QUIZ HEADER -->
+    <div class="course-header">
+        <img src="https://www.luxsolar.com/Uploads/Medium/pdo_2824_m.jpg" alt="PDO Logo">
+        <h1>Safety Training Quiz - PDO Company</h1>
+    </div>
+
+    <!-- QUIZ FORM -->
+    <form id="quizForm">
+        <script>
+            // 20 questions array: [question, option1, option2, option3, option4, correctIndex]
+            const questions = [
+                ["What is PPE?", "Personal Protective Equipment", "Private Protection", "Public Power", "None", 0],
+                ["Why is safety training important?", "Reduce risks", "Waste time", "For fun", "No reason", 0],
+                ["Before operating machinery, you should?", "Inspect equipment", "Ignore safety", "Rush", "Guess", 0],
+                ["Fire extinguisher for electrical fires?", "CO2", "Water", "Foam", "Sand", 0],
+                ["First step in an emergency?", "Stay calm", "Run", "Shout", "Ignore", 0],
+            ];
+
+            // Repeat questions until 20
+            while (questions.length < 20) {
+                questions.push(questions[questions.length % 5]);
+            }
+
+            // Display questions dynamically
+            document.write(
+                questions.map((q, i) => `
+                    <div class="question">
+                        <p>${i + 1}. ${q[0]}</p>
+                        ${q.slice(1,5).map((opt, idx) =>
+                            `<label><input type="radio" name="q${i}" value="${idx}"> ${opt}</label><br>`
+                        ).join("")}
+                    </div>
+                `).join("")
+            );
+        </script>
+
+        <button type="button" class="submit-quiz" onclick="submitQuiz()">Submit Quiz</button>
+    </form>
+
+    <div class="score" id="score"></div>
+    <div class="pass-fail" id="passFail" style="font-size:20px; font-weight:bold; margin-top:10px;"></div>
+
+</div>
+
+<script>
+    function submitQuiz() {
+        let score = 0;
+        const total = 20;
+
+        questions.forEach((q, i) => {
+            const answer = document.querySelector(`input[name="q${i}"]:checked`);
+            if (answer && parseInt(answer.value) === q[5]) {
+                score++;
+            }
+        });
+
+        document.getElementById("score").innerText = `Your Score: ${score} / ${total}`;
+
+        const result = score >= 15 ? "Pass ✅" : "Fail ❌";
+        document.getElementById("passFail").innerText = result;
+    }
+</script>
+
+</body>
+</html>

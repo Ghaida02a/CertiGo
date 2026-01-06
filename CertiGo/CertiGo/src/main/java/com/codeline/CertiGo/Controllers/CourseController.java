@@ -1,8 +1,8 @@
 package com.codeline.CertiGo.Controllers;
 
-import com.codeline.CertiGo.DTOCreateRequest.CourseCreateRequest;
-import com.codeline.CertiGo.DTOResponse.CourseCreateResponse;
 import com.codeline.CertiGo.Entity.Course;
+import com.codeline.CertiGo.DTOCreateRequest.CourseCreateRequest;
+import com.codeline.CertiGo.DTOCreateResponse.CourseCreateResponse;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Services.CourseServices;
 import org.springframework.beans.factory.annotation.Autowired;

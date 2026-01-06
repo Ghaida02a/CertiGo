@@ -1,4 +1,4 @@
 package com.codeline.CertiGo.DTOUpdateRequest;
 
-public class CertificateUpdateRequest {
+public class InstructorUpdateRequest {
 }

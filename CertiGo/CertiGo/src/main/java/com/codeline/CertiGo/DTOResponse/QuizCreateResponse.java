@@ -1,8 +1,6 @@
 package com.codeline.CertiGo.DTOResponse;
 
 import com.codeline.CertiGo.DTOCreateRequest.CourseCreateRequest;
-import com.codeline.CertiGo.DTOCreateRequest.QuestionCreateRequestDTO;
-import com.codeline.CertiGo.DTOCreateRequest.QuizResultCreateRequestDTO;
 import com.codeline.CertiGo.Entity.Quiz;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,18 +18,16 @@ public class QuizCreateResponse {
     private Integer id;
     private Integer totalQuestions;
     private Integer passingScore;
-    private Integer coursesId;
+    private Integer courseId;
     private List<Integer> questionsId;
-    private List<Integer> quizResultsId;
 
     public static QuizCreateResponse ConvertToQuizCreateResponse(Quiz entity) {
         return QuizCreateResponse.builder()
                 .id(entity.getId())
                 .totalQuestions(entity.getTotalQuestions())
                 .passingScore(entity.getPassingScore())
-                .coursesId(entity.getCourse().getId())
+                .courseId(entity.getCourse().getId())
                 .questionsId(entity.getQuestions().stream().map(question -> question.getId()).collect(Collectors.toList()))
-                .quizResultsId(entity.getQuizResults().stream().map(quizResult -> quizResult.getId()).collect(Collectors.toList()))
                 .build();
     }
 }

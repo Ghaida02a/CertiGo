@@ -2,6 +2,12 @@ package com.codeline.CertiGo.Helper;
 
 public class Constants {
 
+    public static final String BAD_REQUEST =
+            "BAD REQUEST";
+
+    public static final String SUCCESS =
+            "SUCCESS";
+
     public static final String REVIEW_CREATE_REQUEST_NAME_NOT_VALID =
             "Reviewer name is not valid";
 
@@ -18,6 +24,12 @@ public class Constants {
             "User ID is not valid";
 
 
+    public static final String REVIEW_LIST_IS_EMPTY =
+            "Review list is empty";
+
+    public static final String INSTRUCTOR_CREATE_REQUEST_INSTRUCTOR_ID_NOT_VALID =
+            "Instructor ID is not valid";
+
     public static final String INSTRUCTOR_CREATE_REQUEST_NAME_NOT_VALID =
             "Instructor name must not be null or blank";
 
@@ -30,6 +42,8 @@ public class Constants {
     public static final String INSTRUCTOR_CREATE_REQUEST_COURSES_NOT_VALID =
             "Instructor courses list is not valid";
 
+    public static final String INSTRUCTOR_LIST_IS_EMPTY =
+            "Instructor list is empty";
 
     public static final String USER_ANSWER_CREATE_REQUEST_SELECTED_OPTION_NOT_VALID =
             "Selected option is not valid";
@@ -59,6 +73,9 @@ public class Constants {
     public static final String OPTION_CREATE_REQUEST_QUESTION_ID_NOT_VALID =
             "Question ID is not valid";
 
+    public static final String OPTION_LIST_IS_EMPTY =
+            "Option list is empty";
+
 
     // HTTP Status Codes
     public static final int HTTP_STATUS_IS_NULL = 422;
@@ -67,17 +84,13 @@ public class Constants {
     public static final int HTTP_STATUS_INTERNAL_SERVER_ERROR = 500;
 
     // Response Messages and Status Codes for Company Validations
-    public final static String SUCCESS = "Success";
-    public final static String BAD_REQUEST = "BAD REQUEST";
+
     public final static String COMPANY_NAME_NOT_VALID = "Company name is not valid";
     public final static String LOCATION_NOT_VALID = "Location is not valid";
     public final static String INDUSTRY_NOT_VALID = "Industry is not valid";
     public final static String CONTACT_EMAIL_NOT_VALID = "Contact email is not valid";
     public final static String COURSE_LIST_NOT_VALID = "Course list is not valid";
     public final static int HTTP_STATUS_SUCCESS = 200;
-    public final static int HTTP_STATUS_BAD_REQUEST = 400;
-    public final static int HTTP_STATUS_IS_NULL = 422;
-    public final static int HTTP_STATUS_NOT_FOUND = 404;
 
     //Response Messages and Status Codes for Enrollment Validations
     public final static String ENROLLMENT_NOT_FOUND = "Enrollment not found";
@@ -100,6 +113,7 @@ public class Constants {
     public final static String IS_PASSED_NOT_VALID = "isPassed is not valid";
     public final  static String USER_ID_NOT_VALID = "User ID is not valid";
     public final static  String USER_ANSWERS_NOT_VALID = "User answers are not valid";
+    public final static String QUIZ_RESULT_NOT_ACTIVE = "QuizResult not active" ;
 
     //User CreateRequest Validations
     public final static String USER_NOT_FOUND = "User not found";
@@ -120,13 +134,16 @@ public class Constants {
     public final static String PAYMENT_PAYMENT_METHODS_IS_NULL = "Payment methods is null";
     public final static String PAYMENT_PAYMENT_STATUS_IS_NULL = "Payment status is null";
 
-    public final static String USER_ID_NOT_VALID = "User ID is not valid";
-    public final static String USER_ANSWERS_NOT_VALID = "User answers are not valid";
+
+   // public final static String USER_ID_NOT_VALID = "User ID is not valid";
+    //public final static String USER_ANSWERS_NOT_VALID = "User answers are not valid";
 
 
     public final static Integer LOWER_DURATION_RANGE = 0;
     public final static Integer UPPER_DURATION_RANGE = 300;
-    public static final int HTTP_STATUS_INTERNAL_SERVER_ERROR = 500;
+
+    public final static String PAYMENT_LIST_IS_NULL = "Payment list is null";
+
 
     //Course
     public final static String COURSE_CREATE_REQUEST_COURSE_NAME_NOT_VALID = "NAME IS NOT VALID";
@@ -138,15 +155,26 @@ public class Constants {
     public final static String COURSE_CREATE_REQUEST_INSTRUCTORS_ID_NOT_VALID = "INSTRUCTORS ID IS NOT VALID";
 
     //Quiz
+    public final static String QUIZ_NOT_FOUND = "Quiz not found";
     public final static String QUIZ_CREATE_REQUEST_TOTAL_QUESTIONS_NOT_VALID = "TOTAL QUESTIONS IS NOT VALID";
     public final static String QUIZ_CREATE_REQUEST_PASSING_SCORE_NOT_VALID = "PASSING SCORE IS NOT VALID";
     public final static String QUIZ_CREATE_REQUEST_COURSE_ID_NOT_VALID = "COURSE ID IS NOT VALID";
     public final static String QUIZ_CREATE_REQUEST_QUESTIONS_ID_NOT_VALID = "QUESTIONS ID IS NOT VALID";
+    public final static String QUIZ_RESULT_NOT_FOUND = "Quiz Result not found";
+    public final static String QUIZ_RESULT_ALREADY_INACTIVE = "Quiz Result is already inactive";
 
     //Lesson
     public final static String LESSON_CREATE_REQUEST_ID_NOT_VALID = " ID IS NOT VALID";
     public final static String LESSON_CREATE_REQUEST_LESSON_NAME_NOT_VALID = "LESSON NAME IS NOT VALID";
     public final static String LESSON_CREATE_REQUEST_PDF_URL_NOT_VALID = "PDF URL IS NOT VALID";
     public final static String LESSON_CREATE_REQUEST_COURSE_ID_NOT_VALID = "COURSE ID IS NOT VALID";
+
+    //Certificate
+    public final static String CERTIFICATE_CREATE_REQUEST_CERTIFICATE_NAME_NOT_VALID = "CERTIFICATE NAME IS NOT VALID";
+    public final static String CERTIFICATE_CREATE_REQUEST_DESCRIPTION_NOT_VALID = "DESCRIPTION IS NOT VALID";
+    public final static String CERTIFICATE_NOT_FOUND = "CERTIFICATE NOT FOUND";
+    public final static String CERTIFICATE_LIST_IS_EMPTY = "Certification list is empty";
+    public final static String CERTIFICATE_CREATE_REQUEST_USER_ID_NOT_VALID = "USER ID IS NOT VALID";
+    public final static String CERTIFICATE_CREATE_REQUEST_COURSE_ID_NOT_VALID = "COURSE ID IS NOT VALID";
 }
 

@@ -1,0 +1,443 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #f5f5f5;
+    color: #333;
+}
+
+/* NAVBAR */
+.navbar {
+    background: #6a2c70;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 40px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo img {
+    width: 100px;
+}
+.img {
+    width: 2000px;
+}
+
+.navbar nav a {
+    color: white;
+    margin: 0 15px;
+    text-decoration: none;
+}
+
+.navbar button {
+    background: white;
+    color: #6a2c70;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* HERO */
+.hero {
+    background: linear-gradient(to right, #6a2c70, #b83b5e);
+    color: white;
+    padding: 80px 40px;
+    text-align: center;
+}
+/* Reusable button style for all buttons */
+.styled-button {
+    background: #6a2c70;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: none; /* for <a> tags styled as button */
+    display: inline-block;
+    transition: background 0.3s;
+}
+
+.styled-button:hover {
+    background: #b83b5e;
+}
+
+/* Review Page */
+.review-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+}
+
+.stars input {
+    display: none;
+}
+
+.stars label {
+    font-size: 30px;
+    color: #ccc;
+    cursor: pointer;
+}
+
+.stars input:checked ~ label,
+.stars label:hover,
+.stars label:hover ~ label {
+    color: #f39c12;
+}
+
+.review-container input[type="text"],
+.review-container textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.submit-review {
+    background: #6a2c70;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.submit-review:hover {
+    background: #b83b5e;
+}
+/* Companies Page */
+/* Companies Page */
+.companies-container {
+    display: flex;
+    gap: 30px;
+    padding: 40px;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: stretch; /* ensures all cards same height */
+}
+
+/* Company Card */
+.company-card {
+    background: white;
+    width: 300px;
+    padding: 15px; /* slightly smaller padding */
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* center image and title */
+    text-align: center;
+    
+    height: 380px; /* decreased from 450px */
+}
+
+/* Logo/Image */
+.company-card img {
+    width: 120px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 10px; /* reduce spacing below image */
+}
+
+/* Company Name */
+.company-card h3 {
+    margin-bottom: 10px; /* reduce spacing below title */
+    font-size: 18px;
+}
+
+/* Course List */
+.company-card ul {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    margin-bottom: 0;
+}
+
+/* Each Course Row */
+.company-card li {
+    display: flex;
+    justify-content: space-between; /* text left, button right */
+    align-items: center;
+    padding: 6px 0; /* reduce spacing between courses */
+    border-bottom: 1px solid #eee; /* line between courses */
+}
+
+/* Last course row no border */
+.company-card li:last-child {
+    border-bottom: none;
+}
+
+/* Course Button */
+.take-course {
+    background: #6a2c70;
+    color: white;
+    padding: 5px 10px; /* slightly smaller button */
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.take-course:hover {
+    background: #b83b5e;
+}
+
+
+
+/* COURSES */
+.courses {
+    padding: 50px;
+}
+
+.course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.course-card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.course-card h3 {
+    margin-bottom: 10px;
+}
+
+.course-card button {
+    margin-top: 15px;
+    width: 100%;
+    padding: 10px;
+    background: #6a2c70;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+/* FLOW */
+.flow {
+    background: white;
+    padding: 40px;
+    text-align: center;
+}
+
+.flow-steps {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+/* QUIZ */
+.quiz {
+    padding: 40px;
+}
+
+.question label {
+    display: block;
+    margin: 10px 0;
+}
+
+/* REVIEWS */
+.reviews {
+    background: white;
+    padding: 40px;
+}
+
+.review-card {
+    background: #eee;
+    padding: 20px;
+    border-radius: 8px;
+}
+/* GENERAL STYLES */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #f5f5f5;
+    color: #333;
+}
+
+/* NAVBAR */
+.navbar {
+    background: #6a2c70;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 40px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo img {
+    width: 100px;
+}
+
+.navbar nav a {
+    color: white;
+    margin: 0 15px;
+    text-decoration: none;
+}
+
+/* COURSE PAGE */
+.course-container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 40px;
+    background: white;
+    border-radius: 12px;
+}
+
+.course-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.course-header img {
+    width: 120px;
+    border-radius: 6px;
+}
+
+/* PDF Embed */
+.pdf-section {
+    max-width: 900px; /* limit width */
+    margin: 40px auto;
+    text-align: center;
+}
+
+.pdf-section h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #6a2c70;
+}
+
+.pdf-viewer {
+    width: 100%;       /* full width of container */
+    height: 600px;     /* adjust height */
+    border: 2px solid #ccc;
+    border-radius: 8px;
+}
+
+
+.download-btn,
+.quiz-btn,
+.submit-quiz {
+    background: #6a2c70;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.download-btn:hover,
+.quiz-btn:hover,
+.submit-quiz:hover {
+    background: #b83b5e;
+}
+
+.quiz {
+    display: none;
+    margin-top: 40px;
+}
+
+.question {
+    margin-bottom: 20px;
+}
+
+.score {
+    font-size: 20px;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+
+/* FOOTER */
+footer {
+    background: #333;
+    color: white;
+    text-align: center;
+    padding: 15px;
+
+
+}
+/* Dropdown container */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown button */
+.dropbtn {
+    background-color: #6a2c70;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 150px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 5px;
+}
+
+/* Dropdown links */
+.dropdown-content a {
+    color: #333;
+    padding: 10px 15px;
+    text-decoration: none;
+    display: block;
+    transition: background 0.2s;
+}
+
+.dropdown-content a:hover {
+    background-color: #f0f0f0;
+}
+
+/* Show dropdown on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Optional: change button color on hover */
+.dropdown:hover .dropbtn {
+    background-color: #5a2460;
+}
+

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CertiGo - Reviews</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="logo">
+            <img src="C:\Users\LENOVO\Desktop\logo\36986b76-9c45-4c51-8486-c25524aba893.png" alt="CertiGo Logo">
+            <h2>CertiGo</h2>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="signin.html">Sign In</a>
+            <a href="create-account.html">Sign Up</a>
+        </nav>
+    </div>
+
+    <!-- Review Section -->
+    <div class="review-container">
+        <h2>Rate this Course</h2>
+
+        <!-- Stars Rating -->
+        <div class="stars">
+            <input type="radio" id="star5" name="rating" value="5">
+            <label for="star5">&#9733;</label>
+            <input type="radio" id="star4" name="rating" value="4">
+            <label for="star4">&#9733;</label>
+            <input type="radio" id="star3" name="rating" value="3">
+            <label for="star3">&#9733;</label>
+            <input type="radio" id="star2" name="rating" value="2">
+            <label for="star2">&#9733;</label>
+            <input type="radio" id="star1" name="rating" value="1">
+            <label for="star1">&#9733;</label>
+        </div>
+
+        <!-- Comment Box -->
+        <input type="text" placeholder="Your Name" required>
+        <textarea rows="4" placeholder="Write your comment here..." required></textarea>
+
+        <!-- Submit Button -->
+        <button class="submit-review" onclick="alert('Review submitted!')">Submit Review</button>
+    </div>
+
+</body>
+</html>

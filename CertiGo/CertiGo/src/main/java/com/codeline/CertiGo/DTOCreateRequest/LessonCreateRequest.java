@@ -17,8 +17,7 @@ import lombok.NoArgsConstructor;
 public class LessonCreateRequest {
     private String lessonName;
     private String pdfUrl;
-    private Integer coursesId;
-
+    private Integer courseId;
 
     public static Lesson ConverToLesson(LessonCreateRequest request) {
         Lesson lesson = new Lesson();
@@ -33,13 +32,12 @@ public class LessonCreateRequest {
             throw new CustomException(Constants.LESSON_CREATE_REQUEST_LESSON_NAME_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
         } else if (Utils.isNull(request.getPdfUrl()) || request.getPdfUrl().isEmpty() || request.getPdfUrl().isBlank()) {
             throw new CustomException(Constants.LESSON_CREATE_REQUEST_PDF_URL_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
-//        } else if (Utils.isNull(request.getCourseId()) || request.getCourseId() <= 0) {
-//            throw new CustomException(Constants.LESSON_CREATE_REQUEST_COURSE_ID_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
-//        }
-
+        } else if (Utils.isNull(request.getCourseId()) || request.getCourseId() <= 0) {
+            throw new CustomException(Constants.LESSON_CREATE_REQUEST_COURSE_ID_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
         }
 
     }
+
 }
 
 
