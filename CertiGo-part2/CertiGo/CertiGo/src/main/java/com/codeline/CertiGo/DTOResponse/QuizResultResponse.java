@@ -20,7 +20,6 @@ public class QuizResultResponse {
     private Integer userId;
     private Integer quizId;
     private Integer courseId;
-    private List<UserAnswer> userAnswers;
     // Convert Entity → DTO
     public  static QuizResultResponse fromEntity(QuizResult quizResult) {
         return QuizResultResponse.builder()
@@ -30,7 +29,6 @@ public class QuizResultResponse {
                 .userId(quizResult.getUser().getId())
                 .quizId(quizResult.getQuiz().getId())
                 .courseId(quizResult.getCourse().getId())
-                .userAnswers(quizResult.getUserAnswers())
                 .build();
     }
 }

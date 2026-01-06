@@ -42,25 +42,6 @@ public class QuestionService {
                 .orElseThrow(() -> new CustomException(Constants.QUIZ_ID_NOT_VALID, 404));
         question.setQuiz(quiz);
 
-        // OPTIONS
-        List<Option> options = new ArrayList<>();
-        if (request.getOptions() != null && !request.getOptions().isEmpty()) {
-            for (Option option : request.getOptions()) {
-                option.setQuestion(question);
-                options.add(option);
-            }
-        }
-        question.setOptions(options);
-        // USER ANSWERS
-        List<UserAnswer> userAnswers = new ArrayList<>();
-        if (request.getUserAnswers() != null && !request.getUserAnswers().isEmpty()) {
-            for (UserAnswer userAnswer : request.getUserAnswers()) {
-                userAnswer.setQuestion(question);
-                userAnswers.add(userAnswer);
-            }
-        }
-        question.setUserAnswers(userAnswers);
-
         Question savedQuestion = questionRepository.save(question);
         return QuestionResponse.fromEntity(savedQuestion);
     }
@@ -125,26 +106,6 @@ public class QuestionService {
                     .orElseThrow(() -> new CustomException(Constants.QUIZ_ID_NOT_VALID, 404));
             existingQuestion.setQuiz(quiz);
         }
-
-        // Update options
-        List<Option> options = new ArrayList<>();
-        if (request.getOptions() != null && !request.getOptions().isEmpty()) {
-            for (Option option : request.getOptions()) {
-                option.setQuestion(existingQuestion);
-                options.add(option);
-            }
-        }
-        existingQuestion.setOptions(options);
-
-        // Update user answers
-        List<UserAnswer> userAnswers = new ArrayList<>();
-        if (request.getUserAnswers() != null && !request.getUserAnswers().isEmpty()) {
-            for (UserAnswer userAnswer : request.getUserAnswers()) {
-                userAnswer.setQuestion(existingQuestion);
-                userAnswers.add(userAnswer);
-            }
-        }
-        existingQuestion.setUserAnswers(userAnswers);
 
         // Save updated question
         Question savedQuestion = questionRepository.save(existingQuestion);

@@ -22,7 +22,6 @@ public class CompanyCreateRequestDTO {
     private String location;
     private String industry;
     private String contactEmail;
-    private List<CourseCreateRequest> courses;
 
     // DTO → Entity
     public static Company convertToCompany(CompanyCreateRequestDTO dto) {
@@ -31,9 +30,6 @@ public class CompanyCreateRequestDTO {
                 .location(dto.getLocation())
                 .industry(dto.getIndustry())
                 .contactEmail(dto.getContactEmail())
-                .courses(dto.getCourses().stream()
-                        .map(CourseCreateRequest::convertToCourse) // assuming you have this method
-                        .collect(Collectors.toList()))
                 .build();
         return company;
     }

@@ -18,7 +18,6 @@ public class CompanyResponse {
     private String location;
     private String industry;
     private String contactEmail;
-    private List<Course> courses;
 
     // Convert Entity → DTO
     public static CompanyResponse fromEntity(Company company) {
@@ -28,7 +27,6 @@ public class CompanyResponse {
                 .location(company.getLocation())
                 .industry(company.getIndustry())
                 .contactEmail(company.getContactEmail())
-                .courses(company.getCourses())
                 .build();
     }
 }

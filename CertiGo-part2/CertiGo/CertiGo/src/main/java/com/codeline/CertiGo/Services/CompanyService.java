@@ -30,10 +30,6 @@ public class CompanyService {
         company.setIsActive(true);
         company.setCreatedAt(new Date());
 
-        if (Utils.isNotNull(company.getCourses()) && !company.getCourses().isEmpty()) {
-            company.getCourses().forEach(course -> course.setCompany(company));
-        }
-
         Company savedCompany = companyRepository.save(company);
         return CompanyResponse.fromEntity(savedCompany);
     }
@@ -59,16 +55,6 @@ public class CompanyService {
         existingCompany.setIndustry(request.getIndustry());
         existingCompany.setContactEmail(request.getContactEmail());
         existingCompany.setUpdatedAt(new Date());
-
-        // Update courses (List<Course> from DTO)
-        List<Course> courses = new ArrayList<>();
-        if (request.getCourses() != null && !request.getCourses().isEmpty()) {
-            for (Course course : request.getCourses()) {
-                course.setCompany(existingCompany); // maintain relationship
-                courses.add(course);
-            }
-        }
-        existingCompany.setCourses(courses);
 
         // Save updated company
         Company savedCompany = companyRepository.save(existingCompany);

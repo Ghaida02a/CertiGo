@@ -1,5 +1,4 @@
-package com.codeline.CertiGo.DTOCreateResponse;
-
+package com.codeline.CertiGo.DTOResponse;
 import com.codeline.CertiGo.Entity.Lesson;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

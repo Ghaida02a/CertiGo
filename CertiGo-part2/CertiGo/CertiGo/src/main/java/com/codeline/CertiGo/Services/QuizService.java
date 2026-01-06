@@ -29,7 +29,8 @@ public class QuizService {
     public List<Quiz> getAllQuizzes() throws CustomException {
         return quizRepository.findAll();
     }
-    public QuizCreateResponse saveQuiz(QuizCreateRequest request)throws CustomException{
+
+    public QuizCreateResponse saveQuiz(QuizCreateRequest request) throws CustomException {
         Quiz quiz = QuizCreateRequest.convertToQuiz(request);
         quiz.setCreatedAt(new Date());
         quiz.setIsActive(Boolean.TRUE);
@@ -37,25 +38,20 @@ public class QuizService {
         Course course = courseRepository.getCourseById(request.getCourseId());
         if (Utils.isNotNull(course)) {
             quiz.setCourse(course);
-        }else {
-            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
+        } else {
+            throw new CustomException(Constants.BAD_REQUEST, Constants.HTTP_STATUS_BAD_REQUEST);
         }
 
-        List<Question> question=questionRepository.findAllActiveQuestions();
-        if (Utils.isNotNull(question)|| Utils.isListNotEmpty(question)){
-            quiz.setQuestions(question);
-        }else {
-            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
-        }
         return QuizCreateResponse.ConvertToQuizCreateResponse(quizRepository.save(quiz));
     }
+
     public Quiz updateQuiz(Quiz quiz) throws CustomException {
-        Quiz existingQuiz =quizRepository.findById(quiz.getId()).get();
+        Quiz existingQuiz = quizRepository.findById(quiz.getId()).get();
         if (existingQuiz != null && existingQuiz.getIsActive()) {
             quiz.setUpdatedAt(new Date());
             return quizRepository.save(quiz);
         } else {
-            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
+            throw new CustomException(Constants.BAD_REQUEST, Constants.HTTP_STATUS_BAD_REQUEST);
         }
     }
 
@@ -66,7 +62,7 @@ public class QuizService {
             existingQuiz.setIsActive(Boolean.FALSE);
             quizRepository.save(existingQuiz);
         } else {
-            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
+            throw new CustomException(Constants.BAD_REQUEST, Constants.HTTP_STATUS_BAD_REQUEST);
         }
     }
 
@@ -75,7 +71,7 @@ public class QuizService {
         if (existingQuiz != null && existingQuiz.getIsActive()) {
             return existingQuiz;
         } else {
-            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
+            throw new CustomException(Constants.BAD_REQUEST, Constants.HTTP_STATUS_BAD_REQUEST);
         }
     }
 }

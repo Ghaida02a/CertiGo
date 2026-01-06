@@ -27,6 +27,4 @@ public class Company {
     private Date createdAt;
     private Date updatedAt;
 
-    @OneToMany(mappedBy = "company")
-    private List<Course> courses;
 }

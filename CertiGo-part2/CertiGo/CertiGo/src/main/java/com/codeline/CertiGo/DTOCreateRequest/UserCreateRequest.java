@@ -21,11 +21,6 @@ public class UserCreateRequest {
     private String email;
     private String password;
     private UserRole role;
-    private List<EnrollmentCreateRequestDTO> enrollments;
-    private List<PaymentCreateRequest> payments;
-    private List<QuizResultCreateRequestDTO> quizResults;
-    private List<UserAnswerCreateRequest> userAnswers;
-    private List<CertificateCreateRequest> certificates;
 
     // Validation
     public static void validateUserCreateRequested(UserCreateRequest dto) throws CustomException {
@@ -51,32 +46,6 @@ public class UserCreateRequest {
                 .password(dto.getPassword()) // hash in service layer
                 .role(dto.getRole())
                 .build();
-
-        if (Utils.isNotNull(dto.getEnrollments())) {
-            user.setEnrollments(dto.getEnrollments().stream()
-                    .map(EnrollmentCreateRequestDTO::convertToEnrollment)
-                    .toList());
-        }
-        if (Utils.isNotNull(dto.getPayments())) {
-            user.setPayments(dto.getPayments().stream()
-                    .map(PaymentCreateRequest::convertDTOToEntity)
-                    .toList());
-        }
-        if (Utils.isNotNull(dto.getQuizResults())) {
-            user.setQuizResults(dto.getQuizResults().stream()
-                    .map(QuizResultCreateRequestDTO::convertToQuizResult)
-                    .toList());
-        }
-        if (Utils.isNotNull(dto.getUserAnswers())) {
-            user.setUserAnswers(dto.getUserAnswers().stream()
-                    .map(UserAnswerCreateRequest::convertToUserAnswer)
-                    .toList());
-        }
-        if (Utils.isNotNull(dto.getCertificates())) {
-            user.setCertificates(dto.getCertificates().stream()
-                    .map(CertificateCreateRequest::convertDTOToEntity)
-                    .toList());
-        }
         return user;
     }
 
@@ -87,21 +56,6 @@ public class UserCreateRequest {
                 .email(entity.getEmail())
                 .password(entity.getPassword())
                 .role(entity.getRole())
-                .enrollments(entity.getEnrollments().stream()
-                        .map(EnrollmentCreateRequestDTO::convertToDTO)
-                        .toList())
-                .payments(entity.getPayments().stream()
-                        .map(PaymentCreateRequest::convertEntityToDTO)
-                        .toList())
-                .quizResults(entity.getQuizResults().stream()
-                        .map(QuizResultCreateRequestDTO::convertToQuizResult)
-                        .toList())
-                .userAnswers(entity.getUserAnswers().stream()
-                        .map(UserAnswerCreateRequest::convertToUserAnswerCreateRequest)
-                        .toList())
-                .certificates(entity.getCertificates().stream()
-                        .map(CertificateCreateRequest::convertEntityToDTO)
-                        .toList())
                 .build();
     }
 }

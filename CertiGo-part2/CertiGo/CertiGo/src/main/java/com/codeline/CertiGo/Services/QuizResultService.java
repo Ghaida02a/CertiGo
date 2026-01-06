@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import com.codeline.CertiGo.Repository.QuizRepository;
 import com.codeline.CertiGo.Repository.CourseRepository;
 
@@ -25,13 +26,13 @@ import java.util.stream.Collectors;
 public class QuizResultService {
 
     @Autowired
-     QuizResultRepository quizResultRepository;
+    QuizResultRepository quizResultRepository;
 
     @Autowired
     UserRepository userRepository;
 
     @Autowired
-     QuizRepository quizRepository;
+    QuizRepository quizRepository;
 
     @Autowired
     QuestionRepository questionRepository;
@@ -62,19 +63,11 @@ public class QuizResultService {
                 .orElseThrow(() -> new CustomException(Constants.COURSE_ID_NOT_VALID, 404));
         quizResult.setCourse(course);
 
-        // user answers
-        //quizResult.setUserAnswers( QuizResultCreateRequestDTO.convertToQuizResult(request.getUserAnswers()) );
-        if (Utils.isNotNull(request.getUserAnswers())) {
-            request.getUserAnswers().forEach(answer -> {
-                answer.setQuizResult(quizResult);
-            });
-            quizResult.setUserAnswers(request.getUserAnswers());
-        }
-
         QuizResult savedResult = quizResultRepository.save(quizResult);
 
         return QuizResultResponse.fromEntity(savedResult);
     }
+
     // GET BY ID
     public QuizResultResponse getQuizResultById(Integer id) throws CustomException {
 
@@ -104,66 +97,14 @@ public class QuizResultService {
     public QuizResultResponse updateQuizResult(QuizResultUpdateRequest request) throws CustomException {
 
         QuizResult existingResult = quizResultRepository.findById(request.getId())
-                .orElseThrow(() -> new CustomException("QuizResult not found" , 404));
+                .orElseThrow(() -> new CustomException("QuizResult not found", 404));
 
         if (!Boolean.TRUE.equals(existingResult.getIsActive())) {
-            throw new CustomException("QuizResult is not active" , 400);
+            throw new CustomException("QuizResult is not active", 400);
         }
         existingResult.setScore(request.getScore());
         existingResult.setIsPassed(request.getIsPassed());
         existingResult.setUpdatedAt(new Date());
-
-
-        if (request.getUserAnswers() != null && !request.getUserAnswers().isEmpty()) {
-
-            List<UserAnswer> userAnswers = request.getUserAnswers()
-                    .stream()
-                    .map(dto -> {
-
-                        UserAnswer answer = new UserAnswer();
-
-                        answer.setSelectedOption(dto.getSelectedOption());
-                        answer.setIsCorrect(dto.getIsCorrect());
-
-                        // User
-                        User user = null;
-                        try {
-                            user = userRepository.findById(dto.getUser().getId())
-                                    .orElseThrow(() -> new CustomException(Constants.USER_NOT_FOUND, 404));
-                        } catch (CustomException e) {
-                            throw new RuntimeException(e);
-                        }
-                        answer.setUser(user);
-
-                        // Quiz
-                        Quiz quiz = null;
-                        try {
-                            quiz = quizRepository.findById(dto.getQuiz().getId())
-                                    .orElseThrow(() -> new CustomException(Constants.QUIZ_NOT_FOUND, 404));
-                        } catch (CustomException e) {
-                            throw new RuntimeException(e);
-                        }
-                        answer.setQuiz(quiz);
-
-                        // Question
-                        Question question = null;
-                        try {
-                            question = questionRepository.findById(dto.getQuestion().getId())
-                                    .orElseThrow(() -> new CustomException(Constants.QUESTION_NOT_FOUND, 404));
-                        } catch (CustomException e) {
-                            throw new RuntimeException(e);
-                        }
-                        answer.setQuestion(question);
-
-                        // QuizResult
-                        answer.setQuizResult(existingResult);
-
-                        return answer;
-                    })
-                    .collect(Collectors.toList());
-
-            existingResult.setUserAnswers(userAnswers);
-        }
 
         QuizResult saved = quizResultRepository.save(existingResult);
         return QuizResultResponse.fromEntity(saved);

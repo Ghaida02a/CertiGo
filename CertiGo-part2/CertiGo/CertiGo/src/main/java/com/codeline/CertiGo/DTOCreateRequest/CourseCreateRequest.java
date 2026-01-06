@@ -39,21 +39,26 @@ public class CourseCreateRequest {
     public static void validCreateCourseRequest(CourseCreateRequest request) throws CustomException {
         if (Utils.isNull(request.getCourseName()) || request.getCourseName().isEmpty() || request.getCourseName().isBlank()) {
             throw new CustomException(Constants.COURSE_CREATE_REQUEST_COURSE_NAME_NOT_VALID,Constants.HTTP_STATUS_IS_NULL);
-        } else if (Utils.isNull(request.getType()) || request.getType().isBlank() || request.getType().isEmpty()) {
+        }
+        if (Utils.isNull(request.getType()) || request.getType().isBlank() || request.getType().isEmpty()) {
             throw new CustomException(Constants.COURSE_CREATE_REQUEST_TYPE_NOT_VALID,Constants.HTTP_STATUS_IS_NULL);
-        } else if (Utils.isNull(request.getDurationHours()) || request.getDurationHours() <= Constants.LOWER_DURATION_RANGE ||
+        }
+        if (Utils.isNull(request.getDurationHours()) || request.getDurationHours() <= Constants.LOWER_DURATION_RANGE ||
                 request.getDurationHours() >= Constants.UPPER_DURATION_RANGE) {
             throw new CustomException(Constants.COURSE_CREATE_REQUEST_DURATION_NOT_VALID,Constants.HTTP_STATUS_IS_NULL);
-        } else if (Utils.isNull(request.getPrice()) || request.getPrice() <= 0) {
+        }
+        if (Utils.isNull(request.getPrice()) || request.getPrice() <= 0) {
             throw new CustomException(Constants.COURSE_CREATE_REQUEST_PRICE_NOT_VALID,Constants.HTTP_STATUS_IS_NULL);
-        } else if (Utils.isNull(request.getIsCompleted())) {
+        }
+        if (Utils.isNull(request.getIsCompleted())) {
             throw new CustomException(Constants.COURSE_CREATE_REQUEST_IS_COMPLETED_NOT_VALID,Constants.HTTP_STATUS_IS_NULL);
-        }else if (Utils.isNull(request.getCompanyId()) || request.getCompanyId() <= 0) {
+        }
+        if (Utils.isNull(request.getCompanyId()) || request.getCompanyId() <= 0) {
             throw new CustomException(Constants.COURSE_CREATE_REQUEST_COMPANY_ID_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
-        }else if (Utils.isNull(request.getInstructorsId())|| Utils.isListEmpty(request.getInstructorsId())) {
+        }
+        if (Utils.isNull(request.getInstructorsId())|| Utils.isListEmpty(request.getInstructorsId())) {
             throw new CustomException(Constants.COURSE_CREATE_REQUEST_INSTRUCTORS_ID_NOT_VALID,Constants.HTTP_STATUS_IS_NULL);
         }
-
     }
 
     public static CourseCreateRequest convertToCourse(Course course) {

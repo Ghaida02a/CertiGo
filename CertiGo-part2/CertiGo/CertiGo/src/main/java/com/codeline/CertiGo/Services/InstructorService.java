@@ -39,22 +39,6 @@ public class InstructorService {
         InstructorCreateRequest.validCreateInstructorRequest(instructorDTO);
         Instructor instructor = InstructorCreateRequest.convertToInstructor(instructorDTO);
 
-        if (Utils.isNotNull(instructorDTO.getCourses()) && !instructorDTO.getCourses().isEmpty()) {
-            List<Course> courses = new ArrayList<>();
-            for (CourseCreateRequest courseDTO : instructorDTO.getCourses()) {
-                if (Utils.isNull(courseDTO.getId()) || courseDTO.getId() <= 0) {
-                    throw new CustomException(Constants.COURSE_ID_NOT_VALID, Constants.HTTP_STATUS_NOT_FOUND);
-                }
-
-                Course course = courseRepository.getCourseById(courseDTO.getId());
-                if (Utils.isNull(course)) {
-                     throw new CustomException(Constants.COURSE_ID_NOT_VALID, Constants.HTTP_STATUS_NOT_FOUND);
-                }
-
-                courses.add(course);
-            }
-            instructor.setCourses(courses);
-        }
         instructor.setCreatedAt(new Date());
         instructor.setIsActive(Boolean.TRUE);
 

@@ -28,7 +28,5 @@ public class Instructor {
     private Date createdAt;
     private Date updatedAt;
 
-    @ManyToMany(mappedBy = "instructors")
-    private List<Course> courses;
 }
 

@@ -29,20 +29,4 @@ public class User {
     private Boolean isActive;
     private Date createdAt;
     private Date updatedAt;
-
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Enrollment> enrollments;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Payment> payments;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<QuizResult> quizResults;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<UserAnswer> userAnswers;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Certificate> certificates;
 }

@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewCreateResponse {
-
     private Integer id;
     private String reviewerName;
     private String comments;

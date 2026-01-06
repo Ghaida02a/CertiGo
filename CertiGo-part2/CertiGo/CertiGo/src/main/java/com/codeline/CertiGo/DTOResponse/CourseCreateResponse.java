@@ -22,11 +22,6 @@ public class CourseCreateResponse {
     private Boolean isCompleted;
     private Integer companyId;
     private List<Integer> instructorId;
-    private List<Integer> lessonId;
-    private List<Integer> enrollmentId;
-    private List<Integer> paymentId;
-    private List<Integer> quizId;
-    private List<Integer> certificateId;
 
     public static CourseCreateResponse convertToCourseCreateResponse(Course entity){
         return CourseCreateResponse.builder()
@@ -38,11 +33,6 @@ public class CourseCreateResponse {
                 .isCompleted(entity.getIsCompleted())
                 .companyId(entity.getCompany().getId())
                 .instructorId(entity.getInstructors().stream().map(instructor->instructor.getId()).collect(Collectors.toList()))
-                .lessonId(entity.getLessons().stream().map(lesson->lesson.getId()).collect(Collectors.toList()))
-                .enrollmentId(entity.getEnrollments().stream().map(enrollment->enrollment.getId()).collect(Collectors.toList()))
-                .paymentId(entity.getPayments().stream().map(payment->payment.getId()).collect(Collectors.toList()))
-                .quizId(entity.getQuizzes().stream().map(quiz->quiz.getId()).collect(Collectors.toList()))
-                .certificateId(entity.getCertificates().stream().map(certificate->certificate.getId()).collect(Collectors.toList()))
                 .build();
     }
 }

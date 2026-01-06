@@ -19,7 +19,6 @@ public class QuizCreateResponse {
     private Integer totalQuestions;
     private Integer passingScore;
     private Integer courseId;
-    private List<Integer> questionsId;
 
     public static QuizCreateResponse ConvertToQuizCreateResponse(Quiz entity) {
         return QuizCreateResponse.builder()
@@ -27,7 +26,6 @@ public class QuizCreateResponse {
                 .totalQuestions(entity.getTotalQuestions())
                 .passingScore(entity.getPassingScore())
                 .courseId(entity.getCourse().getId())
-                .questionsId(entity.getQuestions().stream().map(question -> question.getId()).collect(Collectors.toList()))
                 .build();
     }
 }

@@ -70,13 +70,6 @@ public class UserService {
         existingUser.setRole(updateObj.getRole());
         existingUser.setUpdatedAt(new Date());
 
-        // Handle relationships if provided
-        if (Utils.isNotNull(updateObj.getEnrollments())) existingUser.setEnrollments(updateObj.getEnrollments());
-        if (Utils.isNotNull(updateObj.getPayments())) existingUser.setPayments(updateObj.getPayments());
-        if (Utils.isNotNull(updateObj.getQuizResults())) existingUser.setQuizResults(updateObj.getQuizResults());
-        if (Utils.isNotNull(updateObj.getUserAnswers())) existingUser.setUserAnswers(updateObj.getUserAnswers());
-        if (Utils.isNotNull(updateObj.getCertificates())) existingUser.setCertificates(updateObj.getCertificates());
-
         User savedUser = userRepository.save(existingUser);
         return UserResponse.entityToDTOResponse(savedUser);
     }
@@ -100,44 +93,6 @@ public class UserService {
         user.setCreatedAt(new Date());
         user.setIsActive(Boolean.TRUE);
 
-        // Handle payments
-        if (Utils.isNotNull(userRequested.getPayments()) && !userRequested.getPayments().isEmpty()) {
-            List<Payment> payments = userRequested.getPayments().stream()
-                    .map(PaymentCreateRequest::convertDTOToEntity)
-                    .peek(payment -> {
-                        payment.setUser(user);
-                        payment.setIsActive(Boolean.TRUE);
-                        payment.setCreatedAt(new Date());
-                    })
-                    .toList();
-            user.setPayments(payments);
-        }
-
-        // Handle quiz results
-        if (Utils.isNotNull(userRequested.getQuizResults()) && !userRequested.getQuizResults().isEmpty()) {
-            List<QuizResult> quizResults = userRequested.getQuizResults().stream()
-                    .map(QuizResultCreateRequestDTO::convertToQuizResult)
-                    .peek(qr -> {
-                        qr.setUser(user);
-                        qr.setIsActive(Boolean.TRUE);
-                        qr.setCreatedAt(new Date());
-                    })
-                    .toList();
-            user.setQuizResults(quizResults);
-        }
-
-        // Handle certificates
-        if (Utils.isNotNull(userRequested.getCertificates()) && !userRequested.getCertificates().isEmpty()) {
-            List<Certificate> certificates = userRequested.getCertificates().stream()
-                    .map(CertificateCreateRequest::convertDTOToEntity)
-                    .peek(cert -> {
-                        cert.setUser(user);
-                        cert.setIsActive(Boolean.TRUE);
-                        cert.setCreatedAt(new Date());
-                    })
-                    .toList();
-            user.setCertificates(certificates);
-        }
         User savedUser = userRepository.save(user);
         return UserResponse.entityToDTOResponse(savedUser);
     }

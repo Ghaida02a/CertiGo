@@ -22,7 +22,6 @@ public class QuizResultCreateRequestDTO {
     private Integer userId;
     private Integer quizId;
     private Integer courseId;
-    private List<UserAnswer> userAnswers;
 
     //  convert DTO → Entity
     public static QuizResult convertToQuizResult(QuizResultCreateRequestDTO request) {
@@ -34,23 +33,18 @@ public class QuizResultCreateRequestDTO {
 
     // validation
     public static void validateQuizResult(QuizResultCreateRequestDTO request) throws CustomException {
-
         if (Utils.isNull(request) || Utils.isBlank(request.getIsPassed())) {
             throw new CustomException(Constants.BAD_REQUEST, Constants.HTTP_STATUS_IS_NULL);
         }
-
         if (Utils.isNull(request.getScore()) || request.getScore() < 0) {
             throw new CustomException(Constants.SCORE_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
         }
-
         if (Utils.isNull(request.getUserId()) || request.getUserId() <= 0) {
             throw new CustomException(Constants.USER_ID_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
         }
-
         if (Utils.isNull(request.getQuizId()) || request.getQuizId() <= 0) {
             throw new CustomException(Constants.QUIZ_ID_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
         }
-
         if (Utils.isNull(request.getCourseId()) || request.getCourseId() <= 0) {
             throw new CustomException(Constants.COURSE_ID_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
         }
@@ -63,7 +57,6 @@ public class QuizResultCreateRequestDTO {
                 .userId(quizResult.getUser().getId())
                 .quizId(quizResult.getQuiz().getId())
                 .courseId(quizResult.getCourse().getId())
-                .userAnswers(quizResult.getUserAnswers())
                 .build();
     }
 }

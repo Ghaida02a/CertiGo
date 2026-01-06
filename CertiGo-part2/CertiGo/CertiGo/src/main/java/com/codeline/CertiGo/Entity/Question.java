@@ -68,10 +68,4 @@ public class Question {
     @ManyToOne
     @JoinColumn(name = "quiz")
     private Quiz quiz;
-
-    @OneToMany(mappedBy = "question")
-    private List<Option> options;
-
-    @OneToMany(mappedBy = "question")
-    private List<UserAnswer> userAnswers;
 }

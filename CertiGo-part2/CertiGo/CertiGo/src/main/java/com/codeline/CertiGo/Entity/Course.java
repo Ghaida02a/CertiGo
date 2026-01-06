@@ -102,19 +102,4 @@ public class Course {
             inverseJoinColumns = @JoinColumn(name = "instructor_id")
     )
     private List<Instructor> instructors;
-
-    @OneToMany(mappedBy = "course")
-    private List<Lesson> lessons;
-
-    @OneToMany(mappedBy = "course")
-    private List<Enrollment> enrollments;
-
-    @OneToMany(mappedBy = "course")
-    private List<Payment> payments;
-
-    @OneToMany(mappedBy = "course")
-    private List<Quiz> quizzes;
-
-    @OneToMany(mappedBy = "course")
-    private List<Certificate> certificates;
 }

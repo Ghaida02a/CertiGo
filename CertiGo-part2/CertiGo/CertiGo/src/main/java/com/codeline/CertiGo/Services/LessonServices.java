@@ -1,7 +1,7 @@
 package com.codeline.CertiGo.Services;
 
 import com.codeline.CertiGo.DTOCreateRequest.LessonCreateRequest;
-import com.codeline.CertiGo.DTOCreateResponse.LessonCreateResponse;
+import com.codeline.CertiGo.DTOResponse.LessonCreateResponse;
 import com.codeline.CertiGo.Entity.Course;
 import com.codeline.CertiGo.Entity.Lesson;
 import com.codeline.CertiGo.Exceptions.CustomException;

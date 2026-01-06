@@ -27,11 +27,6 @@ public class UserResponse {
     private Boolean isActive;
     private Date createdAt;
     private Date updatedAt;
-    private List<EnrollmentResponse> enrollments;
-    private List<PaymentResponse> payments;
-    private List<QuizResultResponse> quizResults;
-    private List<UserAnswer> userAnswers;
-    private List<CertificateResponse> certificates;
 
     // Convert Entity → ResponseDTO
     public static UserResponse entityToDTOResponse(User entity) {

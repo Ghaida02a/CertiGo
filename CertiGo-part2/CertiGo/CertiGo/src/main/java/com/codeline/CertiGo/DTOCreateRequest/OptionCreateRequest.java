@@ -14,14 +14,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OptionCreateRequest {
-
     private String optionText;
     private Boolean isCorrect;
     private Integer questionId;
 
     public static Option convertToOption(OptionCreateRequest request) {
         Option option = new Option();
-        if (request != null) {
+        if (Utils.isNotNull(request)) {
             option.setOptionText(request.getOptionText());
             option.setIsCorrect(request.getIsCorrect());
         }
@@ -30,11 +29,13 @@ public class OptionCreateRequest {
 
     public static void validCreateOptionRequest(OptionCreateRequest request) throws CustomException {
         if (Utils.isNull(request.getOptionText()) || request.getOptionText().isBlank()) {
-            throw new CustomException(Constants.OPTION_CREATE_REQUEST_OPTION_TEXT_NOT_VALID , Constants.HTTP_STATUS_IS_NULL);
-        } else if (Utils.isNull(request.getIsCorrect())) {
-            throw new CustomException(Constants.OPTION_CREATE_REQUEST_IS_CORRECT_NOT_VALID , Constants.HTTP_STATUS_IS_NULL);
-        } else if (Utils.isNull(request.getQuestionId()) || request.getQuestionId() <= 0) {
-            throw new CustomException(Constants.OPTION_CREATE_REQUEST_QUESTION_ID_NOT_VALID , Constants.HTTP_STATUS_IS_NULL);
+            throw new CustomException(Constants.OPTION_CREATE_REQUEST_OPTION_TEXT_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
+        }
+        if (Utils.isNull(request.getIsCorrect())) {
+            throw new CustomException(Constants.OPTION_CREATE_REQUEST_IS_CORRECT_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
+        }
+        if (Utils.isNull(request.getQuestionId()) || request.getQuestionId() <= 0) {
+            throw new CustomException(Constants.OPTION_CREATE_REQUEST_QUESTION_ID_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
         }
     }
 }

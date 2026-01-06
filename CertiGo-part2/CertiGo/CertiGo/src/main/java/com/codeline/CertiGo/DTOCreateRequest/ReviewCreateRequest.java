@@ -34,15 +34,19 @@ public class ReviewCreateRequest {
 
     public static void validCreateReviewRequest(ReviewCreateRequest request) throws CustomException {
         if (Utils.isNull(request.getReviewerName()) || request.getReviewerName().isBlank() || request.getReviewerName().isEmpty()) {
-            throw new CustomException(Constants.REVIEW_CREATE_REQUEST_NAME_NOT_VALID , Constants.HTTP_STATUS_IS_NULL);
-        } else if (Utils.isNull(request.getComments()) || request.getComments().isBlank()) {
-            throw new CustomException(Constants.REVIEW_CREATE_REQUEST_COMMENTS_NOT_VALID , Constants.HTTP_STATUS_IS_NULL);
-        } else if (Utils.isNull(request.getRating()) || request.getRating() <= 0) {
-            throw new CustomException(Constants.REVIEW_CREATE_REQUEST_RATING_NOT_VALID , Constants.HTTP_STATUS_IS_NULL);
-        } else if (Utils.isNull(request.getCourseId()) || request.getCourseId() <= 0) {
-            throw new CustomException(Constants.REVIEW_CREATE_REQUEST_COURSE_ID_NOT_VALID , Constants.HTTP_STATUS_IS_NULL);
-        } else if (Utils.isNotNull(request.getUserId()) || request.getUserId() <= 0) {
-            throw new CustomException(Constants.REVIEW_CREATE_REQUEST_USER_ID_NOT_VALID , Constants.HTTP_STATUS_IS_NULL);
+            throw new CustomException(Constants.REVIEW_CREATE_REQUEST_NAME_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
+        }
+        if (Utils.isNull(request.getComments()) || request.getComments().isBlank()) {
+            throw new CustomException(Constants.REVIEW_CREATE_REQUEST_COMMENTS_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
+        }
+        if (Utils.isNull(request.getRating()) || request.getRating() <= 0) {
+            throw new CustomException(Constants.REVIEW_CREATE_REQUEST_RATING_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
+        }
+        if (Utils.isNull(request.getCourseId()) || request.getCourseId() <= 0) {
+            throw new CustomException(Constants.REVIEW_CREATE_REQUEST_COURSE_ID_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
+        }
+        if (Utils.isNotNull(request.getUserId()) || request.getUserId() <= 0) {
+            throw new CustomException(Constants.REVIEW_CREATE_REQUEST_USER_ID_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
         }
     }
 }

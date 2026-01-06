@@ -35,9 +35,7 @@ public class LessonCreateRequest {
         } else if (Utils.isNull(request.getCourseId()) || request.getCourseId() <= 0) {
             throw new CustomException(Constants.LESSON_CREATE_REQUEST_COURSE_ID_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
         }
-
     }
-
 }
 
 

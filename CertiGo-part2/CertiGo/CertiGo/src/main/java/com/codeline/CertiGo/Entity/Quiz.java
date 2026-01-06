@@ -30,10 +30,4 @@ public class Quiz {
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
-
-    @OneToMany(mappedBy = "quiz")
-    private List<Question> questions;
-
-    @OneToMany(mappedBy = "quiz")
-    private List<QuizResult> quizResults;
 }
