@@ -22,7 +22,6 @@ public class QuizCreateRequest {
     private Integer totalQuestions;
     private Integer passingScore;
     private Integer courseId;
-    private List<Integer> questionsId;
 
     public static Quiz convertToQuiz(QuizCreateRequest request) {
         Quiz quiz = new Quiz();
@@ -38,9 +37,6 @@ public class QuizCreateRequest {
             throw new CustomException(Constants.QUIZ_CREATE_REQUEST_PASSING_SCORE_NOT_VALID,Constants.HTTP_STATUS_IS_NULL);
         } else if (Utils.isNull(request.getCourseId())|| request.getCourseId() <= 0) {
             throw new CustomException(Constants.QUIZ_CREATE_REQUEST_COURSE_ID_NOT_VALID,Constants.HTTP_STATUS_IS_NULL);
-        } else if (Utils.isNull(request.getQuestionsId())|| Utils.isListEmpty(request.getQuestionsId())){
-            throw new CustomException(Constants.QUIZ_CREATE_REQUEST_QUESTIONS_ID_NOT_VALID,Constants.HTTP_STATUS_IS_NULL);
-
         }
         }
 }
