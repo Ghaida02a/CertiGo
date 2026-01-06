@@ -54,8 +54,9 @@ public class CourseServices {
 
     public Course updateCourse(Course course) throws CustomException {
         Course existingCourse = courseRepository.findById(course.getId()).get();
-        if (existingCourse != null && existingCourse.getIsActive()) {
+        if (Utils.isNotNull(existingCourse) && existingCourse.getIsActive()) {
             course.setUpdatedAt(new Date());
+            course.setIsActive(Boolean.TRUE);
             return courseRepository.save(course);
         } else {
             throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
@@ -64,7 +65,7 @@ public class CourseServices {
 
     public void deleteCourse(Integer id) throws CustomException {
         Course existingCourse = courseRepository.findById(id).get();
-        if (existingCourse != null && existingCourse.getIsActive()) {
+        if (Utils.isNotNull(existingCourse) && existingCourse.getIsActive()) {
             existingCourse.setUpdatedAt(new Date());
             existingCourse.setIsActive(Boolean.FALSE);
             courseRepository.save(existingCourse);
