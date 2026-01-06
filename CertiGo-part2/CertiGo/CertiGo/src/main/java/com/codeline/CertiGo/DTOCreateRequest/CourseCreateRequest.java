@@ -1,6 +1,7 @@
 package com.codeline.CertiGo.DTOCreateRequest;
 
 import com.codeline.CertiGo.Entity.Course;
+import com.codeline.CertiGo.Entity.Instructor;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
 import com.codeline.CertiGo.Helper.Utils;

@@ -45,7 +45,7 @@ public class InstructorController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public String deleteReview(@PathVariable int id) throws CustomException{
+    public String deleteInstructor(@PathVariable int id) throws CustomException{
         instructorService.deleteInstructor(id);
         return Constants.SUCCESS;
     }

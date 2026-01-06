@@ -40,19 +40,18 @@ public class CourseServices {
         if (Utils.isNotNull(company)) {
             course.setCompany(company);
         } else {
-            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
+            throw new CustomException(Constants.COURSE_CREATE_REQUEST_COMPANY_ID_NOT_VALID, Constants.HTTP_STATUS_BAD_REQUEST);
         }
 
-        List<Instructor> instructor = instructorRepository.findAllInstructors();
-        if (Utils.isNotNull(instructor) && Utils.isListNotEmpty(instructor)) {
-            course.setInstructors(instructor);
+        List<Instructor> instructors = instructorRepository.findAllById(request.getInstructorsId());
+        if (Utils.isNotNull(instructors) && Utils.isListNotEmpty(instructors)) {
+            course.setInstructors(instructors);
         } else {
-            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
+            throw new CustomException(Constants.COURSE_CREATE_REQUEST_INSTRUCTORS_ID_NOT_VALID, Constants.HTTP_STATUS_BAD_REQUEST);
         }
-
         return CourseCreateResponse.convertToCourseCreateResponse(courseRepository.save(course));
-
     }
+
     public Course updateCourse(Course course) throws CustomException {
         Course existingCourse = courseRepository.findById(course.getId()).get();
         if (existingCourse != null && existingCourse.getIsActive()) {
