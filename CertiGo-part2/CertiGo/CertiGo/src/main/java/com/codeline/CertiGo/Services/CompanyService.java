@@ -65,13 +65,14 @@ public class CompanyService {
 
 
     // GET ALL
+// Revised CompanyService.java
     public List<CompanyResponse> getAllCompanies() {
         List<Company> companies = companyRepository.findAllActiveCompanies();
         List<CompanyResponse> responseList = new ArrayList<>();
         for (Company company : companies) {
-            if (Boolean.TRUE.equals(company.getIsActive())) {
-                responseList.add(CompanyResponse.fromEntity(company));
-            }
+            // Remove the extra manual 'if' check here unless you are sure
+            // the repository is returning inactive companies you want to ignore.
+            responseList.add(CompanyResponse.fromEntity(company));
         }
         return responseList;
     }

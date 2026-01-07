@@ -64,13 +64,16 @@ public class CourseServices {
     }
 
     public void deleteCourse(Integer id) throws CustomException {
-        Course existingCourse = courseRepository.findById(id).get();
-        if (Utils.isNotNull(existingCourse) && existingCourse.getIsActive()) {
+        // Better way to handle Optional
+        Course existingCourse = courseRepository.findById(id)
+                .orElseThrow(() -> new CustomException("Course not found", Constants.HTTP_STATUS_BAD_REQUEST));
+
+        if (existingCourse.getIsActive()) {
             existingCourse.setUpdatedAt(new Date());
-            existingCourse.setIsActive(Boolean.FALSE);
+            existingCourse.setIsActive(Boolean.FALSE); // Soft delete
             courseRepository.save(existingCourse);
         } else {
-            throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
+            throw new CustomException("Course is already inactive", Constants.HTTP_STATUS_BAD_REQUEST);
         }
     }
 
