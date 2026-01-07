@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Certificate - CertiGo</title>
+    <script src="auth.js"></script>
+    <script>
+        // Require admin access for this page
+        window.addEventListener('DOMContentLoaded', () => {
+            requireAdmin();
+        });
+    </script>
     <style>
         * {
             margin: 0;

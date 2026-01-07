@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Reviews - CertiGo</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="auth.js"></script>
+</head>
+<body class="certificates-page">
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">
+        <img src="C:\Users\LENOVO\Desktop\logo\36986b76-9c45-4c51-8486-c25524aba893.png" alt="CertiGo Logo">
+        <h2>CertiGo</h2>
+    </div>
+    <nav>
+        <a href="admin-index.html">Admin Dashboard</a>
+        <a href="get-all-certificates.html">Certificates</a>
+        <a href="get-all-companies.html">Companies</a>
+        <a href="get-all-courses.html">Courses</a>
+        <a href="get-all-reviews.html">Reviews</a>
+        <a href="add-review.html" class="admin-only">Add Review</a>
+    </nav>
+    <div class="dropdown">
+        <button class="dropbtn" id="accountBtn">Account</button>
+        <div class="dropdown-content" id="accountDropdown">
+            <a href="#" onclick="showUserProfile(); return false;">Profile</a>
+            <a href="#" onclick="logout(); return false;">Logout</a>
+        </div>
+    </div>
+</div>
+
+    <div class="certificates-container">
+        <div class="certificates-header">
+            <h1>All Reviews</h1>
+            <p>View and manage all course reviews and ratings</p>
+        </div>
+
+        <div id="successMessage" class="certificates-success-message" style="display: none;">
+            Operation completed successfully!
+        </div>
+
+        <div id="errorAlert" class="certificates-error-alert" style="display: none;">
+            Failed to load reviews. Please try again.
+        </div>
+
+        <div class="certificates-stats" id="stats" style="display: none;">
+            <div class="certificates-stat-card">
+                <h3>Total Reviews</h3>
+                <p id="totalCount">0</p>
+            </div>
+            <div class="certificates-stat-card" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);">
+                <h3>Average Rating</h3>
+                <p id="averageRating">0.0 ⭐</p>
+            </div>
+            <div class="certificates-stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                <h3>5-Star Reviews</h3>
+                <p id="fiveStarCount">0</p>
+            </div>
+            <div class="certificates-stat-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                <h3>Low Ratings (≤2)</h3>
+                <p id="lowRatingCount">0</p>
+            </div>
+        </div>
+
+        <div class="certificates-controls">
+            <div class="certificates-search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Search by user, course, or comment...">
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="cert-btn cert-btn-refresh" onclick="loadReviews()">🔄 Refresh</button>
+                <a href="add-review.html" class="cert-btn cert-btn-primary admin-only">➕ Add Review</a>
+            </div>
+        </div>
+
+        <div id="loading" class="certificates-loading">
+            <div class="certificates-spinner"></div>
+            <p style="color: #666; font-size: 16px;">Loading reviews...</p>
+        </div>
+
+        <div id="tableContainer" class="certificates-table-container" style="display: none;">
+            <table class="certificates-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Course</th>
+                        <th>Rating</th>
+                        <th>Comment</th>
+                        <th>Created At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="reviewsTableBody">
+                    <!-- Data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="emptyState" class="certificates-empty-state" style="display: none;">
+            <div class="certificates-empty-state-icon">⭐</div>
+            <h3>No Reviews Found</h3>
+            <p>There are no reviews in the system yet.</p>
+            <a href="add-review.html" class="cert-btn cert-btn-primary admin-only">Create Your First Review</a>
+        </div>
+    </div>
+
+    <script>
+        let allReviews = [];
+
+        // Check authentication on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Require admin access for this page
+            requireAdmin();
+            loadReviews();
+        });
+
+        async function loadReviews() {
+            showLoading(true);
+            hideError();
+
+            try {
+                const response = await fetch('http://localhost:8080/Review/getAll', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    allReviews = await response.json();
+                    displayReviews(allReviews);
+                    updateStats(allReviews);
+                    showLoading(false);
+                } else {
+                    showLoading(false);
+                    showError('Failed to load reviews. Server returned an error.');
+                }
+            } catch (error) {
+                showLoading(false);
+                console.error('Error:', error);
+                showError('Network error. Please check your connection and try again.');
+            }
+        }
+
+        function displayReviews(reviews) {
+            const tbody = document.getElementById('reviewsTableBody');
+            const tableContainer = document.getElementById('tableContainer');
+            const emptyState = document.getElementById('emptyState');
+
+            if (!reviews || reviews.length === 0) {
+                tableContainer.style.display = 'none';
+                emptyState.style.display = 'block';
+                document.getElementById('stats').style.display = 'none';
+                return;
+            }
+
+            tableContainer.style.display = 'block';
+            emptyState.style.display = 'none';
+            document.getElementById('stats').style.display = 'flex';
+
+            tbody.innerHTML = '';
+
+            reviews.forEach(review => {
+                const row = document.createElement('tr');
+
+                // Create star rating display
+                const rating = review.rating || 0;
+                const stars = '⭐'.repeat(Math.floor(rating)) + (rating % 1 >= 0.5 ? '½' : '');
+                const ratingBadge = `<span class="cert-badge" style="background: ${getRatingColor(rating)};">${rating} ${stars}</span>`;
+
+                const userName = review.user
+                    ? `${review.user.firstName || ''} ${review.user.lastName || ''}`.trim() || `User #${review.user.id}`
+                    : 'N/A';
+
+                const courseName = review.course && review.course.courseName
+                    ? review.course.courseName
+                    : review.course && review.course.id
+                    ? `Course #${review.course.id}`
+                    : 'N/A';
+
+                const comment = review.comment || 'No comment';
+                const createdAt = review.createdAt ? new Date(review.createdAt).toLocaleDateString() : 'N/A';
+
+                row.innerHTML = `
+                    <td><strong>#${review.id}</strong></td>
+                    <td>${escapeHtml(userName)}</td>
+                    <td>${escapeHtml(courseName)}</td>
+                    <td>${ratingBadge}</td>
+                    <td><div class="certificate-description" title="${escapeHtml(comment)}">${escapeHtml(comment)}</div></td>
+                    <td class="date-cell">${createdAt}</td>
+                    <td>
+                        <div class="cert-action-buttons">
+                            <button class="cert-btn cert-btn-view" onclick="viewReview(${review.id})">👁️ View</button>
+                            <button class="cert-btn cert-btn-edit" onclick="editReview(${review.id})">✏️ Edit</button>
+                            <button class="cert-btn cert-btn-delete" onclick="deleteReview(${review.id})">🗑️ Delete</button>
+                        </div>
+                    </td>
+                `;
+
+                tbody.appendChild(row);
+            });
+        }
+
+        function getRatingColor(rating) {
+            if (rating >= 4.5) return '#43e97b';
+            if (rating >= 3.5) return '#4facfe';
+            if (rating >= 2.5) return '#fda085';
+            return '#fa709a';
+        }
+
+        function updateStats(reviews) {
+            const total = reviews.length;
+            let totalRating = 0;
+            let fiveStarCount = 0;
+            let lowRatingCount = 0;
+
+            reviews.forEach(review => {
+                const rating = review.rating || 0;
+                totalRating += rating;
+
+                if (rating === 5) {
+                    fiveStarCount++;
+                }
+                if (rating <= 2) {
+                    lowRatingCount++;
+                }
+            });
+
+            const averageRating = total > 0 ? (totalRating / total).toFixed(1) : 0;
+
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('averageRating').textContent = averageRating + ' ⭐';
+            document.getElementById('fiveStarCount').textContent = fiveStarCount;
+            document.getElementById('lowRatingCount').textContent = lowRatingCount;
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        function showError(message) {
+            const errorAlert = document.getElementById('errorAlert');
+            errorAlert.textContent = message;
+            errorAlert.style.display = 'block';
+            setTimeout(() => {
+                errorAlert.style.display = 'none';
+            }, 5000);
+        }
+
+        function hideError() {
+            document.getElementById('errorAlert').style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        }
+
+        async function deleteReview(id) {
+            // Check if user has permission to delete
+            if (!hasPermission('delete_review')) {
+                alert('Access Denied: Only administrators can delete reviews.');
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to delete review #${id}? This action cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:8080/Review/delete/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok || response.status === 204) {
+                    showSuccess(`Review #${id} deleted successfully!`);
+                    loadReviews(); // Reload the list
+                } else {
+                    const errorText = await response.text();
+                    showError(`Failed to delete review #${id}. ${errorText}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Network error. Please check your connection and try again.');
+            }
+        }
+
+        function viewReview(id) {
+            // Find the review in the loaded data
+            const review = allReviews.find(r => r.id === id);
+
+            if (review) {
+                // Create a detailed view modal or alert
+                const userName = review.user
+                    ? `${review.user.firstName || ''} ${review.user.lastName || ''}`.trim() || `User #${review.user.id}`
+                    : 'N/A';
+
+                const userEmail = review.user && review.user.email ? review.user.email : 'N/A';
+
+                const courseName = review.course && review.course.courseName
+                    ? review.course.courseName
+                    : review.course && review.course.id
+                    ? `Course #${review.course.id}`
+                    : 'N/A';
+
+                const rating = review.rating || 0;
+                const stars = '⭐'.repeat(Math.floor(rating));
+
+                const details = `
+Review Details:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ID: ${review.id}
+
+User Information:
+Name: ${userName}
+Email: ${userEmail}
+
+Course: ${courseName}
+
+Rating: ${rating} / 5 ${stars}
+
+Comment:
+${review.comment || 'No comment provided'}
+
+Created: ${review.createdAt ? new Date(review.createdAt).toLocaleString() : 'N/A'}
+Updated: ${review.updatedAt ? new Date(review.updatedAt).toLocaleString() : 'N/A'}
+                `;
+                alert(details);
+            } else {
+                showError('Review not found.');
+            }
+        }
+
+        function editReview(id) {
+            // Find the review in the loaded data
+            const review = allReviews.find(r => r.id === id);
+
+            if (review) {
+                // Redirect to edit page with review data
+                // For now, we'll use a simple prompt-based edit
+                const newRating = prompt('Enter new rating (1-5):', review.rating);
+                if (newRating && !isNaN(newRating) && newRating >= 1 && newRating <= 5) {
+                    updateReview(id, {
+                        id: id,
+                        rating: parseFloat(newRating),
+                        comment: review.comment,
+                        user: review.user,
+                        course: review.course
+                    });
+                } else if (newRating !== null) {
+                    showError('Invalid rating. Please enter a number between 1 and 5.');
+                }
+            } else {
+                showError('Review not found.');
+            }
+        }
+
+        async function updateReview(id, updateData) {
+            try {
+                const response = await fetch(`http://localhost:8080/Review/update`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                if (response.ok) {
+                    showSuccess(`Review #${id} updated successfully!`);
+                    loadReviews(); // Reload the list
+                } else {
+                    const errorText = await response.text();
+                    showError(`Failed to update review #${id}. ${errorText}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Network error. Please check your connection and try again.');
+            }
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+
+            if (!searchTerm) {
+                displayReviews(allReviews);
+                return;
+            }
+
+            const filtered = allReviews.filter(review => {
+                const userName = review.user
+                    ? `${review.user.firstName || ''} ${review.user.lastName || ''}`.toLowerCase()
+                    : '';
+                const userEmail = review.user && review.user.email ? review.user.email.toLowerCase() : '';
+                const courseName = review.course && review.course.courseName ? review.course.courseName.toLowerCase() : '';
+                const comment = review.comment ? review.comment.toLowerCase() : '';
+                const rating = review.rating ? review.rating.toString() : '';
+
+                return userName.includes(searchTerm) ||
+                       userEmail.includes(searchTerm) ||
+                       courseName.includes(searchTerm) ||
+                       comment.includes(searchTerm) ||
+                       rating.includes(searchTerm);
+            });
+
+            displayReviews(filtered);
+        });
+
+        // Helper function to escape HTML
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
