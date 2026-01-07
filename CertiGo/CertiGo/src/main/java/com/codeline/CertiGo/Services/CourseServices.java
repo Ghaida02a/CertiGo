@@ -36,7 +36,7 @@ public class CourseServices {
         course.setCreatedAt(new Date());
         course.setIsActive(Boolean.TRUE);
 
-        Company company = companyRepository.getCompanyById(request.getCompanyId());
+        Company company = companyRepository.getCompanyById(request.getCompany());
         if (Utils.isNotNull(company)) {
             course.setCompany(company);
         } else {

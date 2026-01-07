@@ -85,7 +85,9 @@ public class Constants {
 
     // Response Messages and Status Codes for Company Validations
 
+
     public final static String COMPANY_NAME_NOT_VALID = "Company name is not valid";
+    public final static String COURSE_CREATE_REQUEST_COMPANY_NOT_VALID = "Company location is not valid";
     public final static String LOCATION_NOT_VALID = "Location is not valid";
     public final static String INDUSTRY_NOT_VALID = "Industry is not valid";
     public final static String CONTACT_EMAIL_NOT_VALID = "Contact email is not valid";

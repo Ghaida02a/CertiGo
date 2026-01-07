@@ -38,6 +38,7 @@ public class LessonServices {
         } else {
             throw new CustomException(Constants.BAD_REQUEST,Constants.HTTP_STATUS_BAD_REQUEST);
         }
+
         return LessonCreateResponse.convertToLessonCreateResponse(lessonRepository.save(lesson));
     }
 

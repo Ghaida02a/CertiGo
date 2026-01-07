@@ -22,8 +22,8 @@ public class CourseCreateRequest {
     private Integer durationHours;
     private Double price;
     private Boolean isCompleted;
-    private Integer companyId;
-    private List<Integer> instructorsId;
+    private CompanyCreateRequestDTO company;
+    private List<InstructorCreateRequest> instructors;
 
     public static Course convertToCourse(CourseCreateRequest request) {
         Course course = new Course();
@@ -48,9 +48,9 @@ public class CourseCreateRequest {
             throw new CustomException(Constants.COURSE_CREATE_REQUEST_PRICE_NOT_VALID,Constants.HTTP_STATUS_IS_NULL);
         } else if (Utils.isNull(request.getIsCompleted())) {
             throw new CustomException(Constants.COURSE_CREATE_REQUEST_IS_COMPLETED_NOT_VALID,Constants.HTTP_STATUS_IS_NULL);
-        }else if (Utils.isNull(request.getCompanyId()) || request.getCompanyId() <= 0) {
-            throw new CustomException(Constants.COURSE_CREATE_REQUEST_COMPANY_ID_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
-        }else if (Utils.isNull(request.getInstructorsId())|| Utils.isListEmpty(request.getInstructorsId())) {
+        }else if (Utils.isNull(request.getCompany())) {
+            throw new CustomException(Constants.COURSE_CREATE_REQUEST_COMPANY_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
+        }else if (Utils.isNull(request.getInstructors())|| Utils.isListEmpty(request.getInstructors())) {
             throw new CustomException(Constants.COURSE_CREATE_REQUEST_INSTRUCTORS_ID_NOT_VALID,Constants.HTTP_STATUS_IS_NULL);
         }
 
