@@ -87,6 +87,8 @@
                     // Show success message
                     if (user.role === 'ADMIN') {
                         successDiv.textContent = 'Login successful! Redirecting to Admin Dashboard...';
+                    } else if (user.role === 'TRAINEE') {
+                        successDiv.textContent = 'Login successful! Redirecting to Trainee Dashboard...';
                     } else {
                         successDiv.textContent = 'Login successful! Redirecting to Home...';
                     }
@@ -98,8 +100,8 @@
                             console.log('Redirecting ADMIN to admin-index.html');
                             window.location.href = 'admin-index.html';
                         } else if (user.role === 'TRAINEE') {
-                            console.log('Redirecting TRAINEE to index.html');
-                            window.location.href = 'index.html';
+                            console.log('Redirecting TRAINEE to trainee-dashboard.html');
+                            window.location.href = 'trainee-dashboard.html';
                         } else {
                             // Default redirect for any other role
                             console.log('Redirecting user with role', user.role, 'to index.html');

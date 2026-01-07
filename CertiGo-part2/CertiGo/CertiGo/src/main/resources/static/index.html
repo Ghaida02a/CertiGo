@@ -9,6 +9,14 @@
 <script src="main.js"> </script>
 <script src="auth.js"></script>
 <link rel="stylesheet" href="style.css">
+<script>
+    // Auto-redirect trainees to their dashboard
+    window.addEventListener('DOMContentLoaded', () => {
+        if (isLoggedIn() && isTrainee()) {
+            window.location.href = 'trainee-dashboard.html';
+        }
+    });
+</script>
 <!-- HEADER -->
 <header class="navbar">
     <div class="logo">
@@ -20,6 +28,7 @@
         <a href="#">Courses</a>
         <a href="companies.html">Companies</a>
         <a href="get-all-certificates.html">Certificates</a>
+        <a href="trainee-dashboard.html">Trainee Dashboard</a>
         <a href="#">My Learning</a>
     </nav>
     <div class="dropdown">

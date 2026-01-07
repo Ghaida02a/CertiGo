@@ -50,6 +50,8 @@ function redirectToHomePage() {
     const role = getUserRole();
     if (role === UserRole.ADMIN) {
         window.location.href = 'admin-index.html';
+    } else if (role === UserRole.TRAINEE) {
+        window.location.href = 'trainee-dashboard.html';
     } else {
         window.location.href = 'index.html';
     }
