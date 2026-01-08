@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Courses - CertiGo</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="auth.js"></script>
+</head>
+<body class="certificates-page">
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">
+        <img src="C:\Users\LENOVO\Desktop\logo\36986b76-9c45-4c51-8486-c25524aba893.png" alt="CertiGo Logo">
+        <h2>CertiGo</h2>
+    </div>
+    <nav>
+        <a href="admin-index.html">Admin Dashboard</a>
+        <a href="get-all-certificates.html">Certificates</a>
+        <a href="get-all-companies.html">Companies</a>
+        <a href="get-all-courses.html">Courses</a>
+        <a href="add-course.html" class="admin-only">Add Course</a>
+        <a href="delete-course.html" class="admin-only">Delete Course</a>  <!-- Added link to delete-course.html -->
+    </nav>
+    <div class="dropdown">
+        <button class="dropbtn" id="accountBtn">Account</button>
+        <div class="dropdown-content" id="accountDropdown">
+            <a href="#" onclick="showUserProfile(); return false;">Profile</a>
+            <a href="#" onclick="logout(); return false;">Logout</a>
+        </div>
+    </div>
+</div>
+
+<div class="certificates-container">
+    <div class="certificates-header">
+        <h1>All Courses</h1>
+        <p>View and manage all training courses in the system</p>
+    </div>
+
+    <div id="successMessage" class="certificates-success-message" style="display: none;">
+        Operation completed successfully!
+    </div>
+
+    <div id="errorAlert" class="certificates-error-alert" style="display: none;">
+        Failed to load courses. Please try again.
+    </div>
+
+    <div class="certificates-stats" id="stats" style="display: none;">
+        <div class="certificates-stat-card">
+            <h3>Total Courses</h3>
+            <p id="totalCount">0</p>
+        </div>
+        <div class="certificates-stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+            <h3>Active Courses</h3>
+            <p id="activeCount">0</p>
+        </div>
+        <div class="certificates-stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+            <h3>Inactive Courses</h3>
+            <p id="inactiveCount">0</p>
+        </div>
+    </div>
+
+    <div class="certificates-controls">
+        <div class="certificates-search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Search by course name, description, or instructor...">
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="cert-btn cert-btn-refresh" onclick="loadCourses()">🔄 Refresh</button>
+            <a href="add-course.html" class="cert-btn cert-btn-primary admin-only">➕ Add Course</a>
+        </div>
+    </div>
+
+    <div id="loading" class="certificates-loading">
+        <div class="certificates-spinner"></div>
+        <p style="color: #666; font-size: 16px;">Loading courses...</p>
+    </div>
+
+    <div id="tableContainer" class="certificates-table-container" style="display: none;">
+        <table class="certificates-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Course Name</th>
+                <th>Description</th>
+                <th>Duration (hours)</th>
+                <th>Price</th>
+                <th>Instructor</th>
+                <th>Company</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="coursesTableBody">
+            <!-- Data will be populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <div id="emptyState" class="certificates-empty-state" style="display: none;">
+        <div class="certificates-empty-state-icon">📚</div>
+        <h3>No Courses Found</h3>
+        <p>There are no courses in the system yet.</p>
+        <a href="add-course.html" class="cert-btn cert-btn-primary admin-only">Create Your First Course</a>
+    </div>
+</div>
+
+<script>
+    let allCourses = [];
+
+    // Check authentication on page load
+    window.addEventListener('DOMContentLoaded', () => {
+        // Require admin access for this page
+        requireAdmin();
+        loadCourses();
+    });
+
+    async function loadCourses() {
+        showLoading(true);
+        hideError();
+
+        try {
+            const response = await fetch('http://localhost:8080/course/getAll', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.ok) {
+                allCourses = await response.json();
+                displayCourses(allCourses);
+                updateStats(allCourses);
+                showLoading(false);
+            } else {
+                showLoading(false);
+                showError('Failed to load courses. Server returned an error.');
+            }
+        } catch (error) {
+            showLoading(false);
+            console.error('Error:', error);
+            showError('Network error. Please check your connection and try again.');
+        }
+    }
+
+    function displayCourses(courses) {
+        const tbody = document.getElementById('coursesTableBody');
+        const tableContainer = document.getElementById('tableContainer');
+        const emptyState = document.getElementById('emptyState');
+
+        if (!courses || courses.length === 0) {
+            tableContainer.style.display = 'none';
+            emptyState.style.display = 'block';
+            document.getElementById('stats').style.display = 'none';
+            return;
+        }
+
+        tableContainer.style.display = 'block';
+        emptyState.style.display = 'none';
+        document.getElementById('stats').style.display = 'flex';
+
+        tbody.innerHTML = '';
+
+        courses.forEach(course => {
+            const row = document.createElement('tr');
+
+            const statusBadge = course.isActive
+                ? '<span class="cert-badge cert-badge-active">Active</span>'
+                : '<span class="cert-badge cert-badge-inactive">Inactive</span>';
+
+            const instructorName = course.instructor ? course.instructor.instructorName || `Instructor #${course.instructor.id}` : 'N/A';
+            const companyName = course.company ? course.company.companyName || `Company #${course.company.id}` : 'N/A';
+            const createdAt = course.createdAt ? new Date(course.createdAt).toLocaleDateString() : 'N/A';
+            const price = course.price ? `$${course.price.toFixed(2)}` : 'N/A';
+            const duration = course.duration || 'N/A';
+
+            // Build action buttons based on permissions
+            let actionButtons = '<div class="cert-action-buttons">';
+            actionButtons += `<button class="cert-btn cert-btn-view" onclick="viewCourse(${course.id})">👁️ View</button>`;
+
+            if (hasPermission('update_course')) {
+                actionButtons += `<button class="cert-btn cert-btn-edit" onclick="editCourse(${course.id})">✏️ Edit</button>`;
+            }
+
+            if (hasPermission('delete_course')) {
+                actionButtons += `<button class="cert-btn cert-btn-delete" onclick="deleteCourse(${course.id})">🗑️ Delete</button>`;
+            }
+
+            actionButtons += '</div>';
+
+            row.innerHTML = `
+                <td><strong>#${course.id}</strong></td>
+                <td><strong>${escapeHtml(course.courseName)}</strong></td>
+                <td><div class="certificate-description" title="${escapeHtml(course.description || 'N/A')}">${escapeHtml(course.description || 'N/A')}</div></td>
+                <td>${duration}</td>
+                <td>${price}</td>
+                <td>${escapeHtml(instructorName)}</td>
+                <td>${escapeHtml(companyName)}</td>
+                <td>${statusBadge}</td>
+                <td class="date-cell">${createdAt}</td>
+                <td>${actionButtons}</td>
+            `;
+
+            tbody.appendChild(row);
+        });
+    }
+
+    function updateStats(courses) {
+        const total = courses.length;
+        const active = courses.filter(c => c.isActive).length;
+        const inactive = total - active;
+
+        document.getElementById('totalCount').textContent = total;
+        document.getElementById('activeCount').textContent = active;
+        document.getElementById('inactiveCount').textContent = inactive;
+    }
+
+    function showLoading(show) {
+        document.getElementById('loading').style.display = show ? 'block' : 'none';
+    }
+
+    function showError(message) {
+        const errorAlert = document.getElementById('errorAlert');
+        errorAlert.textContent = message;
+        errorAlert.style.display = 'block';
+        setTimeout(() => {
+            errorAlert.style.display = 'none';
+        }, 5000);
+    }
+
+    function hideError() {
+        document.getElementById('errorAlert').style.display = 'none';
+    }
+
+    function showSuccess(message) {
+        const successMessage = document.getElementById('successMessage');
+        successMessage.textContent = message;
+        successMessage.style.display = 'block';
+        setTimeout(() => {
+            successMessage.style.display = 'none';
+        }, 3000);
+    }
+
+    function viewCourse(id) {
+        // Find the course in the loaded data
+        const course = allCourses.find(c => c.id === id);
+
+        if (course) {
+            // Create a detailed view modal or alert
+            const instructorName = course.instructor ? course.instructor.instructorName || `Instructor #${course.instructor.id}` : 'N/A';
+            const companyName = course.company ? course.company.companyName || `Company #${course.company.id}` : 'N/A';
+            const price = course.price ? `$${course.price.toFixed(2)}` : 'N/A';
+
+            const details = `
+Course Details:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ID: ${course.id}
+Name: ${course.courseName}
+Description: ${course.description || 'N/A'}
+Duration: ${course.duration || 'N/A'} hours
+Price: ${price}
+Instructor: ${instructorName}
+Company: ${companyName}
+Status: ${course.isActive ? 'Active' : 'Inactive'}
+
+Created: ${course.createdAt ? new Date(course.createdAt).toLocaleString() : 'N/A'}
+Updated: ${course.updatedAt ? new Date(course.updatedAt).toLocaleString() : 'N/A'}
+            `;
+            alert(details);
+        } else {
+            showError('Course not found.');
+        }
+    }
+
+    function editCourse(id) {
+        // Check permission before redirecting
+        if (!hasPermission('update_course')) {
+            alert('Access Denied: Only administrators can update courses.');
+            return;
+        }
+        // Redirect to update-course.html with course ID
+        window.location.href = `update-course.html?courseId=${id}`;
+    }
+
+    function deleteCourse(id) {
+        // Check permission before redirecting
+        if (!hasPermission('delete_course')) {
+            alert('Access Denied: Only administrators can delete courses.');
+            return;
+        }
+        // Redirect to delete-course.html with course ID
+        window.location.href = `delete-course.html?courseId=${id}`;
+    }
+
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+
+        if (!searchTerm) {
+            displayCourses(allCourses);
+            return;
+        }
+
+        const filtered = allCourses.filter(course => {
+            const courseName = course.courseName ? course.courseName.toLowerCase() : '';
+            const description = course.description ? course.description.toLowerCase() : '';
+            const instructorName = course.instructor && course.instructor.instructorName ? course.instructor.instructorName.toLowerCase() : '';
+            const companyName = course.company && course.company.companyName ? course.company.companyName.toLowerCase() : '';
+
+            return courseName.includes(searchTerm) ||
+                   description.includes(searchTerm) ||
+                   instructorName.includes(searchTerm) ||
+                   companyName.includes(searchTerm);
+        });
+
+        displayCourses(filtered);
+    });
+
+    // Helper function to escape HTML
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+</script>
+</body>
+</html>

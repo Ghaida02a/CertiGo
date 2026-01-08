@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Course - CertiGo</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="auth.js"></script>
+    <style>
+        /* Additional styles for the form to match the page */
+        .certificates-form {
+            max-width: 800px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .certificates-form-group {
+            margin-bottom: 15px;
+        }
+        .certificates-form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        .certificates-form-group input,
+        .certificates-form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .certificates-form-group input:focus,
+        .certificates-form-group select:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        .cert-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        .cert-btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .cert-btn-primary:hover {
+            background-color: #45a049;
+        }
+        .certificates-success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .certificates-error-alert {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body class="certificates-page">
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">
+        <img src="logo.png" alt="CertiGo Logo">
+        <h2>CertiGo</h2>
+    </div>
+    <nav>
+        <a href="admin-index.html">Admin Dashboard</a>
+        <a href="get-all-certificates.html">Certificates</a>
+        <a href="get-all-companies.html">Companies</a>
+        <a href="get-all-courses.html">Courses</a>
+        <a href="add-course.html" class="admin-only">Add Course</a>
+    </nav>
+    <div class="dropdown">
+        <button class="dropbtn" id="accountBtn">Account</button>
+        <div class="dropdown-content" id="accountDropdown">
+            <a href="#" onclick="showUserProfile(); return false;">Profile</a>
+            <a href="#" onclick="logout(); return false;">Logout</a>
+        </div>
+    </div>
+</div>
+
+<div class="certificates-container">
+    <div class="certificates-header">
+        <h1>Update Course</h1>
+        <p>Edit the details of the selected course</p>
+    </div>
+
+    <div id="successMessage" class="certificates-success-message" style="display: none;">
+        Course updated successfully!
+    </div>
+
+    <div id="errorAlert" class="certificates-error-alert" style="display: none;">
+        Failed to update course. Please try again.
+    </div>
+
+    <form id="updateForm" class="certificates-form">
+        <div class="certificates-form-group">
+            <label for="courseId">Course ID:</label>
+            <input type="number" id="courseId" required>
+            <button type="button" id="fetchBtn" class="cert-btn cert-btn-primary">Fetch Course</button>
+        </div>
+
+        <div class="certificates-form-group">
+            <label for="courseName">Course Name:</label>
+            <input type="text" id="courseName" required>
+        </div>
+
+        <div class="certificates-form-group">
+            <label for="type">Type:</label>
+            <input type="text" id="type" required>
+        </div>
+
+        <div class="certificates-form-group">
+            <label for="durationHours">Duration (Hours):</label>
+            <input type="number" id="durationHours" required>
+        </div>
+
+        <div class="certificates-form-group">
+            <label for="price">Price:</label>
+            <input type="number" step="0.01" id="price" required>
+        </div>
+
+        <div class="certificates-form-group">
+            <label for="isCompleted">Is Completed:</label>
+            <select id="isCompleted" required>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+            </select>
+        </div>
+
+        <div class="certificates-form-group">
+            <label for="companyId">Company ID:</label>
+            <input type="number" id="companyId" required>
+        </div>
+
+        <div class="certificates-form-group">
+            <label for="instructorsId">Instructor IDs (comma-separated):</label>
+            <input type="text" id="instructorsId" placeholder="e.g., 1,2,3" required>
+        </div>
+
+        <button type="submit" class="cert-btn cert-btn-primary">Update Course</button>
+    </form>
+</div>
+
+<script>
+    const baseUrl = 'http://localhost:8080'; // Adjust if your backend is on a different port/host
+
+    // Check for courseId in URL and auto-fetch if present
+    window.addEventListener('DOMContentLoaded', () => {
+        // Require admin access on page load
+        if (!requireAdmin()) {
+            // If not admin, the function will handle redirection
+            return;
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const courseId = urlParams.get('courseId');
+        if (courseId) {
+            document.getElementById('courseId').value = courseId;
+            fetchCourse(courseId); // Auto-fetch the course
+        }
+    });
+
+    async function fetchCourse(id) {
+        try {
+            console.log('Fetching course with ID:', id);
+            const response = await fetch(`${baseUrl}/course/getById?id=${id}`);
+            console.log('Response status:', response.status);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Error response:', errorText);
+                throw new Error('Course not found');
+            }
+
+            const course = await response.json();
+            console.log('Course data received:', course);
+            populateForm(course);
+        } catch (error) {
+            console.error('Fetch error:', error);
+            showError(error.message);
+        }
+    }
+
+    document.getElementById('fetchBtn').addEventListener('click', async () => {
+        const id = document.getElementById('courseId').value;
+        if (!id) {
+            alert('Please enter a Course ID');
+            return;
+        }
+        fetchCourse(id);
+    });
+
+    function populateForm(course) {
+        console.log('Populating form with course:', course);
+
+        // Set each field and log it
+        const courseName = document.getElementById('courseName');
+        const type = document.getElementById('type');
+        const durationHours = document.getElementById('durationHours');
+        const price = document.getElementById('price');
+        const isCompleted = document.getElementById('isCompleted');
+        const companyId = document.getElementById('companyId');
+        const instructorsId = document.getElementById('instructorsId');
+
+        if (courseName) {
+            courseName.value = course.courseName || '';
+            console.log('Set courseName:', courseName.value);
+        }
+        if (type) {
+            type.value = course.type || '';
+            console.log('Set type:', type.value);
+        }
+        if (durationHours) {
+            durationHours.value = course.durationHours || '';
+            console.log('Set durationHours:', durationHours.value);
+        }
+        if (price) {
+            price.value = course.price || '';
+            console.log('Set price:', price.value);
+        }
+        if (isCompleted) {
+            isCompleted.value = course.isCompleted ? 'true' : 'false';
+            console.log('Set isCompleted:', isCompleted.value);
+        }
+        if (companyId) {
+            companyId.value = course.company ? course.company.id : '';
+            console.log('Set companyId:', companyId.value);
+        }
+        if (instructorsId) {
+            instructorsId.value = course.instructors ? course.instructors.map(i => i.id).join(',') : '';
+            console.log('Set instructorsId:', instructorsId.value);
+        }
+    }
+
+    document.getElementById('updateForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Get values directly from input elements instead of FormData
+        const course = {
+            id: parseInt(document.getElementById('courseId').value),
+            courseName: document.getElementById('courseName').value,
+            type: document.getElementById('type').value,
+            durationHours: parseInt(document.getElementById('durationHours').value),
+            price: parseFloat(document.getElementById('price').value),
+            isCompleted: document.getElementById('isCompleted').value === 'true',
+            company: { id: parseInt(document.getElementById('companyId').value) },
+            instructors: document.getElementById('instructorsId').value.split(',').map(id => ({ id: parseInt(id.trim()) }))
+        };
+        try {
+            const response = await fetch(`${baseUrl}/course/update`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(course)
+            });
+            if (!response.ok) throw new Error('Update failed');
+            showSuccess('Course updated successfully!');
+        } catch (error) {
+            showError(error.message);
+        }
+    });
+
+    function showError(message) {
+        const errorAlert = document.getElementById('errorAlert');
+        errorAlert.textContent = message;
+        errorAlert.style.display = 'block';
+        setTimeout(() => {
+            errorAlert.style.display = 'none';
+        }, 5000);
+    }
+
+    function showSuccess(message) {
+        const successMessage = document.getElementById('successMessage');
+        successMessage.textContent = message;
+        successMessage.style.display = 'block';
+        setTimeout(() => {
+            successMessage.style.display = 'none';
+        }, 3000);
+    }
+</script>
+</body>
+</html>

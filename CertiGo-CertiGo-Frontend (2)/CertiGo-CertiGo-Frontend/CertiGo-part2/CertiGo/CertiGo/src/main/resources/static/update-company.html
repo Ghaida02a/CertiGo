@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Company - CertiGo</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="auth.js"></script>
+    <style>
+        /* Additional styles for the form to match the page */
+        .certificates-form {
+            max-width: 800px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .certificates-form-group {
+            margin-bottom: 15px;
+        }
+        .certificates-form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        .certificates-form-group input,
+        .certificates-form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .certificates-form-group input:focus,
+        .certificates-form-group select:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        .cert-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        .cert-btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .cert-btn-primary:hover {
+            background-color: #45a049;
+        }
+        .cert-btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .cert-btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .certificates-success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .certificates-error-alert {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .form-hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .industry-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .industry-tag {
+            background: #f0f0f0;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #e0e0e0;
+        }
+        .industry-tag:hover {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+    </style>
+</head>
+<body class="certificates-page">
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">
+        <img src="logo.png" alt="CertiGo Logo">
+        <h2>CertiGo</h2>
+    </div>
+    <nav>
+        <a href="admin-index.html">Admin Dashboard</a>
+        <a href="get-all-certificates.html">Certificates</a>
+        <a href="get-all-companies.html">Companies</a>
+        <a href="add-company.html" class="admin-only">Add Company</a>
+    </nav>
+    <div class="dropdown">
+        <button class="dropbtn" id="accountBtn">Account</button>
+        <div class="dropdown-content" id="accountDropdown">
+            <a href="#" onclick="showUserProfile(); return false;">Profile</a>
+            <a href="#" onclick="logout(); return false;">Logout</a>
+        </div>
+    </div>
+</div>
+
+<div class="certificates-container">
+    <div class="certificates-header">
+        <h1>Update Company</h1>
+        <p>Edit the details of the selected company</p>
+    </div>
+
+    <div id="successMessage" class="certificates-success-message" style="display: none;">
+        Company updated successfully!
+    </div>
+
+    <div id="errorAlert" class="certificates-error-alert" style="display: none;">
+        Failed to update company. Please try again.
+    </div>
+
+    <form id="updateForm" class="certificates-form">
+        <div class="certificates-form-group">
+            <label for="companyId">Company ID:</label>
+            <input type="number" id="companyId" placeholder="Enter company ID" required>
+            <button type="button" id="fetchBtn" class="cert-btn cert-btn-secondary">Fetch Company</button>
+        </div>
+
+        <div class="certificates-form-group">
+            <label for="companyName">Company Name:</label>
+            <input type="text" id="companyName" placeholder="Enter company name" required>
+        </div>
+
+        <div class="certificates-form-group">
+            <label for="location">Location:</label>
+            <input type="text" id="location" placeholder="e.g., New York, USA" required>
+            <div class="form-hint">City, State/Country</div>
+        </div>
+
+        <div class="certificates-form-group">
+            <label for="industry">Industry:</label>
+            <input type="text" id="industry" placeholder="Enter industry type" required>
+            <div class="industry-suggestions">
+                <span class="industry-tag" onclick="selectIndustry('Technology')">Technology</span>
+                <span class="industry-tag" onclick="selectIndustry('Finance')">Finance</span>
+                <span class="industry-tag" onclick="selectIndustry('Healthcare')">Healthcare</span>
+                <span class="industry-tag" onclick="selectIndustry('Education')">Education</span>
+                <span class="industry-tag" onclick="selectIndustry('Manufacturing')">Manufacturing</span>
+                <span class="industry-tag" onclick="selectIndustry('Retail')">Retail</span>
+                <span class="industry-tag" onclick="selectIndustry('Consulting')">Consulting</span>
+            </div>
+        </div>
+
+        <div class="certificates-form-group">
+            <label for="contactEmail">Contact Email:</label>
+            <input type="email" id="contactEmail" placeholder="company@example.com" required>
+            <div class="form-hint">Primary contact email for the company</div>
+        </div>
+
+        <div class="certificates-form-group">
+            <label for="isActive">Status:</label>
+            <select id="isActive" required>
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+            </select>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <button type="submit" class="cert-btn cert-btn-primary">Update Company</button>
+            <button type="button" class="cert-btn cert-btn-secondary" onclick="window.location.href='get-all-companies.html'">Cancel</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const baseUrl = 'http://localhost:8080'; // Adjust if your backend is on a different port/host
+
+    function selectIndustry(industry) {
+        document.getElementById('industry').value = industry;
+    }
+
+    // Check for companyId in URL and auto-fetch if present
+    window.addEventListener('DOMContentLoaded', () => {
+        // Require admin access on page load
+        if (typeof requireAdmin === "function") {
+            if (!requireAdmin()) {
+                // If not admin, the function will handle redirection
+                return;
+            }
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const companyId = urlParams.get('companyId');
+        if (companyId) {
+            document.getElementById('companyId').value = companyId;
+            fetchCompany(companyId); // Auto-fetch the company
+        }
+    });
+
+    async function fetchCompany(id) {
+        if (!id || id === '') {
+            showError('Please enter a valid Company ID');
+            return;
+        }
+
+        try {
+            console.log('Fetching company with ID:', id);
+            showError(''); // Clear any previous errors
+
+            const response = await fetch(`${baseUrl}/company/getById?id=${id}`);
+            console.log('Response status:', response.status);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Error response:', errorText);
+                throw new Error(`Company not found (ID: ${id}). Please check the ID and try again.`);
+            }
+
+            const company = await response.json();
+            console.log('Company data received:', company);
+            populateForm(company);
+            showSuccess('Company data loaded successfully!');
+        } catch (error) {
+            console.error('Fetch error:', error);
+            if (error.message.includes('Failed to fetch')) {
+                showError('Cannot connect to server. Please ensure the backend is running on ' + baseUrl);
+            } else {
+                showError(error.message);
+            }
+        }
+    }
+
+    document.getElementById('fetchBtn').addEventListener('click', async () => {
+        const id = document.getElementById('companyId').value;
+        if (!id) {
+            alert('Please enter a Company ID');
+            return;
+        }
+        fetchCompany(id);
+    });
+
+    function populateForm(company) {
+        console.log('Populating form with company:', company);
+
+        // Set each field and log it
+        const companyName = document.getElementById('companyName');
+        const location = document.getElementById('location');
+        const industry = document.getElementById('industry');
+        const contactEmail = document.getElementById('contactEmail');
+        const isActive = document.getElementById('isActive');
+
+        if (companyName) {
+            companyName.value = company.companyName || '';
+            console.log('Set companyName:', companyName.value);
+        }
+        if (location) {
+            location.value = company.location || '';
+            console.log('Set location:', location.value);
+        }
+        if (industry) {
+            industry.value = company.industry || '';
+            console.log('Set industry:', industry.value);
+        }
+        if (contactEmail) {
+            contactEmail.value = company.contactEmail || '';
+            console.log('Set contactEmail:', contactEmail.value);
+        }
+        if (isActive) {
+            isActive.value = company.isActive !== undefined ? company.isActive.toString() : 'true';
+            console.log('Set isActive:', isActive.value);
+        }
+    }
+
+    document.getElementById('updateForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Get values directly from input elements
+        const companyData = {
+            companyId: parseInt(document.getElementById('companyId').value),
+            companyName: document.getElementById('companyName').value.trim(),
+            location: document.getElementById('location').value.trim(),
+            industry: document.getElementById('industry').value.trim(),
+            contactEmail: document.getElementById('contactEmail').value.trim(),
+            isActive: document.getElementById('isActive').value === 'true'
+        };
+
+        console.log('Sending update request with data:', companyData);
+
+        try {
+            const response = await fetch(`${baseUrl}/company/Update`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(companyData)
+            });
+
+            console.log('Update response status:', response.status);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Error response:', errorText);
+                throw new Error('Update failed');
+            }
+
+            const result = await response.json();
+            console.log('Update successful:', result);
+            showSuccess(`Company "${result.companyName}" updated successfully!`);
+
+            // Redirect to companies list after 2 seconds
+            setTimeout(() => {
+                window.location.href = 'get-all-companies.html';
+            }, 2000);
+        } catch (error) {
+            console.error('Update error:', error);
+            showError(error.message);
+        }
+    });
+
+    function showError(message) {
+        const errorAlert = document.getElementById('errorAlert');
+        if (!message || message === '') {
+            errorAlert.style.display = 'none';
+            return;
+        }
+        errorAlert.textContent = message;
+        errorAlert.style.display = 'block';
+        document.getElementById('successMessage').style.display = 'none';
+        setTimeout(() => {
+            errorAlert.style.display = 'none';
+        }, 5000);
+    }
+
+    function showSuccess(message) {
+        const successMessage = document.getElementById('successMessage');
+        successMessage.textContent = message;
+        successMessage.style.display = 'block';
+        document.getElementById('errorAlert').style.display = 'none';
+        setTimeout(() => {
+            successMessage.style.display = 'none';
+        }, 3000);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trainee Dashboard - CertiGo</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="auth.js"></script>
+    <style>
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, #6a2c70 0%, #b83b5e 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .dashboard-header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .stat-card p {
+            color: #6a2c70;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .companies-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .section-header h2 {
+            color: #333;
+            font-size: 24px;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            max-width: 400px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #6a2c70;
+            box-shadow: 0 0 0 3px rgba(106, 44, 112, 0.1);
+        }
+
+        .companies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .company-card {
+            background: white;
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .company-card:hover {
+            border-color: #6a2c70;
+            box-shadow: 0 8px 20px rgba(106, 44, 112, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .company-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #6a2c70 0%, #b83b5e 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .company-card h3 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .company-info {
+            color: #666;
+            font-size: 14px;
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .company-info-icon {
+            color: #6a2c70;
+        }
+
+        .view-courses-btn {
+            background: linear-gradient(135deg, #6a2c70 0%, #b83b5e 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .view-courses-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(106, 44, 112, 0.3);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #6a2c70;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .refresh-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="logo">
+        <img class="image" src="C:\Users\LENOVO\Desktop\logo\36986b76-9c45-4c51-8486-c25524aba893.png" alt="CertiGo Logo">
+        <span>CertiGo</span>
+    </div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="trainee-dashboard.html">Dashboard</a>
+        <a href="get-all-courses.html">Courses</a>
+        <a href="get-all-certificates.html">Certificates</a>
+    </nav>
+    <div class="dropdown">
+        <button class="dropbtn" id="accountBtn">Account</button>
+        <div class="dropdown-content" id="accountDropdown">
+            <a href="#" onclick="showUserProfile(); return false;">Profile</a>
+            <a href="#" onclick="logout(); return false;">Logout</a>
+        </div>
+    </div>
+</header>
+
+<!-- DASHBOARD CONTAINER -->
+<div class="dashboard-container">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <h1>👋 Welcome to Your Trainee Dashboard</h1>
+        <p>Explore companies and discover training opportunities</p>
+    </div>
+
+    <!-- Dashboard Stats -->
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <h3>Total Companies</h3>
+            <p id="totalCompanies">0</p>
+        </div>
+        <div class="stat-card">
+            <h3>Available Courses</h3>
+            <p id="totalCourses">0</p>
+        </div>
+        <div class="stat-card">
+            <h3>My Enrollments</h3>
+            <p id="myEnrollments">0</p>
+        </div>
+        <div class="stat-card">
+            <h3>Certificates Earned</h3>
+            <p id="myCertificates">0</p>
+        </div>
+    </div>
+
+    <!-- Companies Section -->
+    <div class="companies-section">
+        <div class="section-header">
+            <h2>🏢 Partner Companies</h2>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Search companies by name, location, or industry...">
+            </div>
+            <button class="refresh-btn" onclick="loadCompanies()">🔄 Refresh</button>
+        </div>
+
+        <div id="errorMessage" class="error-message" style="display: none;">
+            Failed to load companies. Please try again.
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p style="color: #666; font-size: 16px;">Loading companies...</p>
+        </div>
+
+        <div id="companiesGrid" class="companies-grid" style="display: none;">
+            <!-- Companies will be populated here -->
+        </div>
+
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <div class="empty-state-icon">🏢</div>
+            <h3>No Companies Found</h3>
+            <p>There are no companies available at the moment.</p>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <p>© 2026 CertiGo. All Rights Reserved.</p>
+</footer>
+
+<script>
+    let allCompanies = [];
+
+    // Load companies on page load
+    window.addEventListener('DOMContentLoaded', () => {
+        loadCompanies();
+        // Load other stats (you can implement these later)
+        loadStats();
+    });
+
+    async function loadCompanies() {
+        showLoading(true);
+        hideError();
+
+        try {
+            const response = await fetch('http://localhost:8080/company/getAll', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.ok) {
+                allCompanies = await response.json();
+                displayCompanies(allCompanies);
+                updateCompanyStats(allCompanies);
+                showLoading(false);
+            } else {
+                showLoading(false);
+                showError('Failed to load companies. Server returned an error.');
+            }
+        } catch (error) {
+            showLoading(false);
+            console.error('Error:', error);
+            showError('Network error. Please check your connection and try again.');
+        }
+    }
+
+    function displayCompanies(companies) {
+        const grid = document.getElementById('companiesGrid');
+        const emptyState = document.getElementById('emptyState');
+
+        if (!companies || companies.length === 0) {
+            grid.style.display = 'none';
+            emptyState.style.display = 'block';
+            return;
+        }
+
+        grid.style.display = 'grid';
+        emptyState.style.display = 'none';
+        grid.innerHTML = '';
+
+        companies.forEach(company => {
+            const card = document.createElement('div');
+            card.className = 'company-card';
+
+            // Get first letter of company name for icon
+            const firstLetter = company.companyName ? company.companyName.charAt(0).toUpperCase() : '🏢';
+
+            card.innerHTML = `
+                <div class="company-icon">${firstLetter}</div>
+                <h3>${escapeHtml(company.companyName || 'N/A')}</h3>
+                <div class="company-info">
+                    <span class="company-info-icon">📍</span>
+                    <span>${escapeHtml(company.location || 'Location not specified')}</span>
+                </div>
+                <div class="company-info">
+                    <span class="company-info-icon">🏭</span>
+                    <span>${escapeHtml(company.industry || 'Industry not specified')}</span>
+                </div>
+                <div class="company-info">
+                    <span class="company-info-icon">📧</span>
+                    <span>${escapeHtml(company.contactEmail || 'No email')}</span>
+                </div>
+                <button class="view-courses-btn" onclick="viewCompanyCourses(${company.companyId})">
+                    View Courses
+                </button>
+            `;
+
+            grid.appendChild(card);
+        });
+    }
+
+    function updateCompanyStats(companies) {
+        document.getElementById('totalCompanies').textContent = companies.length;
+    }
+
+    function loadStats() {
+        // Placeholder for loading other stats
+        // You can implement API calls to get courses, enrollments, and certificates
+        document.getElementById('totalCourses').textContent = '-';
+        document.getElementById('myEnrollments').textContent = '-';
+        document.getElementById('myCertificates').textContent = '-';
+    }
+
+    function viewCompanyCourses(companyId) {
+        // Redirect to company courses page
+        window.location.href = `company-courses.html?companyId=${companyId}`;
+    }
+
+    function showLoading(show) {
+        document.getElementById('loading').style.display = show ? 'block' : 'none';
+    }
+
+    function showError(message) {
+        const errorMessage = document.getElementById('errorMessage');
+        errorMessage.textContent = message;
+        errorMessage.style.display = 'block';
+        setTimeout(() => {
+            errorMessage.style.display = 'none';
+        }, 5000);
+    }
+
+    function hideError() {
+        document.getElementById('errorMessage').style.display = 'none';
+    }
+
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+
+        if (!searchTerm) {
+            displayCompanies(allCompanies);
+            return;
+        }
+
+        const filtered = allCompanies.filter(company => {
+            const companyName = company.companyName ? company.companyName.toLowerCase() : '';
+            const location = company.location ? company.location.toLowerCase() : '';
+            const industry = company.industry ? company.industry.toLowerCase() : '';
+            const email = company.contactEmail ? company.contactEmail.toLowerCase() : '';
+
+            return companyName.includes(searchTerm) ||
+                   location.includes(searchTerm) ||
+                   industry.includes(searchTerm) ||
+                   email.includes(searchTerm);
+        });
+
+        displayCompanies(filtered);
+    });
+
+    // Helper function to escape HTML
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+</script>
+
+</body>
+</html>
