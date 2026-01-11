@@ -98,6 +98,7 @@ function hasPermission(action) {
         'delete_course': [UserRole.ADMIN],  // Added: For deleting courses
         'update_company': [UserRole.ADMIN],  // Added: Only admins can update companies
         'delete_company': [UserRole.ADMIN]   // Added: For deleting companies
+//        'delete_user': [UserRole.ADMIN]      // Added: For deleting users
     };
 
     return permissions[action] && permissions[action].includes(role);
