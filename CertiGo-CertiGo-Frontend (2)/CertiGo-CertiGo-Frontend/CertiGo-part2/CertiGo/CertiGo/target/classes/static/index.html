@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+    <title>CertiGo | Online Training & Certification</title>
+</head>
+<body>
+<script src="main.js"> </script>
+<script src="auth.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>
+    // Auto-redirect trainees to their dashboard
+    window.addEventListener('DOMContentLoaded', () => {
+        if (isLoggedIn() && isTrainee()) {
+            window.location.href = 'trainee-dashboard.html';
+        }
+    });
+</script>
+<!-- HEADER -->
+<header class="navbar">
+    <div class="logo">
+        <img class="image" src="C:\Users\TRA\Downloads\232914367-removebg-preview (7).png" alt="CertiGo Logo">
+<!--        <img class="image"-->
+<!--             src="C:\Users\Public\CertiGo.png"-->
+<!--             alt="CertiGo Logo">-->
+        <span>CertiGo</span>
+    </div>
+    <nav>
+        <a href="#">Courses</a>
+        <a href="companies.html">Companies</a>
+        <a href="get-all-certificates.html">Certificates</a>
+        <a href="trainee-dashboard.html">Trainee Dashboard</a>
+        <a href="#">My Learning</a>
+    </nav>
+    <div class="dropdown">
+        <button class="dropbtn" id="accountBtn">Login</button>
+        <div class="dropdown-content" id="accountDropdown">
+            <button onclick="window.location.href='create-account.html'">Create Account</button>
+            <button onclick="window.location.href='signin.html'">Sign In</button>
+            </button>
+        </div>
+    </div>
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+    <h1>Learn. Certify. Advance.</h1>
+    <p>Professional training courses with verified certifications</p>
+</section>
+
+<!-- COURSES -->
+<section class="courses">
+    <h2>Available Courses</h2>
+
+    <div class="course-grid">
+
+        <div class="course-card">
+            <h3>Java Backend Development</h3>
+            <p class="company">Offered by: CodeLine</p>
+            <p class="instructor">Instructor: John Smith</p>
+            <p class="type">Content: PDF Lessons</p>
+            <button>Enroll</button>
+        </div>
+
+        <div class="course-card">
+            <h3>Frontend Web Design</h3>
+            <p class="company">Offered by: DesignPro</p>
+            <p class="instructor">Instructor: Sarah Lee</p>
+            <p class="type">Content: PDF Lessons</p>
+            <button>Enroll</button>
+        </div>
+
+    </div>
+</section>
+
+<!-- COURSE FLOW -->
+<section class="flow">
+
+    </div>
+</section>
+<!-- REVIEW -->
+<section class="reviews">
+    <button class="styled-button" onclick="window.location.href='review.html'">
+        Go to Reviews
+    </button>
+
+    <h2>Student Reviews</h2>
+    <div class="review-card">
+        ⭐⭐⭐⭐⭐
+        <p>Very clear content and useful certification!</p>
+        <span>- Ahmed</span>
+    </div>
+
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p>© 2026 CertiGo. All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>

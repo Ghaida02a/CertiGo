@@ -1,0 +1,1155 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>All Lessons - CertiGo</title>-->
+<!--    <link rel="stylesheet" href="style.css">-->
+<!--    <script src="auth.js"></script>-->
+<!--</head>-->
+<!--<body class="certificates-page">-->
+
+<!--&lt;!&ndash; NAVBAR &ndash;&gt;-->
+<!--<div class="navbar">-->
+<!--    <div class="logo">-->
+<!--        <img src="C:\Users\LENOVO\Desktop\logo\36986b76-9c45-4c51-8486-c25524aba893.png" alt="CertiGo Logo">-->
+<!--        <h2>CertiGo</h2>-->
+<!--    </div>-->
+<!--    <nav>-->
+<!--        <a href="admin-index.html">Admin Dashboard</a>-->
+<!--        <a href="get-all-certificates.html">Certificates</a>-->
+<!--        <a href="get-all-companies.html">Companies</a>-->
+<!--        <a href="get-all-courses.html">Courses</a>-->
+<!--        <a href="get-all-lessons.html">Lessons</a>-->
+<!--        <a href="add-lesson.html" class="admin-only">Add Lesson</a>-->
+<!--    </nav>-->
+<!--    <div class="dropdown">-->
+<!--        <button class="dropbtn" id="accountBtn">Account</button>-->
+<!--        <div class="dropdown-content" id="accountDropdown">-->
+<!--            <a href="#" onclick="showUserProfile(); return false;">Profile</a>-->
+<!--            <a href="#" onclick="logout(); return false;">Logout</a>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<div class="certificates-container">-->
+<!--    <div class="certificates-header">-->
+<!--        <h1>All Lessons</h1>-->
+<!--        <p>View and manage all lessons in the system</p>-->
+<!--    </div>-->
+
+<!--    <div id="successMessage" class="certificates-success-message" style="display: none;">-->
+<!--        Operation completed successfully!-->
+<!--    </div>-->
+
+<!--    <div id="errorAlert" class="certificates-error-alert" style="display: none;">-->
+<!--        Failed to load lessons. Please try again.-->
+<!--    </div>-->
+
+<!--    <div class="certificates-stats" id="stats" style="display: none;">-->
+<!--        <div class="certificates-stat-card">-->
+<!--            <h3>Total Lessons</h3>-->
+<!--            <p id="totalCount">0</p>-->
+<!--        </div>-->
+<!--        <div class="certificates-stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">-->
+<!--            <h3>Active Lessons</h3>-->
+<!--            <p id="activeCount">0</p>-->
+<!--        </div>-->
+<!--        <div class="certificates-stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">-->
+<!--            <h3>Inactive Lessons</h3>-->
+<!--            <p id="inactiveCount">0</p>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="certificates-controls">-->
+<!--        <div class="certificates-search-box">-->
+<!--            <input type="text" id="searchInput" placeholder="🔍 Search by lesson title, description, or course...">-->
+<!--        </div>-->
+<!--        <div style="display: flex; gap: 10px;">-->
+<!--            <button class="cert-btn cert-btn-refresh" onclick="loadLessons()">🔄 Refresh</button>-->
+<!--            <a href="add-lesson.html" class="cert-btn cert-btn-primary admin-only">➕ Add Lesson</a>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div id="loading" class="certificates-loading">-->
+<!--        <div class="certificates-spinner"></div>-->
+<!--        <p style="color: #666; font-size: 16px;">Loading lessons...</p>-->
+<!--    </div>-->
+
+<!--    <div id="tableContainer" class="certificates-table-container" style="display: none;">-->
+<!--        <table class="certificates-table">-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <th>ID</th>-->
+<!--                <th>Lesson Title</th>-->
+<!--                <th>Description</th>-->
+<!--                <th>Duration (min)</th>-->
+<!--                <th>Order</th>-->
+<!--                <th>Course</th>-->
+<!--                <th>Status</th>-->
+<!--                <th>Created At</th>-->
+<!--                <th>Actions</th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody id="lessonsTableBody">-->
+<!--            &lt;!&ndash; Data will be populated here &ndash;&gt;-->
+<!--            </tbody>-->
+<!--        </table>-->
+<!--    </div>-->
+
+<!--    <div id="emptyState" class="certificates-empty-state" style="display: none;">-->
+<!--        <div class="certificates-empty-state-icon">📖</div>-->
+<!--        <h3>No Lessons Found</h3>-->
+<!--        <p>There are no lessons in the system yet.</p>-->
+<!--        <a href="add-lesson.html" class="cert-btn cert-btn-primary admin-only">Create Your First Lesson</a>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--    let allLessons = [];-->
+
+<!--    // Check authentication on page load-->
+<!--    window.addEventListener('DOMContentLoaded', () => {-->
+<!--        // Require authentication and permission to view lessons (admin or trainee)-->
+<!--        if (!requireAuth()) return;-->
+<!--        if (!hasPermission('view_lessons')) {-->
+<!--            alert('Access Denied: You do not have permission to view lessons.');-->
+<!--            redirectToHomePage();-->
+<!--            return;-->
+<!--        }-->
+<!--        loadLessons();-->
+<!--    });-->
+
+<!--    async function loadLessons() {-->
+<!--        showLoading(true);-->
+<!--        hideError();-->
+
+<!--        try {-->
+<!--            const response = await fetch('http://localhost:8080/Lesson/getAll', {-->
+<!--                method: 'GET',-->
+<!--                headers: {-->
+<!--                    'Content-Type': 'application/json',-->
+<!--                }-->
+<!--            });-->
+
+<!--            if (response.ok) {-->
+<!--                allLessons = await response.json();-->
+<!--                displayLessons(allLessons);-->
+<!--                updateStats(allLessons);-->
+<!--                showLoading(false);-->
+<!--            } else {-->
+<!--                showLoading(false);-->
+<!--                showError('Failed to load lessons. Server returned an error.');-->
+<!--            }-->
+<!--        } catch (error) {-->
+<!--            showLoading(false);-->
+<!--            console.error('Error:', error);-->
+<!--            showError('Network error. Please check your connection and try again.');-->
+<!--        }-->
+<!--    }-->
+
+<!--    function displayLessons(lessons) {-->
+<!--        const tbody = document.getElementById('lessonsTableBody');-->
+<!--        const tableContainer = document.getElementById('tableContainer');-->
+<!--        const emptyState = document.getElementById('emptyState');-->
+
+<!--        if (!lessons || lessons.length === 0) {-->
+<!--            tableContainer.style.display = 'none';-->
+<!--            emptyState.style.display = 'block';-->
+<!--            document.getElementById('stats').style.display = 'none';-->
+<!--            return;-->
+<!--        }-->
+
+<!--        tableContainer.style.display = 'block';-->
+<!--        emptyState.style.display = 'none';-->
+<!--        document.getElementById('stats').style.display = 'flex';-->
+
+<!--        tbody.innerHTML = '';-->
+
+<!--        lessons.forEach(lesson => {-->
+<!--            const row = document.createElement('tr');-->
+
+<!--            const statusBadge = lesson.isActive-->
+<!--                ? '<span class="cert-badge cert-badge-active">Active</span>'-->
+<!--                : '<span class="cert-badge cert-badge-inactive">Inactive</span>';-->
+
+<!--            const courseName = lesson.course ? lesson.course.courseName || `Course #${lesson.course.id}` : 'N/A';-->
+<!--            const createdAt = lesson.createdAt ? new Date(lesson.createdAt).toLocaleDateString() : 'N/A';-->
+<!--            const duration = lesson.duration || 'N/A';-->
+<!--            const lessonOrder = lesson.lessonOrder !== undefined && lesson.lessonOrder !== null ? lesson.lessonOrder : 'N/A';-->
+
+<!--            // Build action buttons based on permissions-->
+<!--            let actionButtons = `<button class="cert-btn cert-btn-view" onclick="viewLesson(${lesson.id})">👁️ View</button>`;-->
+<!--            if (hasPermission('edit_lesson')) {-->
+<!--                actionButtons += ` <button class="cert-btn cert-btn-edit" onclick="editLesson(${lesson.id})">✏️ Edit</button>`;-->
+<!--            }-->
+<!--            if (hasPermission('delete_lesson')) {-->
+<!--                actionButtons += ` <button class="cert-btn cert-btn-delete" onclick="deleteLesson(${lesson.id})">🗑️ Delete</button>`;-->
+<!--            }-->
+
+<!--            row.innerHTML = `-->
+<!--                <td><strong>#${lesson.id}</strong></td>-->
+<!--                <td><strong>${escapeHtml(lesson.lessonTitle)}</strong></td>-->
+<!--                <td><div class="certificate-description" title="${escapeHtml(lesson.description || 'N/A')}">${escapeHtml(lesson.description || 'N/A')}</div></td>-->
+<!--                <td>${duration}</td>-->
+<!--                <td>${lessonOrder}</td>-->
+<!--                <td>${escapeHtml(courseName)}</td>-->
+<!--                <td>${statusBadge}</td>-->
+<!--                <td class="date-cell">${createdAt}</td>-->
+<!--                <td>-->
+<!--                    <div class="cert-action-buttons">-->
+<!--                        ${actionButtons}-->
+<!--                    </div>-->
+<!--                </td>-->
+<!--            `;-->
+
+<!--            tbody.appendChild(row);-->
+<!--        });-->
+<!--    }-->
+
+<!--    function updateStats(lessons) {-->
+<!--        const total = lessons.length;-->
+<!--        const active = lessons.filter(l => l.isActive).length;-->
+<!--        const inactive = total - active;-->
+
+<!--        document.getElementById('totalCount').textContent = total;-->
+<!--        document.getElementById('activeCount').textContent = active;-->
+<!--        document.getElementById('inactiveCount').textContent = inactive;-->
+<!--    }-->
+
+<!--    function showLoading(show) {-->
+<!--        document.getElementById('loading').style.display = show ? 'block' : 'none';-->
+<!--    }-->
+
+<!--    function showError(message) {-->
+<!--        const errorAlert = document.getElementById('errorAlert');-->
+<!--        errorAlert.textContent = message;-->
+<!--        errorAlert.style.display = 'block';-->
+<!--        setTimeout(() => {-->
+<!--            errorAlert.style.display = 'none';-->
+<!--        }, 5000);-->
+<!--    }-->
+
+<!--    function hideError() {-->
+<!--        document.getElementById('errorAlert').style.display = 'none';-->
+<!--    }-->
+
+<!--    function showSuccess(message) {-->
+<!--        const successMessage = document.getElementById('successMessage');-->
+<!--        successMessage.textContent = message;-->
+<!--        successMessage.style.display = 'block';-->
+<!--        setTimeout(() => {-->
+<!--            successMessage.style.display = 'none';-->
+<!--        }, 3000);-->
+<!--    }-->
+
+<!--    async function deleteLesson(id) {-->
+<!--        // Check if user has permission to delete-->
+<!--        if (!hasPermission('delete_lesson')) {-->
+<!--            alert('Access Denied: Only administrators can delete lessons.');-->
+<!--            return;-->
+<!--        }-->
+
+<!--        if (!confirm(`Are you sure you want to delete lesson #${id}? This action cannot be undone.`)) {-->
+<!--            return;-->
+<!--        }-->
+
+<!--        try {-->
+<!--            const response = await fetch(`http://localhost:8080/Lesson/delete/${id}`, {-->
+<!--                method: 'DELETE',-->
+<!--                headers: {-->
+<!--                    'Content-Type': 'application/json',-->
+<!--                }-->
+<!--            });-->
+
+<!--            if (response.ok || response.status === 204) {-->
+<!--                showSuccess(`Lesson #${id} deleted successfully!`);-->
+<!--                loadLessons(); // Reload the list-->
+<!--            } else {-->
+<!--                const errorText = await response.text();-->
+<!--                showError(`Failed to delete lesson #${id}. ${errorText}`);-->
+<!--            }-->
+<!--        } catch (error) {-->
+<!--            console.error('Error:', error);-->
+<!--            showError('Network error. Please check your connection and try again.');-->
+<!--        }-->
+<!--    }-->
+
+<!--    function viewLesson(id) {-->
+<!--        // Find the lesson in the loaded data-->
+<!--        const lesson = allLessons.find(l => l.id === id);-->
+
+<!--        if (lesson) {-->
+<!--            // Create a detailed view modal or alert-->
+<!--            const courseName = lesson.course ? lesson.course.courseName || `Course #${lesson.course.id}` : 'N/A';-->
+<!--            const duration = lesson.duration || 'N/A';-->
+<!--            const lessonOrder = lesson.lessonOrder !== undefined && lesson.lessonOrder !== null ? lesson.lessonOrder : 'N/A';-->
+
+<!--            const details = `-->
+<!--Lesson Details:-->
+<!--━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-->
+<!--ID: ${lesson.id}-->
+<!--Title: ${lesson.lessonTitle}-->
+<!--Description: ${lesson.description || 'N/A'}-->
+<!--Duration: ${duration} minutes-->
+<!--Order: ${lessonOrder}-->
+<!--Course: ${courseName}-->
+<!--Status: ${lesson.isActive ? 'Active' : 'Inactive'}-->
+
+<!--Created: ${lesson.createdAt ? new Date(lesson.createdAt).toLocaleString() : 'N/A'}-->
+<!--Updated: ${lesson.updatedAt ? new Date(lesson.updatedAt).toLocaleString() : 'N/A'}-->
+<!--            `;-->
+<!--            alert(details);-->
+<!--        } else {-->
+<!--            showError('Lesson not found.');-->
+<!--        }-->
+<!--    }-->
+
+<!--    function editLesson(id) {-->
+<!--        // Check if user has permission to edit-->
+<!--        if (!hasPermission('edit_lesson')) {-->
+<!--            alert('Access Denied: Only administrators can edit lessons.');-->
+<!--            return;-->
+<!--        }-->
+
+<!--        // Find the lesson in the loaded data-->
+<!--        const lesson = allLessons.find(l => l.id === id);-->
+
+<!--        if (lesson) {-->
+<!--            // Redirect to edit page with lesson data-->
+<!--            // For now, we'll use a simple prompt-based edit-->
+<!--            const newTitle = prompt('Enter new lesson title:', lesson.lessonTitle);-->
+<!--            if (newTitle && newTitle !== lesson.lessonTitle) {-->
+<!--                updateLesson(id, {-->
+<!--                    id: id,-->
+<!--                    lessonTitle: newTitle,-->
+<!--                    description: lesson.description,-->
+<!--                    duration: lesson.duration,-->
+<!--                    lessonOrder: lesson.lessonOrder,-->
+<!--                    isActive: lesson.isActive,-->
+<!--                    course: lesson.course-->
+<!--                });-->
+<!--            }-->
+<!--        } else {-->
+<!--            showError('Lesson not found.');-->
+<!--        }-->
+<!--    }-->
+
+<!--    async function updateLesson(id, updateData) {-->
+<!--        try {-->
+<!--            const response = await fetch(`http://localhost:8080/Lesson/update`, {-->
+<!--                method: 'PUT',-->
+<!--                headers: {-->
+<!--                    'Content-Type': 'application/json',-->
+<!--                },-->
+<!--                body: JSON.stringify(updateData)-->
+<!--            });-->
+
+<!--            if (response.ok) {-->
+<!--                showSuccess(`Lesson #${id} updated successfully!`);-->
+<!--                loadLessons(); // Reload the list-->
+<!--            } else {-->
+<!--                const errorText = await response.text();-->
+<!--                showError(`Failed to update lesson #${id}. ${errorText}`);-->
+<!--            }-->
+<!--        } catch (error) {-->
+<!--            console.error('Error:', error);-->
+<!--            showError('Network error. Please check your connection and try again.');-->
+<!--        }-->
+<!--    }-->
+
+<!--    // Search functionality-->
+<!--    document.getElementById('searchInput').addEventListener('input', function(e) {-->
+<!--        const searchTerm = e.target.value.toLowerCase();-->
+
+<!--        if (!searchTerm) {-->
+<!--            displayLessons(allLessons);-->
+<!--            return;-->
+<!--        }-->
+
+<!--        const filtered = allLessons.filter(lesson => {-->
+<!--            const lessonTitle = lesson.lessonTitle ? lesson.lessonTitle.toLowerCase() : '';-->
+<!--            const description = lesson.description ? lesson.description.toLowerCase() : '';-->
+<!--            const courseName = lesson.course && lesson.course.courseName ? lesson.course.courseName.toLowerCase() : '';-->
+
+<!--            return lessonTitle.includes(searchTerm) ||-->
+<!--                   description.includes(searchTerm) ||-->
+<!--                   courseName.includes(searchTerm);-->
+<!--        });-->
+
+<!--        displayLessons(filtered);-->
+<!--    });-->
+
+<!--    // Helper function to escape HTML-->
+<!--    function escapeHtml(text) {-->
+<!--        if (!text) return '';-->
+<!--        const div = document.createElement('div');-->
+<!--        div.textContent = text;-->
+<!--        return div.innerHTML;-->
+<!--    }-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>All Lessons - CertiGo</title>-->
+<!--    <link rel="stylesheet" href="style.css">-->
+<!--    <script src="auth.js"></script>-->
+<!--</head>-->
+<!--<body class="certificates-page">-->
+
+<!--&lt;!&ndash; NAVBAR &ndash;&gt;-->
+<!--<div class="navbar">-->
+<!--    <div class="logo">-->
+<!--        <img src="C:\Users\LENOVO\Desktop\logo\36986b76-9c45-4c51-8486-c25524aba893.png" alt="CertiGo Logo">-->
+<!--        <h2>CertiGo</h2>-->
+<!--    </div>-->
+<!--    <nav>-->
+<!--        <a href="admin-index.html">Admin Dashboard</a>-->
+<!--        <a href="get-all-certificates.html">Certificates</a>-->
+<!--        <a href="get-all-companies.html">Companies</a>-->
+<!--        <a href="get-all-courses.html">Courses</a>-->
+<!--        <a href="get-all-lessons.html">Lessons</a>-->
+<!--        <a href="add-lesson.html" class="admin-only">Add Lesson</a>-->
+<!--    </nav>-->
+<!--    <div class="dropdown">-->
+<!--        <button class="dropbtn" id="accountBtn">Account</button>-->
+<!--        <div class="dropdown-content" id="accountDropdown">-->
+<!--            <a href="#" onclick="showUserProfile(); return false;">Profile</a>-->
+<!--            <a href="#" onclick="logout(); return false;">Logout</a>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<div class="certificates-container">-->
+<!--    <div class="certificates-header">-->
+<!--        <h1>All Lessons</h1>-->
+<!--        <p>View and manage all lessons in the system</p>-->
+<!--    </div>-->
+
+<!--    <div id="successMessage" class="certificates-success-message" style="display: none;">-->
+<!--        Operation completed successfully!-->
+<!--    </div>-->
+
+<!--    <div id="errorAlert" class="certificates-error-alert" style="display: none;">-->
+<!--        Failed to load lessons. Please try again.-->
+<!--    </div>-->
+
+<!--    <div class="certificates-stats" id="stats" style="display: none;">-->
+<!--        <div class="certificates-stat-card">-->
+<!--            <h3>Total Lessons</h3>-->
+<!--            <p id="totalCount">0</p>-->
+<!--        </div>-->
+<!--        <div class="certificates-stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">-->
+<!--            <h3>Active Lessons</h3>-->
+<!--            <p id="activeCount">0</p>-->
+<!--        </div>-->
+<!--        <div class="certificates-stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">-->
+<!--            <h3>Inactive Lessons</h3>-->
+<!--            <p id="inactiveCount">0</p>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="certificates-controls">-->
+<!--        <div class="certificates-search-box">-->
+<!--            <input type="text" id="searchInput" placeholder="🔍 Search by lesson name or course...">-->
+<!--        </div>-->
+<!--        <div style="display: flex; gap: 10px;">-->
+<!--            <button class="cert-btn cert-btn-refresh" onclick="loadLessons()">🔄 Refresh</button>-->
+<!--            <a href="add-lesson.html" class="cert-btn cert-btn-primary admin-only">➕ Add Lesson</a>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div id="loading" class="certificates-loading">-->
+<!--        <div class="certificates-spinner"></div>-->
+<!--        <p style="color: #666; font-size: 16px;">Loading lessons...</p>-->
+<!--    </div>-->
+
+<!--    <div id="tableContainer" class="certificates-table-container" style="display: none;">-->
+<!--        <table class="certificates-table">-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <th>ID</th>-->
+<!--                <th>Lesson Name</th>-->
+<!--                <th>Course</th>-->
+<!--                <th>PDF URL</th>-->
+<!--                <th>Status</th>-->
+<!--                <th>Created At</th>-->
+<!--                <th>Actions</th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody id="lessonsTableBody">-->
+<!--            &lt;!&ndash; Data will be populated here &ndash;&gt;-->
+<!--            </tbody>-->
+<!--        </table>-->
+<!--    </div>-->
+
+<!--    <div id="emptyState" class="certificates-empty-state" style="display: none;">-->
+<!--        <div class="certificates-empty-state-icon">📖</div>-->
+<!--        <h3>No Lessons Found</h3>-->
+<!--        <p>There are no lessons in the system yet.</p>-->
+<!--        <a href="add-lesson.html" class="cert-btn cert-btn-primary admin-only">Create Your First Lesson</a>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--    let allLessons = [];-->
+
+<!--    // Check authentication on page load-->
+<!--    window.addEventListener('DOMContentLoaded', () => {-->
+<!--        // Require authentication and permission to view lessons (admin or trainee)-->
+<!--        if (!requireAuth()) return;-->
+<!--        if (!hasPermission('view_lessons')) {-->
+<!--            alert('Access Denied: You do not have permission to view lessons.');-->
+<!--            redirectToHomePage();-->
+<!--            return;-->
+<!--        }-->
+<!--        loadLessons();-->
+<!--    });-->
+
+<!--    async function loadLessons() {-->
+<!--        showLoading(true);-->
+<!--        hideError();-->
+
+<!--        try {-->
+<!--            const response = await fetch('http://localhost:8080/Lesson/getAll', {-->
+<!--                method: 'GET',-->
+<!--                headers: {-->
+<!--                    'Content-Type': 'application/json',-->
+<!--                }-->
+<!--            });-->
+
+<!--            if (response.ok) {-->
+<!--                allLessons = await response.json();-->
+<!--                displayLessons(allLessons);-->
+<!--                updateStats(allLessons);-->
+<!--                showLoading(false);-->
+<!--            } else {-->
+<!--                showLoading(false);-->
+<!--                showError('Failed to load lessons. Server returned an error.');-->
+<!--            }-->
+<!--        } catch (error) {-->
+<!--            showLoading(false);-->
+<!--            console.error('Error:', error);-->
+<!--            showError('Network error. Please check your connection and try again.');-->
+<!--        }-->
+<!--    }-->
+
+<!--    function displayLessons(lessons) {-->
+<!--        const tbody = document.getElementById('lessonsTableBody');-->
+<!--        const tableContainer = document.getElementById('tableContainer');-->
+<!--        const emptyState = document.getElementById('emptyState');-->
+
+<!--        if (!lessons || lessons.length === 0) {-->
+<!--            tableContainer.style.display = 'none';-->
+<!--            emptyState.style.display = 'block';-->
+<!--            document.getElementById('stats').style.display = 'none';-->
+<!--            return;-->
+<!--        }-->
+
+<!--        tableContainer.style.display = 'block';-->
+<!--        emptyState.style.display = 'none';-->
+<!--        document.getElementById('stats').style.display = 'flex';-->
+
+<!--        tbody.innerHTML = '';-->
+
+<!--        lessons.forEach(lesson => {-->
+<!--            const row = document.createElement('tr');-->
+
+<!--            const statusBadge = lesson.isActive-->
+<!--                ? '<span class="cert-badge cert-badge-active">Active</span>'-->
+<!--                : '<span class="cert-badge cert-badge-inactive">Inactive</span>';-->
+
+<!--            const courseName = lesson.course ? lesson.course.courseName || `Course #${lesson.course.id}` : 'N/A';-->
+<!--            const createdAt = lesson.createdAt ? new Date(lesson.createdAt).toLocaleDateString() : 'N/A';-->
+<!--            const pdfUrl = lesson.pdfUrl || 'N/A';-->
+
+<!--            // Build action buttons based on permissions-->
+<!--            let actionButtons = `<button class="cert-btn cert-btn-view" onclick="viewLesson(${lesson.id})">👁️ View PDF</button>`;-->
+<!--            if (hasPermission('edit_lesson')) {-->
+<!--                actionButtons += ` <button class="cert-btn cert-btn-edit" onclick="editLesson(${lesson.id})">✏️ Edit</button>`;-->
+<!--            }-->
+<!--            if (hasPermission('delete_lesson')) {-->
+<!--                actionButtons += ` <button class="cert-btn cert-btn-delete" onclick="deleteLesson(${lesson.id})">🗑️ Delete</button>`;-->
+<!--            }-->
+
+<!--            row.innerHTML = `-->
+<!--                <td><strong>#${lesson.id}</strong></td>-->
+<!--                <td><strong>${escapeHtml(lesson.lessonName)}</strong></td>-->
+<!--                <td>${escapeHtml(courseName)}</td>-->
+<!--                <td><a href="${escapeHtml(pdfUrl)}" target="_blank">${escapeHtml(pdfUrl)}</a></td>-->
+<!--                <td>${statusBadge}</td>-->
+<!--                <td class="date-cell">${createdAt}</td>-->
+<!--                <td>-->
+<!--                    <div class="cert-action-buttons">-->
+<!--                        ${actionButtons}-->
+<!--                    </div>-->
+<!--                </td>-->
+<!--            `;-->
+
+<!--            tbody.appendChild(row);-->
+<!--        });-->
+<!--    }-->
+
+<!--    function updateStats(lessons) {-->
+<!--        const total = lessons.length;-->
+<!--        const active = lessons.filter(l => l.isActive).length;-->
+<!--        const inactive = total - active;-->
+
+<!--        document.getElementById('totalCount').textContent = total;-->
+<!--        document.getElementById('activeCount').textContent = active;-->
+<!--        document.getElementById('inactiveCount').textContent = inactive;-->
+<!--    }-->
+
+<!--    function showLoading(show) {-->
+<!--        document.getElementById('loading').style.display = show ? 'block' : 'none';-->
+<!--    }-->
+
+<!--    function showError(message) {-->
+<!--        const errorAlert = document.getElementById('errorAlert');-->
+<!--        errorAlert.textContent = message;-->
+<!--        errorAlert.style.display = 'block';-->
+<!--        setTimeout(() => {-->
+<!--            errorAlert.style.display = 'none';-->
+<!--        }, 5000);-->
+<!--    }-->
+
+<!--    function hideError() {-->
+<!--        document.getElementById('errorAlert').style.display = 'none';-->
+<!--    }-->
+
+<!--    function showSuccess(message) {-->
+<!--        const successMessage = document.getElementById('successMessage');-->
+<!--        successMessage.textContent = message;-->
+<!--        successMessage.style.display = 'block';-->
+<!--        setTimeout(() => {-->
+<!--            successMessage.style.display = 'none';-->
+<!--        }, 3000);-->
+<!--    }-->
+
+<!--    async function deleteLesson(id) {-->
+<!--        // Check if user has permission to delete-->
+<!--        if (!hasPermission('delete_lesson')) {-->
+<!--            alert('Access Denied: Only administrators can delete lessons.');-->
+<!--            return;-->
+<!--        }-->
+
+<!--        if (!confirm(`Are you sure you want to delete lesson #${id}? This action cannot be undone.`)) {-->
+<!--            return;-->
+<!--        }-->
+
+<!--        try {-->
+<!--            const response = await fetch(`http://localhost:8080/Lesson/delete/${id}`, {-->
+<!--                method: 'DELETE',-->
+<!--                headers: {-->
+<!--                    'Content-Type': 'application/json',-->
+<!--                }-->
+<!--            });-->
+
+<!--            if (response.ok || response.status === 204) {-->
+<!--                showSuccess(`Lesson #${id} deleted successfully!`);-->
+<!--                loadLessons(); // Reload the list-->
+<!--            } else {-->
+<!--                const errorText = await response.text();-->
+<!--                showError(`Failed to delete lesson #${id}. ${errorText}`);-->
+<!--            }-->
+<!--        } catch (error) {-->
+<!--            console.error('Error:', error);-->
+<!--            showError('Network error. Please check your connection and try again.');-->
+<!--        }-->
+<!--    }-->
+
+<!--    function viewLesson(id) {-->
+<!--        // Find the lesson in the loaded data-->
+<!--        const lesson = allLessons.find(l => l.id === id);-->
+
+<!--        if (lesson) {-->
+<!--            if (lesson.pdfUrl) {-->
+<!--                // Open the PDF in a new tab-->
+<!--                window.open(lesson.pdfUrl, '_blank');-->
+<!--            } else {-->
+<!--                alert('PDF not available for this lesson.');-->
+<!--            }-->
+<!--        } else {-->
+<!--            showError('Lesson not found.');-->
+<!--        }-->
+<!--    }-->
+
+<!--    function editLesson(id) {-->
+<!--        // Check if user has permission to edit-->
+<!--        if (!hasPermission('edit_lesson')) {-->
+<!--            alert('Access Denied: Only administrators can edit lessons.');-->
+<!--            return;-->
+<!--        }-->
+
+<!--        // Find the lesson in the loaded data-->
+<!--        const lesson = allLessons.find(l => l.id === id);-->
+
+<!--        if (lesson) {-->
+<!--            // Redirect to edit page with lesson data-->
+<!--            // For now, we'll use a simple prompt-based edit-->
+<!--            const newName = prompt('Enter new lesson name:', lesson.lessonName);-->
+<!--            if (newName && newName !== lesson.lessonName) {-->
+<!--                updateLesson(id, {-->
+<!--                    id: id,-->
+<!--                    lessonName: newName,-->
+<!--                    pdfUrl: lesson.pdfUrl,-->
+<!--                    isActive: lesson.isActive,-->
+<!--                    course: lesson.course-->
+<!--                });-->
+<!--            }-->
+<!--        } else {-->
+<!--            showError('Lesson not found.');-->
+<!--        }-->
+<!--    }-->
+
+<!--    async function updateLesson(id, updateData) {-->
+<!--        try {-->
+<!--            const response = await fetch(`http://localhost:8080/Lesson/update`, {-->
+<!--                method: 'PUT',-->
+<!--                headers: {-->
+<!--                    'Content-Type': 'application/json',-->
+<!--                },-->
+<!--                body: JSON.stringify(updateData)-->
+<!--            });-->
+
+<!--            if (response.ok) {-->
+<!--                showSuccess(`Lesson #${id} updated successfully!`);-->
+<!--                loadLessons(); // Reload the list-->
+<!--            } else {-->
+<!--                const errorText = await response.text();-->
+<!--                showError(`Failed to update lesson #${id}. ${errorText}`);-->
+<!--            }-->
+<!--        } catch (error) {-->
+<!--            console.error('Error:', error);-->
+<!--            showError('Network error. Please check your connection and try again.');-->
+<!--        }-->
+<!--    }-->
+
+<!--    // Search functionality-->
+<!--    document.getElementById('searchInput').addEventListener('input', function(e) {-->
+<!--        const searchTerm = e.target.value.toLowerCase();-->
+
+<!--        if (!searchTerm) {-->
+<!--            displayLessons(allLessons);-->
+<!--            return;-->
+<!--        }-->
+
+<!--        const filtered = allLessons.filter(lesson => {-->
+<!--            const lessonName = lesson.lessonName ? lesson.lessonName.toLowerCase() : '';-->
+<!--            const courseName = lesson.course && lesson.course.courseName ? lesson.course.courseName.toLowerCase() : '';-->
+
+<!--            return lessonName.includes(searchTerm) ||-->
+<!--                   courseName.includes(searchTerm);-->
+<!--        });-->
+
+<!--        displayLessons(filtered);-->
+<!--    });-->
+
+<!--    // Helper function to escape HTML-->
+<!--    function escapeHtml(text) {-->
+<!--        if (!text) return '';-->
+<!--        const div = document.createElement('div');-->
+<!--        div.textContent = text;-->
+<!--        return div.innerHTML;-->
+<!--    }-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+<!--```-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Lessons - CertiGo</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="auth.js"></script>
+</head>
+<body class="certificates-page">
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">
+        <img src="C:\Users\LENOVO\Desktop\logo\36986b76-9c45-4c51-8486-c25524aba893.png" alt="CertiGo Logo">
+        <h2>CertiGo</h2>
+    </div>
+    <nav>
+        <a href="admin-index.html">Admin Dashboard</a>
+        <a href="get-all-certificates.html">Certificates</a>
+        <a href="get-all-companies.html">Companies</a>
+        <a href="get-all-courses.html">Courses</a>
+        <a href="get-all-lessons.html">Lessons</a>
+        <a href="quiz.html" id="quizLink">Quizzes</a> <!-- Added link to quiz.html -->
+        <a href="add-lesson.html" class="admin-only">Add Lesson</a>
+    </nav>
+    <div class="dropdown">
+        <button class="dropbtn" id="accountBtn">Account</button>
+        <div class="dropdown-content" id="accountDropdown">
+            <a href="#" onclick="showUserProfile(); return false;">Profile</a>
+            <a href="#" onclick="logout(); return false;">Logout</a>
+        </div>
+    </div>
+</div>
+
+<div class="certificates-container">
+    <div class="certificates-header">
+        <h1>All Lessons</h1>
+        <p>View and manage all lessons in the system</p>
+    </div>
+
+    <div id="successMessage" class="certificates-success-message" style="display: none;">
+        Operation completed successfully!
+    </div>
+
+    <div id="errorAlert" class="certificates-error-alert" style="display: none;">
+        Failed to load lessons. Please try again.
+    </div>
+
+    <div class="certificates-stats" id="stats" style="display: none;">
+        <div class="certificates-stat-card">
+            <h3>Total Lessons</h3>
+            <p id="totalCount">0</p>
+        </div>
+        <div class="certificates-stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+            <h3>Active Lessons</h3>
+            <p id="activeCount">0</p>
+        </div>
+        <div class="certificates-stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+            <h3>Inactive Lessons</h3>
+            <p id="inactiveCount">0</p>
+        </div>
+    </div>
+
+    <div class="certificates-controls">
+        <div class="certificates-search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Search by lesson name or course...">
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="cert-btn cert-btn-refresh" onclick="loadLessons()">🔄 Refresh</button>
+            <a href="add-lesson.html" class="cert-btn cert-btn-primary admin-only">➕ Add Lesson</a>
+        </div>
+    </div>
+
+    <div id="loading" class="certificates-loading">
+        <div class="certificates-spinner"></div>
+        <p style="color: #666; font-size: 16px;">Loading lessons...</p>
+    </div>
+
+    <div id="tableContainer" class="certificates-table-container" style="display: none;">
+        <table class="certificates-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Lesson Name</th>
+                <th>Course</th>
+                <th>PDF URL</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="lessonsTableBody">
+            <!-- Data will be populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <div id="emptyState" class="certificates-empty-state" style="display: none;">
+        <div class="certificates-empty-state-icon">📖</div>
+        <h3>No Lessons Found</h3>
+        <p>There are no lessons in the system yet.</p>
+        <a href="add-lesson.html" class="cert-btn cert-btn-primary admin-only">Create Your First Lesson</a>
+    </div>
+
+    <!-- Take Quiz Button at the bottom -->
+    <div style="text-align: center; margin-top: 20px;">
+        <button class="cert-btn cert-btn-primary" onclick="takeQuiz()">📝 Take a Quiz</button>
+    </div>
+</div>
+
+<script>
+    let allLessons = [];
+
+    // Check authentication on page load
+    window.addEventListener('DOMContentLoaded', () => {
+        // Require authentication and permission to view lessons (admin or trainee)
+        if (!requireAuth()) return;
+        if (!hasPermission('view_lessons')) {
+            alert('Access Denied: You do not have permission to view lessons.');
+            redirectToHomePage();
+            return;
+        }
+        loadLessons();
+        updateNavLinks(); // Hide/show quiz link based on permissions
+    });
+
+    async function loadLessons() {
+        showLoading(true);
+        hideError();
+
+        try {
+            const response = await fetch('http://localhost:8080/Lesson/getAll', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.ok) {
+                allLessons = await response.json();
+                displayLessons(allLessons);
+                updateStats(allLessons);
+                showLoading(false);
+            } else {
+                showLoading(false);
+                showError('Failed to load lessons. Server returned an error.');
+            }
+        } catch (error) {
+            showLoading(false);
+            console.error('Error:', error);
+            showError('Network error. Please check your connection and try again.');
+        }
+    }
+
+    function displayLessons(lessons) {
+        const tbody = document.getElementById('lessonsTableBody');
+        const tableContainer = document.getElementById('tableContainer');
+        const emptyState = document.getElementById('emptyState');
+
+        if (!lessons || lessons.length === 0) {
+            tableContainer.style.display = 'none';
+            emptyState.style.display = 'block';
+            document.getElementById('stats').style.display = 'none';
+            return;
+        }
+
+        tableContainer.style.display = 'block';
+        emptyState.style.display = 'none';
+        document.getElementById('stats').style.display = 'flex';
+
+        tbody.innerHTML = '';
+
+        lessons.forEach(lesson => {
+            const row = document.createElement('tr');
+
+            const statusBadge = lesson.isActive
+                ? '<span class="cert-badge cert-badge-active">Active</span>'
+                : '<span class="cert-badge cert-badge-inactive">Inactive</span>';
+
+            const courseName = lesson.course ? lesson.course.courseName || `Course #${lesson.course.id}` : 'N/A';
+            const createdAt = lesson.createdAt ? new Date(lesson.createdAt).toLocaleDateString() : 'N/A';
+            const pdfUrl = lesson.pdfUrl || 'N/A';
+
+            // Build action buttons based on permissions
+            let actionButtons = `<button class="cert-btn cert-btn-view" onclick="viewLesson(${lesson.id})">👁️ View PDF</button>`;
+            if (hasPermission('edit_lesson')) {
+                actionButtons += ` <button class="cert-btn cert-btn-edit" onclick="editLesson(${lesson.id})">✏️ Edit</button>`;
+            }
+            if (hasPermission('delete_lesson')) {
+                actionButtons += ` <button class="cert-btn cert-btn-delete" onclick="deleteLesson(${lesson.id})">🗑️ Delete</button>`;
+            }
+
+            row.innerHTML = `
+                <td><strong>#${lesson.id}</strong></td>
+                <td><strong>${escapeHtml(lesson.lessonName)}</strong></td>
+                <td>${escapeHtml(courseName)}</td>
+                <td><a href="${escapeHtml(pdfUrl)}" target="_blank">${escapeHtml(pdfUrl)}</a></td>
+                <td>${statusBadge}</td>
+                <td class="date-cell">${createdAt}</td>
+                <td>
+                    <div class="cert-action-buttons">
+                        ${actionButtons}
+                    </div>
+                </td>
+            `;
+
+            tbody.appendChild(row);
+        });
+    }
+
+    function updateStats(lessons) {
+        const total = lessons.length;
+        const active = lessons.filter(l => l.isActive).length;
+        const inactive = total - active;
+
+        document.getElementById('totalCount').textContent = total;
+        document.getElementById('activeCount').textContent = active;
+        document.getElementById('inactiveCount').textContent = inactive;
+    }
+
+    function showLoading(show) {
+        document.getElementById('loading').style.display = show ? 'block' : 'none';
+    }
+
+    function showError(message) {
+        const errorAlert = document.getElementById('errorAlert');
+        errorAlert.textContent = message;
+        errorAlert.style.display = 'block';
+        setTimeout(() => {
+            errorAlert.style.display = 'none';
+        }, 5000);
+    }
+
+    function hideError() {
+        document.getElementById('errorAlert').style.display = 'none';
+    }
+
+    function showSuccess(message) {
+        const successMessage = document.getElementById('successMessage');
+        successMessage.textContent = message;
+        successMessage.style.display = 'block';
+        setTimeout(() => {
+            successMessage.style.display = 'none';
+        }, 3000);
+    }
+
+    async function deleteLesson(id) {
+        // Check if user has permission to delete
+        if (!hasPermission('delete_lesson')) {
+            alert('Access Denied: Only administrators can delete lessons.');
+            return;
+        }
+
+        if (!confirm(`Are you sure you want to delete lesson #${id}? This action cannot be undone.`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/Lesson/delete/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.ok || response.status === 204) {
+                showSuccess(`Lesson #${id} deleted successfully!`);
+                loadLessons(); // Reload the list
+            } else {
+                const errorText = await response.text();
+                showError(`Failed to delete lesson #${id}. ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showError('Network error. Please check your connection and try again.');
+        }
+    }
+
+    function viewLesson(id) {
+        // Find the lesson in the loaded data
+        const lesson = allLessons.find(l => l.id === id);
+
+        if (lesson) {
+            if (lesson.pdfUrl) {
+                // Open the PDF in a new tab
+                window.open(lesson.pdfUrl, '_blank');
+            } else {
+                alert('PDF not available for this lesson.');
+            }
+        } else {
+            showError('Lesson not found.');
+        }
+    }
+
+    function editLesson(id) {
+        // Check if user has permission to edit
+        if (!hasPermission('edit_lesson')) {
+            alert('Access Denied: Only administrators can edit lessons.');
+            return;
+        }
+
+        // Find the lesson in the loaded data
+        const lesson = allLessons.find(l => l.id === id);
+
+        if (lesson) {
+            // Redirect to edit page with lesson data
+            // For now, we'll use a simple prompt-based edit
+            const newName = prompt('Enter new lesson name:', lesson.lessonName);
+            if (newName && newName !== lesson.lessonName) {
+                updateLesson(id, {
+                    id: id,
+                    lessonName: newName,
+                    pdfUrl: lesson.pdfUrl,
+                    isActive: lesson.isActive,
+                    course: lesson.course
+                });
+            }
+        } else {
+            showError('Lesson not found.');
+        }
+    }
+
+    async function updateLesson(id, updateData) {
+        try {
+            const response = await fetch(`http://localhost:8080/Lesson/update`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updateData)
+            });
+
+            if (response.ok) {
+                showSuccess(`Lesson #${id} updated successfully!`);
+                loadLessons(); // Reload the list
+            } else {
+                const errorText = await response.text();
+                showError(`Failed to update lesson #${id}. ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showError('Network error. Please check your connection and try again.');
+        }
+    }
+
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+
+        if (!searchTerm) {
+            displayLessons(allLessons);
+            return;
+        }
+
+        const filtered = allLessons.filter(lesson => {
+            const lessonName = lesson.lessonName ? lesson.lessonName.toLowerCase() : '';
+            const courseName = lesson.course && lesson.course.courseName ? lesson.course.courseName.toLowerCase() : '';
+
+            return lessonName.includes(searchTerm) ||
+                   courseName.includes(searchTerm);
+        });
+
+        displayLessons(filtered);
+    });
+
+    // Take Quiz function
+    function takeQuiz() {
+        // Redirect to quiz page
+        window.location.href = 'quiz.html';
+    }
+
+    // Update navigation links based on permissions
+    function updateNavLinks() {
+        const quizLink = document.getElementById('quizLink');
+        if (!hasPermission('view_quizzes')) {
+            quizLink.style.display = 'none';
+        }
+    }
+
+    // Helper function to escape HTML
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+</script>
+</body>
+</html>
