@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CertiGo | Certificate</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Custom CSS for Certificate Page */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        header.navbar {
+            width: 100%;
+            background-color: #fff;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .navbar .logo span {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .certificate-container {
+            background-color: #fff;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 40px;
+            max-width: 800px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 80px; /* To account for fixed navbar */
+            position: relative;
+        }
+
+        .certificate-header {
+            margin-bottom: 30px;
+        }
+
+        .certificate-logo {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+        }
+
+        .certificate-header h1 {
+            font-size: 36px;
+            color: #333;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .certificate-body {
+            margin-bottom: 30px;
+        }
+
+        .certificate-body p {
+            font-size: 18px;
+            color: #666;
+            margin: 10px 0;
+        }
+
+        .certificate-body h2 {
+            font-size: 28px;
+            color: #333;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .certificate-body h3 {
+            font-size: 24px;
+            color: #555;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        .certificate-body .date {
+            font-size: 16px;
+            color: #777;
+            margin-top: 20px;
+        }
+
+        .certificate-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+        }
+
+        .certificate-footer .signature img {
+            width: 150px;
+            height: auto;
+        }
+
+        .certificate-footer .signature p {
+            font-size: 14px;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        .certificate-footer .website {
+            font-size: 16px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .download-btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: background-color 0.3s;
+        }
+
+        .download-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .download-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .certificate-container {
+                padding: 20px;
+                margin-top: 60px;
+            }
+
+            .certificate-header h1 {
+                font-size: 28px;
+            }
+
+            .certificate-body h2 {
+                font-size: 24px;
+            }
+
+            .certificate-body h3 {
+                font-size: 20px;
+            }
+
+            .certificate-footer {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .certificate-footer .signature {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header class="navbar">
+    <div class="logo">
+        <img src="images\CertiGo.png" alt="CertiGo Logo">
+        <span>CertiGo</span>
+    </div>
+</header>
+
+<div class="certificate-container">
+    <div class="certificate-header">
+        <img src="images\CertiGo.png" alt="CertiGo Logo" class="certificate-logo">
+        <h1>Certificate of Completion</h1>
+    </div>
+
+    <div class="certificate-body">
+        <p>This is to certify that</p>
+        <h2 id="user-name">[User Name]</h2>
+        <p>has successfully completed the course</p>
+        <h3 id="course-name">[Course Name]</h3>
+        <p class="date">Date: <span id="completion-date"></span></p>
+    </div>
+
+    <div class="certificate-footer">
+        <div class="signature">
+            <img src="https://codeline.om/images/codeline%20by%20rihal%20logo.png" alt="Company Signature">
+            <p>Company Signature</p>
+        </div>
+        <div class="website">
+            <p>www.certigo.com</p>
+        </div>
+    </div>
+
+    <button class="download-btn" id="generate-cert-btn">Download Certification</button>
+</div>
+
+<!-- JS Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+    // Fill in dynamic info from sessionStorage (unchanged)
+    const userName = sessionStorage.getItem('certUserName') || 'Mulk Badar';
+    const courseName = sessionStorage.getItem('certCourseName') || 'Java Backend Development';
+    const today = new Date().toLocaleDateString();
+
+    document.getElementById('user-name').innerText = userName;
+    document.getElementById('course-name').innerText = courseName;
+    document.getElementById('completion-date').innerText = today;
+
+    // Generate & DOWNLOAD certificate directly
+    document.getElementById('generate-cert-btn').addEventListener('click', async () => {
+        const certElement = document.querySelector('.certificate-container');
+        const button = document.getElementById('generate-cert-btn');
+
+        // Prevent double-clicks
+        button.disabled = true;
+        button.innerText = 'Downloading...';
+
+        // Hide button from PDF
+        button.style.display = 'none';
+
+        const canvas = await html2canvas(certElement, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: '#ffffff'
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({
+            orientation: 'landscape',
+            unit: 'px',
+            format: [canvas.width, canvas.height]
+        });
+
+        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+
+        // 🔽 FORCE DOWNLOAD
+        pdf.save(`${userName}-Certificate.pdf`);
+
+        // Restore button
+        button.style.display = 'block';
+        button.disabled = false;
+        button.innerText = 'Generate Certificate';
+    });
+</script>
+
+</body>
+</html>
