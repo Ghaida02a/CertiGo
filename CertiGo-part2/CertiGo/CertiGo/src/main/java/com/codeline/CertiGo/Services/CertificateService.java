@@ -6,10 +6,12 @@ import com.codeline.CertiGo.DTOCreateRequest.QuizResultCreateRequestDTO;
 import com.codeline.CertiGo.DTOCreateRequest.UserCreateRequest;
 import com.codeline.CertiGo.DTOResponse.CertificateResponse;
 import com.codeline.CertiGo.Entity.Certificate;
+import com.codeline.CertiGo.Entity.QuizResult;
 import com.codeline.CertiGo.Exceptions.CustomException;
 import com.codeline.CertiGo.Helper.Constants;
 import com.codeline.CertiGo.Helper.Utils;
 import com.codeline.CertiGo.Repository.CertificationRepository;
+import com.codeline.CertiGo.Repository.QuizResultRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,10 @@ public class CertificateService {
 
     @Autowired
     CertificationRepository certificationRepository;
+    @Autowired
+    QuizResultService quizResultService;
+    @Autowired
+    QuizResultRepository quizResultRepository;
 
     // Get all active certificates
     public List<Certificate> getAllCertificates() throws CustomException {
@@ -57,8 +63,15 @@ public class CertificateService {
         }
 
         if (Utils.isNotNull(certificateCreateRequest.getQuizResult())) {
-            certificate.setQuizResult(QuizResultCreateRequestDTO.convertToQuizResult(certificateCreateRequest.getQuizResult()));
+            QuizResult quizResult =
+                    QuizResultCreateRequestDTO.convertToQuizResult(
+                            certificateCreateRequest.getQuizResult()
+                    );
+
+            quizResult = quizResultRepository.save(quizResult);
+            certificate.setQuizResult(quizResult);
         }
+
         Certificate savedCertificate = certificationRepository.save(certificate);
         return CertificateResponse.entityToDTOResponse(savedCertificate);
     }

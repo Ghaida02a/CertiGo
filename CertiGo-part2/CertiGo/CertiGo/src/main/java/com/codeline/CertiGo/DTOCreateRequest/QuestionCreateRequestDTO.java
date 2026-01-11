@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -21,15 +22,34 @@ public class QuestionCreateRequestDTO {
     private String questionText;
     private String correctAnswer;
     private Integer quiz_id;
+    private List<Option> options;
 
     // convert DTO → Entity
     public static Question convertToQuestion(QuestionCreateRequestDTO request) {
+
         Question question = new Question();
         question.setQuestionText(request.getQuestionText());
         question.setCorrectAnswer(request.getCorrectAnswer());
-//        question.setQuiz(request.getQuiz().builder().id(request.getQuiz_id()).build());
+
+        List<Option> managedOptions = new ArrayList<>();
+
+        if (request.getOptions() != null) {
+            for (Option incomingOption : request.getOptions()) {
+
+                Option option = new Option();
+                option.setOptionText(incomingOption.getOptionText());
+                option.setIsCorrect(incomingOption.getIsCorrect());
+
+                option.setQuestion(question);
+
+                managedOptions.add(option);
+            }
+        }
+
+        question.setOptions(managedOptions);
         return question;
     }
+
 
     // validation
     public static void validateQuestion(QuestionCreateRequestDTO request) throws CustomException {

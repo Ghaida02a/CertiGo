@@ -14,12 +14,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CertificateCreateRequest {
+
     private String certificateName;
     private String description;
     private CourseCreateRequest course;
     private UserCreateRequest user;
     private QuizResultCreateRequestDTO quizResult;
-
     //Validation
     public static void validateCertificateCreateRequested(CertificateCreateRequest dto) throws CustomException {
         if (Utils.isNull(dto.getCertificateName())) {

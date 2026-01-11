@@ -31,7 +31,11 @@ public class QuestionUpdateRequest {
         question.setId(request.getId());
         // question.setQuiz();
         //question.setUserAnswers(request.getUserAnswers());
-        //  question.setOptions(request.getOptions());
+        List<Option> options = request.getOptions();
+        for (Option option : options) {
+            option.setQuestion(question);
+        }
+        question.setOptions(options);
         question.setQuestionText(request.getQuestionText());
         question.setCorrectAnswer(request.getCorrectAnswer());
         return question;
