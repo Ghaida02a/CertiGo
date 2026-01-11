@@ -177,7 +177,7 @@
             const pdfUrl = lesson.pdfUrl || 'N/A';
 
             // Build action buttons based on permissions
-            let actionButtons = `<button class="cert-btn cert-btn-view" onclick="viewLesson(${lesson.id})">👁️ View PDF</button>`;
+            let actionButtons = `<button class="cert-btn cert-btn-view" onclick="viewLesson(${lesson.id})">👁️ View</button>`;
             if (hasPermission('edit_lesson')) {
                 actionButtons += ` <button class="cert-btn cert-btn-edit" onclick="editLesson(${lesson.id})">✏️ Edit</button>`;
             }
