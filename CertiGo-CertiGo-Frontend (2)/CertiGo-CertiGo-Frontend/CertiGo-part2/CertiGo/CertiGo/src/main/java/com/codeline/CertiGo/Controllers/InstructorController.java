@@ -19,7 +19,6 @@ public class InstructorController {
     @Autowired
     InstructorService instructorService;
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("create")
     public InstructorCreateResponse createInstructor(@RequestBody InstructorCreateRequest requestObj) throws CustomException {
         InstructorCreateRequest.validCreateInstructorRequest(requestObj);
@@ -27,10 +26,9 @@ public class InstructorController {
         return instructor;
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @GetMapping("/getAll")
     public List<Instructor> getAllInstructors() throws CustomException {
-        List<Instructor> instructors= instructorService.getAllInstructors();
+        List<Instructor> instructors = instructorService.getAllInstructors();
         return instructors;
     }
 

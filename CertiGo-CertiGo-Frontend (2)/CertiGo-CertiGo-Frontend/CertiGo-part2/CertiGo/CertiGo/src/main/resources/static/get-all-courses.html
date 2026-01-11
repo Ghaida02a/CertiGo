@@ -164,11 +164,13 @@
                 ? '<span class="cert-badge cert-badge-active">Active</span>'
                 : '<span class="cert-badge cert-badge-inactive">Inactive</span>';
 
-            const instructorName = course.instructor ? course.instructor.instructorName || `Instructor #${course.instructor.id}` : 'N/A';
+            const instructorNames = course.instructors && course.instructors.length > 0
+                ? course.instructors.map(i => i.name || `Instructor #${i.id}`).join(', ')
+                : 'N/A';
             const companyName = course.company ? course.company.companyName || `Company #${course.company.id}` : 'N/A';
             const createdAt = course.createdAt ? new Date(course.createdAt).toLocaleDateString() : 'N/A';
             const price = course.price ? `$${course.price.toFixed(2)}` : 'N/A';
-            const duration = course.duration || 'N/A';
+            const duration = course.durationHours || 'N/A';
 
             // Build action buttons based on permissions
             let actionButtons = '<div class="cert-action-buttons">';
@@ -187,10 +189,10 @@
             row.innerHTML = `
                 <td><strong>#${course.id}</strong></td>
                 <td><strong>${escapeHtml(course.courseName)}</strong></td>
-                <td><div class="certificate-description" title="${escapeHtml(course.description || 'N/A')}">${escapeHtml(course.description || 'N/A')}</div></td>
+                <td><div class="certificate-description" title="${escapeHtml(course.type || 'N/A')}">${escapeHtml(course.type || 'N/A')}</div></td>
                 <td>${duration}</td>
                 <td>${price}</td>
-                <td>${escapeHtml(instructorName)}</td>
+                <td>${escapeHtml(instructorNames)}</td>
                 <td>${escapeHtml(companyName)}</td>
                 <td>${statusBadge}</td>
                 <td class="date-cell">${createdAt}</td>
@@ -243,7 +245,9 @@
 
         if (course) {
             // Create a detailed view modal or alert
-            const instructorName = course.instructor ? course.instructor.instructorName || `Instructor #${course.instructor.id}` : 'N/A';
+            const instructorNames = course.instructors && course.instructors.length > 0
+                ? course.instructors.map(i => i.name || `Instructor #${i.id}`).join(', ')
+                : 'N/A';
             const companyName = course.company ? course.company.companyName || `Company #${course.company.id}` : 'N/A';
             const price = course.price ? `$${course.price.toFixed(2)}` : 'N/A';
 
@@ -252,10 +256,10 @@ Course Details:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ID: ${course.id}
 Name: ${course.courseName}
-Description: ${course.description || 'N/A'}
-Duration: ${course.duration || 'N/A'} hours
+Description: ${course.type || 'N/A'}
+Duration: ${course.durationHours || 'N/A'} hours
 Price: ${price}
-Instructor: ${instructorName}
+Instructor: ${instructorNames}
 Company: ${companyName}
 Status: ${course.isActive ? 'Active' : 'Inactive'}
 
@@ -299,13 +303,15 @@ Updated: ${course.updatedAt ? new Date(course.updatedAt).toLocaleString() : 'N/A
 
         const filtered = allCourses.filter(course => {
             const courseName = course.courseName ? course.courseName.toLowerCase() : '';
-            const description = course.description ? course.description.toLowerCase() : '';
-            const instructorName = course.instructor && course.instructor.instructorName ? course.instructor.instructorName.toLowerCase() : '';
+            const description = course.type ? course.type.toLowerCase() : '';
+            const instructorNames = course.instructors && course.instructors.length > 0
+                ? course.instructors.map(i => i.name || '').join(' ').toLowerCase()
+                : '';
             const companyName = course.company && course.company.companyName ? course.company.companyName.toLowerCase() : '';
 
             return courseName.includes(searchTerm) ||
                    description.includes(searchTerm) ||
-                   instructorName.includes(searchTerm) ||
+                   instructorNames.includes(searchTerm) ||
                    companyName.includes(searchTerm);
         });
 
@@ -322,3 +328,4 @@ Updated: ${course.updatedAt ? new Date(course.updatedAt).toLocaleString() : 'N/A
 </script>
 </body>
 </html>
+```
