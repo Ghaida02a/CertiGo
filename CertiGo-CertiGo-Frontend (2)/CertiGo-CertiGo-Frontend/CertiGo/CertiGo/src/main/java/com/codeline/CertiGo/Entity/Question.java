@@ -41,6 +41,8 @@
 //}
 package com.codeline.CertiGo.Entity;
 
+import com.codeline.CertiGo.DTOCreateRequest.OptionCreateRequest;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -69,9 +71,7 @@ public class Question {
     @JoinColumn(name = "quiz")
     private Quiz quiz;
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Option> options;
-
-    @OneToMany(mappedBy = "question")
-    private List<UserAnswer> userAnswers;
 }

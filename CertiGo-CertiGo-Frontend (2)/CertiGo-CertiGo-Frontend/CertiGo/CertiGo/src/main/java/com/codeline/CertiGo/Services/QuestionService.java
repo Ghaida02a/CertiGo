@@ -1,5 +1,6 @@
 package com.codeline.CertiGo.Services;
 
+import com.codeline.CertiGo.DTOCreateRequest.OptionCreateRequest;
 import com.codeline.CertiGo.DTOCreateRequest.QuestionCreateRequestDTO;
 import com.codeline.CertiGo.DTOResponse.QuestionResponse;
 import com.codeline.CertiGo.DTOUpdateRequest.QuestionUpdateRequest;
@@ -29,7 +30,7 @@ public class QuestionService {
     private QuizRepository quizRepository;
 
     // ---------------- SAVE ----------------
-    public QuestionResponse saveQuestion(QuestionCreateRequestDTO request) throws CustomException {
+    public QuestionResponse saveQuestion(QuestionCreateRequestDTO request) {
 
         Question question = new Question();
         question.setQuestionText(request.getQuestionText());
@@ -39,31 +40,33 @@ public class QuestionService {
 
         // QUIZ
         Quiz quiz = quizRepository.findById(request.getQuiz_id())
-                .orElseThrow(() -> new CustomException(Constants.QUIZ_ID_NOT_VALID, 404));
+                .orElseThrow(() ->
+                        new RuntimeException("Quiz not found with id: " + request.getQuiz_id())
+                );
         question.setQuiz(quiz);
 
-        // OPTIONS
-        List<Option> options = new ArrayList<>();
-        if (request.getOptions() != null && !request.getOptions().isEmpty()) {
-            for (Option option : request.getOptions()) {
-                option.setQuestion(question);
-                options.add(option);
-            }
-        }
-        question.setOptions(options);
-        // USER ANSWERS
-        List<UserAnswer> userAnswers = new ArrayList<>();
-        if (request.getUserAnswers() != null && !request.getUserAnswers().isEmpty()) {
-            for (UserAnswer userAnswer : request.getUserAnswers()) {
-                userAnswer.setQuestion(question);
-                userAnswers.add(userAnswer);
-            }
-        }
-        question.setUserAnswers(userAnswers);
+        List<Option> managedOptions = new ArrayList<>();
 
+        if (request.getOptions() != null) {
+            for (Option incomingOption : request.getOptions()) {
+                Option option = new Option();
+                option.setOptionText(incomingOption.getOptionText());
+                option.setIsCorrect(incomingOption.getIsCorrect());
+                option.setIsActive(true);
+                option.setCreatedAt(new Date());
+                option.setQuestion(question);
+                managedOptions.add(option);
+            }
+        }
+
+        question.setOptions(managedOptions);
+
+        // SAVE (cascade saves options)
         Question savedQuestion = questionRepository.save(question);
+
         return QuestionResponse.fromEntity(savedQuestion);
     }
+
 
     public List<QuestionResponse> getAllQuestions() {
 
@@ -125,26 +128,6 @@ public class QuestionService {
                     .orElseThrow(() -> new CustomException(Constants.QUIZ_ID_NOT_VALID, 404));
             existingQuestion.setQuiz(quiz);
         }
-
-        // Update options
-        List<Option> options = new ArrayList<>();
-        if (request.getOptions() != null && !request.getOptions().isEmpty()) {
-            for (Option option : request.getOptions()) {
-                option.setQuestion(existingQuestion);
-                options.add(option);
-            }
-        }
-        existingQuestion.setOptions(options);
-
-        // Update user answers
-        List<UserAnswer> userAnswers = new ArrayList<>();
-        if (request.getUserAnswers() != null && !request.getUserAnswers().isEmpty()) {
-            for (UserAnswer userAnswer : request.getUserAnswers()) {
-                userAnswer.setQuestion(existingQuestion);
-                userAnswers.add(userAnswer);
-            }
-        }
-        existingQuestion.setUserAnswers(userAnswers);
 
         // Save updated question
         Question savedQuestion = questionRepository.save(existingQuestion);

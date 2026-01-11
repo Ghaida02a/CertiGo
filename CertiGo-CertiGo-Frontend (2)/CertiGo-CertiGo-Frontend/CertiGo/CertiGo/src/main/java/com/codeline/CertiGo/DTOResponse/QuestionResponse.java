@@ -20,7 +20,8 @@ public class QuestionResponse {
     private String correctAnswer;
     private Integer quiz_id;
     private List<Option> options;
-    private List<UserAnswer> userAnswers;
+
+
     // Convert Entity → DTO
     public static QuestionResponse fromEntity(Question question) {
         return QuestionResponse.builder()
@@ -29,7 +30,6 @@ public class QuestionResponse {
                 .correctAnswer(question.getCorrectAnswer())
                 .quiz_id(question.getQuiz().getId())
                 .options(question.getOptions())
-                .userAnswers(question.getUserAnswers())
                 .build();
     }
 }

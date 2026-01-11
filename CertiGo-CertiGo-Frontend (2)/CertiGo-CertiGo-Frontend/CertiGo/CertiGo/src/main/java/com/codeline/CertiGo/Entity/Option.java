@@ -1,5 +1,6 @@
 package com.codeline.CertiGo.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table
+@Table(name = "options")
 public class Option {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,5 +25,6 @@ public class Option {
 
     @ManyToOne
     @JoinColumn(name = "question")
+    @JsonBackReference
     private Question question;
 }
