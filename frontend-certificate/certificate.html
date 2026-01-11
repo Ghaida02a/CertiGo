@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CertiGo | Certificate</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="logo">
+        <img src="C:\Users\LENOVO\Downloads\232914367-removebg-preview (7).png" alt="CertiGo Logo">
+        <span>CertiGo</span>
+    </div>
+</header>
+
+<div class="certificate-container">
+    <div class="certificate-header">
+        <img src="C:\Users\LENOVO\Downloads\232914367-removebg-preview (10).png" alt="CertiGo Logo" class="certificate-logo">
+        <h1>Certificate of Completion</h1>
+    </div>
+
+    <div class="certificate-body">
+        <p>This is to certify that</p>
+        <h2 id="user-name">[User Name]</h2>
+        <p>has successfully completed the course</p>
+        <h3 id="course-name">[Course Name]</h3>
+        <p class="date">Date: <span id="completion-date"></span></p>
+    </div>
+
+    <div class="certificate-footer">
+        <div class="signature">
+            <img src="https://codeline.om/images/codeline%20by%20rihal%20logo.png" alt="Company Signature">
+            <p>Company Signature</p>
+        </div>
+        <div class="website">
+            <p>www.certigo.com</p>
+        </div>
+    </div>
+
+    <button class="download-btn" id="generate-cert-btn">Generate Certificate</button>
+</div>
+
+<!-- JS Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+    // Fill in dynamic info from sessionStorage (unchanged)
+    const userName = sessionStorage.getItem('certUserName') || 'Mulk Badar';
+    const courseName = sessionStorage.getItem('certCourseName') || 'Java Backend Development';
+    const today = new Date().toLocaleDateString();
+
+    document.getElementById('user-name').innerText = userName;
+    document.getElementById('course-name').innerText = courseName;
+    document.getElementById('completion-date').innerText = today;
+
+    // Generate & DOWNLOAD certificate directly
+    document.getElementById('generate-cert-btn').addEventListener('click', async () => {
+        const certElement = document.querySelector('.certificate-container');
+        const button = document.getElementById('generate-cert-btn');
+
+        // Prevent double-clicks
+        button.disabled = true;
+        button.innerText = 'Downloading...';
+
+        // Hide button from PDF
+        button.style.display = 'none';
+
+        const canvas = await html2canvas(certElement, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: '#ffffff'
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({
+            orientation: 'landscape',
+            unit: 'px',
+            format: [canvas.width, canvas.height]
+        });
+
+        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+
+        // 🔽 FORCE DOWNLOAD
+        pdf.save(`${userName}-Certificate.pdf`);
+
+        // Restore button
+        button.style.display = 'block';
+        button.disabled = false;
+        button.innerText = 'Generate Certificate';
+    });
+</script>
+
+
+</body>
+</html>
