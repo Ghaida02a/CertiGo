@@ -1,9 +1,427 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>All Questions - CertiGo</title>-->
+<!--    <link rel="stylesheet" href="style.css">-->
+<!--    <script src="auth.js"></script>-->
+<!--</head>-->
+<!--<body class="certificates-page">-->
+
+<!--&lt;!&ndash; NAVBAR &ndash;&gt;-->
+<!--<div class="navbar">-->
+<!--    <div class="logo">-->
+<!--        <img src="images\CertiGo.png" alt="CertiGo Logo">-->
+<!--        <h2>CertiGo</h2>-->
+<!--    </div>-->
+<!--    <nav>-->
+<!--        <a href="admin-index.html">Admin Dashboard</a>-->
+<!--    </nav>-->
+<!--    <div class="dropdown">-->
+<!--        <button class="dropbtn" id="accountBtn">Account</button>-->
+<!--        <div class="dropdown-content" id="accountDropdown">-->
+<!--            <a href="#" onclick="showUserProfile(); return false;">Profile</a>-->
+<!--            <a href="#" onclick="logout(); return false;">Logout</a>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--    <div class="certificates-container">-->
+<!--        <div class="certificates-header">-->
+<!--            <h1>All Questions</h1>-->
+<!--            <p>View and manage all quiz questions in the system</p>-->
+<!--        </div>-->
+
+<!--        <div id="successMessage" class="certificates-success-message" style="display: none;">-->
+<!--            Operation completed successfully!-->
+<!--        </div>-->
+
+<!--        <div id="errorAlert" class="certificates-error-alert" style="display: none;">-->
+<!--            Failed to load questions. Please try again.-->
+<!--        </div>-->
+
+<!--        <div class="certificates-stats" id="stats" style="display: none;">-->
+<!--            <div class="certificates-stat-card">-->
+<!--                <h3>Total Questions</h3>-->
+<!--                <p id="totalCount">0</p>-->
+<!--            </div>-->
+<!--            <div class="certificates-stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">-->
+<!--                <h3>Multiple Choice</h3>-->
+<!--                <p id="multipleChoiceCount">0</p>-->
+<!--            </div>-->
+<!--            <div class="certificates-stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">-->
+<!--                <h3>True/False</h3>-->
+<!--                <p id="trueFalseCount">0</p>-->
+<!--            </div>-->
+<!--            <div class="certificates-stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">-->
+<!--                <h3>Other Types</h3>-->
+<!--                <p id="otherCount">0</p>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div class="certificates-controls">-->
+<!--            <div class="certificates-search-box">-->
+<!--                <input type="text" id="searchInput" placeholder="🔍 Search by question text, type, or quiz...">-->
+<!--            </div>-->
+<!--            <div style="display: flex; gap: 10px;">-->
+<!--                <button class="cert-btn cert-btn-refresh" onclick="loadQuestions()">🔄 Refresh</button>-->
+<!--                <a href="add-question.html" class="cert-btn cert-btn-primary admin-only">➕ Add Question</a>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div id="loading" class="certificates-loading">-->
+<!--            <div class="certificates-spinner"></div>-->
+<!--            <p style="color: #666; font-size: 16px;">Loading questions...</p>-->
+<!--        </div>-->
+
+<!--        <div id="tableContainer" class="certificates-table-container" style="display: none;">-->
+<!--            <table class="certificates-table">-->
+<!--                <thead>-->
+<!--                    <tr>-->
+<!--                        <th>ID</th>-->
+<!--                        <th>Question Text</th>-->
+<!--                        <th>Question Type</th>-->
+<!--                        <th>Points</th>-->
+<!--                        <th>Quiz</th>-->
+<!--                        <th>Options Count</th>-->
+<!--                        <th>Created At</th>-->
+<!--                        <th>Actions</th>-->
+<!--                    </tr>-->
+<!--                </thead>-->
+<!--                <tbody id="questionsTableBody">-->
+<!--                    &lt;!&ndash; Data will be populated here &ndash;&gt;-->
+<!--                </tbody>-->
+<!--            </table>-->
+<!--        </div>-->
+
+<!--        <div id="emptyState" class="certificates-empty-state" style="display: none;">-->
+<!--            <div class="certificates-empty-state-icon">❓</div>-->
+<!--            <h3>No Questions Found</h3>-->
+<!--            <p>There are no questions in the system yet.</p>-->
+<!--            <a href="add-question.html" class="cert-btn cert-btn-primary admin-only">Create Your First Question</a>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <script>-->
+<!--        let allQuestions = [];-->
+
+<!--        // Check authentication on page load-->
+<!--        window.addEventListener('DOMContentLoaded', () => {-->
+<!--            // Require admin access for this page-->
+<!--            requireAdmin();-->
+<!--            loadQuestions();-->
+<!--        });-->
+
+<!--        async function loadQuestions() {-->
+<!--            showLoading(true);-->
+<!--            hideError();-->
+
+<!--            try {-->
+<!--                const response = await fetch('http://localhost:8080/question/getAll', {-->
+<!--                    method: 'GET',-->
+<!--                    headers: {-->
+<!--                        'Content-Type': 'application/json',-->
+<!--                    }-->
+<!--                });-->
+
+<!--                if (response.ok) {-->
+<!--                    allQuestions = await response.json();-->
+<!--                    displayQuestions(allQuestions);-->
+<!--                    updateStats(allQuestions);-->
+<!--                    showLoading(false);-->
+<!--                } else {-->
+<!--                    showLoading(false);-->
+<!--                    showError('Failed to load questions. Server returned an error.');-->
+<!--                }-->
+<!--            } catch (error) {-->
+<!--                showLoading(false);-->
+<!--                console.error('Error:', error);-->
+<!--                showError('Network error. Please check your connection and try again.');-->
+<!--            }-->
+<!--        }-->
+
+<!--        function displayQuestions(questions) {-->
+<!--            const tbody = document.getElementById('questionsTableBody');-->
+<!--            const tableContainer = document.getElementById('tableContainer');-->
+<!--            const emptyState = document.getElementById('emptyState');-->
+
+<!--            if (!questions || questions.length === 0) {-->
+<!--                tableContainer.style.display = 'none';-->
+<!--                emptyState.style.display = 'block';-->
+<!--                document.getElementById('stats').style.display = 'none';-->
+<!--                return;-->
+<!--            }-->
+
+<!--            tableContainer.style.display = 'block';-->
+<!--            emptyState.style.display = 'none';-->
+<!--            document.getElementById('stats').style.display = 'flex';-->
+
+<!--            tbody.innerHTML = '';-->
+
+<!--            questions.forEach(question => {-->
+<!--                const row = document.createElement('tr');-->
+
+<!--                // Determine question type badge-->
+<!--                let typeBadge = '';-->
+<!--                const questionType = question.questionType ? question.questionType.toLowerCase() : 'unknown';-->
+
+<!--                if (questionType.includes('multiple') || questionType.includes('choice')) {-->
+<!--                    typeBadge = '<span class="cert-badge" style="background: #667eea;">Multiple Choice</span>';-->
+<!--                } else if (questionType.includes('true') || questionType.includes('false')) {-->
+<!--                    typeBadge = '<span class="cert-badge" style="background: #f093fb;">True/False</span>';-->
+<!--                } else if (questionType.includes('short') || questionType.includes('text')) {-->
+<!--                    typeBadge = '<span class="cert-badge" style="background: #4facfe;">Short Answer</span>';-->
+<!--                } else {-->
+<!--                    typeBadge = `<span class="cert-badge">${escapeHtml(question.questionType || 'N/A')}</span>`;-->
+<!--                }-->
+
+<!--                const quizInfo = question.quiz && question.quiz.id-->
+<!--                    ? `Quiz #${question.quiz.id}`-->
+<!--                    : 'N/A';-->
+
+<!--                const points = question.points !== undefined && question.points !== null-->
+<!--                    ? question.points-->
+<!--                    : 'N/A';-->
+
+<!--                const optionsCount = question.options && Array.isArray(question.options)-->
+<!--                    ? question.options.length-->
+<!--                    : 0;-->
+
+<!--                const createdAt = question.createdAt ? new Date(question.createdAt).toLocaleDateString() : 'N/A';-->
+
+<!--                row.innerHTML = `-->
+<!--                    <td><strong>#${question.id}</strong></td>-->
+<!--                    <td><div class="certificate-description" title="${escapeHtml(question.questionText)}">${escapeHtml(question.questionText)}</div></td>-->
+<!--                    <td>${typeBadge}</td>-->
+<!--                    <td><strong>${points}</strong></td>-->
+<!--                    <td>${escapeHtml(quizInfo)}</td>-->
+<!--                    <td>${optionsCount}</td>-->
+<!--                    <td class="date-cell">${createdAt}</td>-->
+<!--                    <td>-->
+<!--                        <div class="cert-action-buttons">-->
+<!--                            <button class="cert-btn cert-btn-view" onclick="viewQuestion(${question.id})">👁️ View</button>-->
+<!--                            <button class="cert-btn cert-btn-edit" onclick="editQuestion(${question.id})">✏️ Edit</button>-->
+<!--                            <button class="cert-btn cert-btn-delete" onclick="deleteQuestion(${question.id})">🗑️ Delete</button>-->
+<!--                        </div>-->
+<!--                    </td>-->
+<!--                `;-->
+
+<!--                tbody.appendChild(row);-->
+<!--            });-->
+<!--        }-->
+
+<!--        function updateStats(questions) {-->
+<!--            const total = questions.length;-->
+<!--            let multipleChoice = 0;-->
+<!--            let trueFalse = 0;-->
+<!--            let other = 0;-->
+
+<!--            questions.forEach(question => {-->
+<!--                const questionType = question.questionType ? question.questionType.toLowerCase() : '';-->
+
+<!--                if (questionType.includes('multiple') || questionType.includes('choice')) {-->
+<!--                    multipleChoice++;-->
+<!--                } else if (questionType.includes('true') || questionType.includes('false')) {-->
+<!--                    trueFalse++;-->
+<!--                } else {-->
+<!--                    other++;-->
+<!--                }-->
+<!--            });-->
+
+<!--            document.getElementById('totalCount').textContent = total;-->
+<!--            document.getElementById('multipleChoiceCount').textContent = multipleChoice;-->
+<!--            document.getElementById('trueFalseCount').textContent = trueFalse;-->
+<!--            document.getElementById('otherCount').textContent = other;-->
+<!--        }-->
+
+<!--        function showLoading(show) {-->
+<!--            document.getElementById('loading').style.display = show ? 'block' : 'none';-->
+<!--        }-->
+
+<!--        function showError(message) {-->
+<!--            const errorAlert = document.getElementById('errorAlert');-->
+<!--            errorAlert.textContent = message;-->
+<!--            errorAlert.style.display = 'block';-->
+<!--            setTimeout(() => {-->
+<!--                errorAlert.style.display = 'none';-->
+<!--            }, 5000);-->
+<!--        }-->
+
+<!--        function hideError() {-->
+<!--            document.getElementById('errorAlert').style.display = 'none';-->
+<!--        }-->
+
+<!--        function showSuccess(message) {-->
+<!--            const successMessage = document.getElementById('successMessage');-->
+<!--            successMessage.textContent = message;-->
+<!--            successMessage.style.display = 'block';-->
+<!--            setTimeout(() => {-->
+<!--                successMessage.style.display = 'none';-->
+<!--            }, 3000);-->
+<!--        }-->
+
+<!--        async function deleteQuestion(id) {-->
+<!--            // Check if user has permission to delete-->
+<!--            if (!hasPermission('delete_question')) {-->
+<!--                alert('Access Denied: Only administrators can delete questions.');-->
+<!--                return;-->
+<!--            }-->
+
+<!--            if (!confirm(`Are you sure you want to delete question #${id}? This action cannot be undone.`)) {-->
+<!--                return;-->
+<!--            }-->
+
+<!--            try {-->
+<!--                const response = await fetch(`http://localhost:8080/question/delete?id=${id}`, {-->
+<!--                    method: 'DELETE',-->
+<!--                    headers: {-->
+<!--                        'Content-Type': 'application/json',-->
+<!--                    }-->
+<!--                });-->
+
+<!--                if (response.ok || response.status === 204) {-->
+<!--                    showSuccess(`Question #${id} deleted successfully!`);-->
+<!--                    loadQuestions(); // Reload the list-->
+<!--                } else {-->
+<!--                    const errorText = await response.text();-->
+<!--                    showError(`Failed to delete question #${id}. ${errorText}`);-->
+<!--                }-->
+<!--            } catch (error) {-->
+<!--                console.error('Error:', error);-->
+<!--                showError('Network error. Please check your connection and try again.');-->
+<!--            }-->
+<!--        }-->
+
+<!--        function viewQuestion(id) {-->
+<!--            // Find the question in the loaded data-->
+<!--            const question = allQuestions.find(q => q.id === id);-->
+
+<!--            if (question) {-->
+<!--                // Create a detailed view modal or alert-->
+<!--                const quizInfo = question.quiz && question.quiz.id-->
+<!--                    ? `Quiz #${question.quiz.id}`-->
+<!--                    : 'N/A';-->
+
+<!--                const points = question.points !== undefined && question.points !== null-->
+<!--                    ? question.points-->
+<!--                    : 'N/A';-->
+
+<!--                let optionsText = 'No options';-->
+<!--                if (question.options && Array.isArray(question.options) && question.options.length > 0) {-->
+<!--                    optionsText = question.options.map((opt, idx) => {-->
+<!--                        const correctMark = opt.isCorrect ? ' ✓ (Correct)' : '';-->
+<!--                        return `  ${idx + 1}. ${opt.optionText}${correctMark}`;-->
+<!--                    }).join('\n');-->
+<!--                }-->
+
+<!--                const details = `-->
+<!--Question Details:-->
+<!--━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-->
+<!--ID: ${question.id}-->
+<!--Question Text: ${question.questionText}-->
+<!--Question Type: ${question.questionType || 'N/A'}-->
+<!--Points: ${points}-->
+
+<!--Quiz: ${quizInfo}-->
+
+<!--Options (${question.options ? question.options.length : 0}):-->
+<!--${optionsText}-->
+
+<!--Created: ${question.createdAt ? new Date(question.createdAt).toLocaleString() : 'N/A'}-->
+<!--Updated: ${question.updatedAt ? new Date(question.updatedAt).toLocaleString() : 'N/A'}-->
+<!--                `;-->
+<!--                alert(details);-->
+<!--            } else {-->
+<!--                showError('Question not found.');-->
+<!--            }-->
+<!--        }-->
+
+<!--        function editQuestion(id) {-->
+<!--            // Find the question in the loaded data-->
+<!--            const question = allQuestions.find(q => q.id === id);-->
+
+<!--            if (question) {-->
+<!--                // Redirect to edit page with question data-->
+<!--                // For now, we'll use a simple prompt-based edit-->
+<!--                const newText = prompt('Enter new question text:', question.questionText);-->
+<!--                if (newText && newText !== question.questionText) {-->
+<!--                    updateQuestion(id, {-->
+<!--                        id: id,-->
+<!--                        questionText: newText,-->
+<!--                        questionType: question.questionType,-->
+<!--                        points: question.points,-->
+<!--                        quiz: question.quiz-->
+<!--                    });-->
+<!--                }-->
+<!--            } else {-->
+<!--                showError('Question not found.');-->
+<!--            }-->
+<!--        }-->
+
+<!--        async function updateQuestion(id, updateData) {-->
+<!--            try {-->
+<!--                const response = await fetch(`http://localhost:8080/question/Update`, {-->
+<!--                    method: 'PUT',-->
+<!--                    headers: {-->
+<!--                        'Content-Type': 'application/json',-->
+<!--                    },-->
+<!--                    body: JSON.stringify(updateData)-->
+<!--                });-->
+
+<!--                if (response.ok) {-->
+<!--                    showSuccess(`Question #${id} updated successfully!`);-->
+<!--                    loadQuestions(); // Reload the list-->
+<!--                } else {-->
+<!--                    const errorText = await response.text();-->
+<!--                    showError(`Failed to update question #${id}. ${errorText}`);-->
+<!--                }-->
+<!--            } catch (error) {-->
+<!--                console.error('Error:', error);-->
+<!--                showError('Network error. Please check your connection and try again.');-->
+<!--            }-->
+<!--        }-->
+
+<!--        // Search functionality-->
+<!--        document.getElementById('searchInput').addEventListener('input', function(e) {-->
+<!--            const searchTerm = e.target.value.toLowerCase();-->
+
+<!--            if (!searchTerm) {-->
+<!--                displayQuestions(allQuestions);-->
+<!--                return;-->
+<!--            }-->
+
+<!--            const filtered = allQuestions.filter(question => {-->
+<!--                const questionText = question.questionText ? question.questionText.toLowerCase() : '';-->
+<!--                const questionType = question.questionType ? question.questionType.toLowerCase() : '';-->
+<!--                const quizId = question.quiz && question.quiz.id ? question.quiz.id.toString() : '';-->
+
+<!--                return questionText.includes(searchTerm) ||-->
+<!--                       questionType.includes(searchTerm) ||-->
+<!--                       quizId.includes(searchTerm);-->
+<!--            });-->
+
+<!--            displayQuestions(filtered);-->
+<!--        });-->
+
+<!--        // Helper function to escape HTML-->
+<!--        function escapeHtml(text) {-->
+<!--            if (!text) return '';-->
+<!--            const div = document.createElement('div');-->
+<!--            div.textContent = text;-->
+<!--            return div.innerHTML;-->
+<!--        }-->
+<!--    </script>-->
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Questions - CertiGo</title>
+    <title>  All Questions - CertiGo</title>
     <link rel="stylesheet" href="style.css">
     <script src="auth.js"></script>
 </head>
@@ -27,390 +445,350 @@
     </div>
 </div>
 
-    <div class="certificates-container">
-        <div class="certificates-header">
-            <h1>All Questions</h1>
-            <p>View and manage all quiz questions in the system</p>
-        </div>
+<div class="certificates-container">
+    <div class="certificates-header">
+        <h1>All Questions</h1>
+        <p>View and manage all quiz questions in the system</p>
+    </div>
 
-        <div id="successMessage" class="certificates-success-message" style="display: none;">
-            Operation completed successfully!
-        </div>
+    <div id="successMessage" class="certificates-success-message" style="display: none;">
+        Operation completed successfully!
+    </div>
 
-        <div id="errorAlert" class="certificates-error-alert" style="display: none;">
-            Failed to load questions. Please try again.
-        </div>
+    <div id="errorAlert" class="certificates-error-alert" style="display: none;">
+        Failed to load questions. Please try again.
+    </div>
 
-        <div class="certificates-stats" id="stats" style="display: none;">
-            <div class="certificates-stat-card">
-                <h3>Total Questions</h3>
-                <p id="totalCount">0</p>
-            </div>
-            <div class="certificates-stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                <h3>Multiple Choice</h3>
-                <p id="multipleChoiceCount">0</p>
-            </div>
-            <div class="certificates-stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                <h3>True/False</h3>
-                <p id="trueFalseCount">0</p>
-            </div>
-            <div class="certificates-stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                <h3>Other Types</h3>
-                <p id="otherCount">0</p>
-            </div>
+    <div class="certificates-stats" id="stats" style="display: none;">
+        <div class="certificates-stat-card">
+            <h3>Total Questions</h3>
+            <p id="totalCount">0</p>
         </div>
-
-        <div class="certificates-controls">
-            <div class="certificates-search-box">
-                <input type="text" id="searchInput" placeholder="🔍 Search by question text, type, or quiz...">
-            </div>
-            <div style="display: flex; gap: 10px;">
-                <button class="cert-btn cert-btn-refresh" onclick="loadQuestions()">🔄 Refresh</button>
-                <a href="add-question.html" class="cert-btn cert-btn-primary admin-only">➕ Add Question</a>
-            </div>
+        <div class="certificates-stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+            <h3>Active Questions</h3>
+            <p id="activeCount">0</p>
         </div>
-
-        <div id="loading" class="certificates-loading">
-            <div class="certificates-spinner"></div>
-            <p style="color: #666; font-size: 16px;">Loading questions...</p>
+        <div class="certificates-stat-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+            <h3>Inactive Questions</h3>
+            <p id="inactiveCount">0</p>
         </div>
-
-        <div id="tableContainer" class="certificates-table-container" style="display: none;">
-            <table class="certificates-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Question Text</th>
-                        <th>Question Type</th>
-                        <th>Points</th>
-                        <th>Quiz</th>
-                        <th>Options Count</th>
-                        <th>Created At</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="questionsTableBody">
-                    <!-- Data will be populated here -->
-                </tbody>
-            </table>
-        </div>
-
-        <div id="emptyState" class="certificates-empty-state" style="display: none;">
-            <div class="certificates-empty-state-icon">❓</div>
-            <h3>No Questions Found</h3>
-            <p>There are no questions in the system yet.</p>
-            <a href="add-question.html" class="cert-btn cert-btn-primary admin-only">Create Your First Question</a>
+        <div class="certificates-stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+            <h3>Questions with Answers</h3>
+            <p id="withAnswersCount">0</p>
         </div>
     </div>
 
-    <script>
-        let allQuestions = [];
+    <div class="certificates-controls">
+        <div class="certificates-search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Search by question text or quiz ID...">
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="cert-btn cert-btn-refresh" onclick="loadQuestions()">🔄 Refresh</button>
+            <a href="add-question.html" class="cert-btn cert-btn-primary admin-only">➕ Add Question</a>
+        </div>
+    </div>
 
-        // Check authentication on page load
-        window.addEventListener('DOMContentLoaded', () => {
-            // Require admin access for this page
-            requireAdmin();
-            loadQuestions();
-        });
+    <div id="loading" class="certificates-loading">
+        <div class="certificates-spinner"></div>
+        <p style="color: #666; font-size: 16px;">Loading questions...</p>
+    </div>
 
-        async function loadQuestions() {
-            showLoading(true);
-            hideError();
+    <div id="tableContainer" class="certificates-table-container" style="display: none;">
+        <table class="certificates-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Question Text</th>
+                <th>Correct Answer</th>
+                <th>Quiz</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="questionsTableBody">
+            <!-- Data will be populated here -->
+            </tbody>
+        </table>
+    </div>
 
-            try {
-                const response = await fetch('http://localhost:8080/question/getAll', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
+    <div id="emptyState" class="certificates-empty-state" style="display: none;">
+        <div class="certificates-empty-state-icon">❓</div>
+        <h3>No Questions Found</h3>
+        <p>There are no questions in the system yet.</p>
+        <a href="add-question.html" class="cert-btn cert-btn-primary admin-only">Create Your First Question</a>
+    </div>
+</div>
 
-                if (response.ok) {
-                    allQuestions = await response.json();
-                    displayQuestions(allQuestions);
-                    updateStats(allQuestions);
-                    showLoading(false);
-                } else {
-                    showLoading(false);
-                    showError('Failed to load questions. Server returned an error.');
+<script>
+    let allQuestions = [];
+
+    // Check authentication on page load
+    window.addEventListener('DOMContentLoaded', () => {
+        // Require admin access for this page
+        requireAdmin();
+        loadQuestions();
+    });
+
+    async function loadQuestions() {
+        showLoading(true);
+        hideError();
+
+        try {
+            const response = await fetch('http://localhost:8080/question/getAll', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
                 }
-            } catch (error) {
+            });
+
+            if (response.ok) {
+                allQuestions = await response.json();
+                displayQuestions(allQuestions);
+                updateStats(allQuestions);
                 showLoading(false);
-                console.error('Error:', error);
-                showError('Network error. Please check your connection and try again.');
+            } else {
+                showLoading(false);
+                showError('Failed to load questions. Server returned an error.');
             }
+        } catch (error) {
+            showLoading(false);
+            console.error('Error:', error);
+            showError('Network error. Please check your connection and try again.');
+        }
+    }
+
+    function displayQuestions(questions) {
+        const tbody = document.getElementById('questionsTableBody');
+        const tableContainer = document.getElementById('tableContainer');
+        const emptyState = document.getElementById('emptyState');
+
+        if (!questions || questions.length === 0) {
+            tableContainer.style.display = 'none';
+            emptyState.style.display = 'block';
+            document.getElementById('stats').style.display = 'none';
+            return;
         }
 
-        function displayQuestions(questions) {
-            const tbody = document.getElementById('questionsTableBody');
-            const tableContainer = document.getElementById('tableContainer');
-            const emptyState = document.getElementById('emptyState');
+        tableContainer.style.display = 'block';
+        emptyState.style.display = 'none';
+        document.getElementById('stats').style.display = 'flex';
 
-            if (!questions || questions.length === 0) {
-                tableContainer.style.display = 'none';
-                emptyState.style.display = 'block';
-                document.getElementById('stats').style.display = 'none';
-                return;
-            }
+        tbody.innerHTML = '';
 
-            tableContainer.style.display = 'block';
-            emptyState.style.display = 'none';
-            document.getElementById('stats').style.display = 'flex';
+        questions.forEach(question => {
+            const row = document.createElement('tr');
 
-            tbody.innerHTML = '';
+            const statusBadge = question.isActive
+                ? '<span class="cert-badge cert-badge-active">Active</span>'
+                : '<span class="cert-badge cert-badge-inactive">Inactive</span>';
 
-            questions.forEach(question => {
-                const row = document.createElement('tr');
+            const quizInfo = question.quiz && question.quiz.id
+                ? `Quiz #${question.quiz.id}`
+                : 'N/A';
 
-                // Determine question type badge
-                let typeBadge = '';
-                const questionType = question.questionType ? question.questionType.toLowerCase() : 'unknown';
+            const correctAnswer = question.correctAnswer || 'N/A';
 
-                if (questionType.includes('multiple') || questionType.includes('choice')) {
-                    typeBadge = '<span class="cert-badge" style="background: #667eea;">Multiple Choice</span>';
-                } else if (questionType.includes('true') || questionType.includes('false')) {
-                    typeBadge = '<span class="cert-badge" style="background: #f093fb;">True/False</span>';
-                } else if (questionType.includes('short') || questionType.includes('text')) {
-                    typeBadge = '<span class="cert-badge" style="background: #4facfe;">Short Answer</span>';
-                } else {
-                    typeBadge = `<span class="cert-badge">${escapeHtml(question.questionType || 'N/A')}</span>`;
+            const createdAt = question.createdAt ? new Date(question.createdAt).toLocaleDateString() : 'N/A';
+            const updatedAt = question.updatedAt ? new Date(question.updatedAt).toLocaleDateString() : 'N/A';
+
+            row.innerHTML = `
+                <td><strong>#${question.id}</strong></td>
+                <td><div class="certificate-description" title="${escapeHtml(question.questionText)}">${escapeHtml(question.questionText)}</div></td>
+                <td>${escapeHtml(correctAnswer)}</td>
+                <td>${escapeHtml(quizInfo)}</td>
+                <td>${statusBadge}</td>
+                <td class="date-cell">${createdAt}</td>
+                <td class="date-cell">${updatedAt}</td>
+                <td>
+                    <div class="cert-action-buttons">
+                        <button class="cert-btn cert-btn-view" onclick="viewQuestion(${question.id})">👁️ View</button>
+                        <button class="cert-btn cert-btn-edit" onclick="editQuestion(${question.id})">✏️ Edit</button>
+                        <button class="cert-btn cert-btn-delete" onclick="deleteQuestion(${question.id})">🗑️ Delete</button>
+                    </div>
+                </td>
+            `;
+
+            tbody.appendChild(row);
+        });
+    }
+
+    function updateStats(questions) {
+        const total = questions.length;
+        const active = questions.filter(q => q.isActive).length;
+        const inactive = total - active;
+        const withAnswers = questions.filter(q => q.correctAnswer && q.correctAnswer.trim() !== '').length;
+
+        document.getElementById('totalCount').textContent = total;
+        document.getElementById('activeCount').textContent = active;
+        document.getElementById('inactiveCount').textContent = inactive;
+        document.getElementById('withAnswersCount').textContent = withAnswers;
+    }
+
+    function showLoading(show) {
+        document.getElementById('loading').style.display = show ? 'block' : 'none';
+    }
+
+    function showError(message) {
+        const errorAlert = document.getElementById('errorAlert');
+        errorAlert.textContent = message;
+        errorAlert.style.display = 'block';
+        setTimeout(() => {
+            errorAlert.style.display = 'none';
+        }, 5000);
+    }
+
+    function hideError() {
+        document.getElementById('errorAlert').style.display = 'none';
+    }
+
+    function showSuccess(message) {
+        const successMessage = document.getElementById('successMessage');
+        successMessage.textContent = message;
+        successMessage.style.display = 'block';
+        setTimeout(() => {
+            successMessage.style.display = 'none';
+        }, 3000);
+    }
+
+    async function deleteQuestion(id) {
+        // Check if user has permission to delete
+        if (!hasPermission('delete_question')) {
+            alert('Access Denied: Only administrators can delete questions.');
+            return;
+        }
+
+        if (!confirm(`Are you sure you want to delete question #${id}? This action cannot be undone.`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/question/delete?id=${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
                 }
-
-                const quizInfo = question.quiz && question.quiz.id
-                    ? `Quiz #${question.quiz.id}`
-                    : 'N/A';
-
-                const points = question.points !== undefined && question.points !== null
-                    ? question.points
-                    : 'N/A';
-
-                const optionsCount = question.options && Array.isArray(question.options)
-                    ? question.options.length
-                    : 0;
-
-                const createdAt = question.createdAt ? new Date(question.createdAt).toLocaleDateString() : 'N/A';
-
-                row.innerHTML = `
-                    <td><strong>#${question.id}</strong></td>
-                    <td><div class="certificate-description" title="${escapeHtml(question.questionText)}">${escapeHtml(question.questionText)}</div></td>
-                    <td>${typeBadge}</td>
-                    <td><strong>${points}</strong></td>
-                    <td>${escapeHtml(quizInfo)}</td>
-                    <td>${optionsCount}</td>
-                    <td class="date-cell">${createdAt}</td>
-                    <td>
-                        <div class="cert-action-buttons">
-                            <button class="cert-btn cert-btn-view" onclick="viewQuestion(${question.id})">👁️ View</button>
-                            <button class="cert-btn cert-btn-edit" onclick="editQuestion(${question.id})">✏️ Edit</button>
-                            <button class="cert-btn cert-btn-delete" onclick="deleteQuestion(${question.id})">🗑️ Delete</button>
-                        </div>
-                    </td>
-                `;
-
-                tbody.appendChild(row);
             });
-        }
 
-        function updateStats(questions) {
-            const total = questions.length;
-            let multipleChoice = 0;
-            let trueFalse = 0;
-            let other = 0;
-
-            questions.forEach(question => {
-                const questionType = question.questionType ? question.questionType.toLowerCase() : '';
-
-                if (questionType.includes('multiple') || questionType.includes('choice')) {
-                    multipleChoice++;
-                } else if (questionType.includes('true') || questionType.includes('false')) {
-                    trueFalse++;
-                } else {
-                    other++;
-                }
-            });
-
-            document.getElementById('totalCount').textContent = total;
-            document.getElementById('multipleChoiceCount').textContent = multipleChoice;
-            document.getElementById('trueFalseCount').textContent = trueFalse;
-            document.getElementById('otherCount').textContent = other;
-        }
-
-        function showLoading(show) {
-            document.getElementById('loading').style.display = show ? 'block' : 'none';
-        }
-
-        function showError(message) {
-            const errorAlert = document.getElementById('errorAlert');
-            errorAlert.textContent = message;
-            errorAlert.style.display = 'block';
-            setTimeout(() => {
-                errorAlert.style.display = 'none';
-            }, 5000);
-        }
-
-        function hideError() {
-            document.getElementById('errorAlert').style.display = 'none';
-        }
-
-        function showSuccess(message) {
-            const successMessage = document.getElementById('successMessage');
-            successMessage.textContent = message;
-            successMessage.style.display = 'block';
-            setTimeout(() => {
-                successMessage.style.display = 'none';
-            }, 3000);
-        }
-
-        async function deleteQuestion(id) {
-            // Check if user has permission to delete
-            if (!hasPermission('delete_question')) {
-                alert('Access Denied: Only administrators can delete questions.');
-                return;
+            if (response.ok || response.status === 204) {
+                showSuccess(`Question #${id} deleted successfully!`);
+                loadQuestions(); // Reload the list
+            } else {
+                const errorText = await response.text();
+                showError(`Failed to delete question #${id}. ${errorText}`);
             }
-
-            if (!confirm(`Are you sure you want to delete question #${id}? This action cannot be undone.`)) {
-                return;
-            }
-
-            try {
-                const response = await fetch(`http://localhost:8080/question/delete?id=${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-
-                if (response.ok || response.status === 204) {
-                    showSuccess(`Question #${id} deleted successfully!`);
-                    loadQuestions(); // Reload the list
-                } else {
-                    const errorText = await response.text();
-                    showError(`Failed to delete question #${id}. ${errorText}`);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showError('Network error. Please check your connection and try again.');
-            }
+        } catch (error) {
+            console.error('Error:', error);
+            showError('Network error. Please check your connection and try again.');
         }
+    }
 
-        function viewQuestion(id) {
-            // Find the question in the loaded data
-            const question = allQuestions.find(q => q.id === id);
+    function viewQuestion(id) {
+        // Find the question in the loaded data
+        const question = allQuestions.find(q => q.id === id);
 
-            if (question) {
-                // Create a detailed view modal or alert
-                const quizInfo = question.quiz && question.quiz.id
-                    ? `Quiz #${question.quiz.id}`
-                    : 'N/A';
+        if (question) {
+            const quizInfo = question.quiz && question.quiz.id
+                ? `Quiz #${question.quiz.id}`
+                : 'N/A';
 
-                const points = question.points !== undefined && question.points !== null
-                    ? question.points
-                    : 'N/A';
-
-                let optionsText = 'No options';
-                if (question.options && Array.isArray(question.options) && question.options.length > 0) {
-                    optionsText = question.options.map((opt, idx) => {
-                        const correctMark = opt.isCorrect ? ' ✓ (Correct)' : '';
-                        return `  ${idx + 1}. ${opt.optionText}${correctMark}`;
-                    }).join('\n');
-                }
-
-                const details = `
+            const details = `
 Question Details:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ID: ${question.id}
 Question Text: ${question.questionText}
-Question Type: ${question.questionType || 'N/A'}
-Points: ${points}
+Correct Answer: ${question.correctAnswer || 'N/A'}
+Status: ${question.isActive ? 'Active' : 'Inactive'}
 
 Quiz: ${quizInfo}
 
-Options (${question.options ? question.options.length : 0}):
-${optionsText}
-
 Created: ${question.createdAt ? new Date(question.createdAt).toLocaleString() : 'N/A'}
 Updated: ${question.updatedAt ? new Date(question.updatedAt).toLocaleString() : 'N/A'}
-                `;
-                alert(details);
-            } else {
-                showError('Question not found.');
-            }
+            `;
+            alert(details);
+        } else {
+            showError('Question not found.');
         }
+    }
 
-        function editQuestion(id) {
-            // Find the question in the loaded data
-            const question = allQuestions.find(q => q.id === id);
+    function editQuestion(id) {
+        // Find the question in the loaded data
+        const question = allQuestions.find(q => q.id === id);
 
-            if (question) {
-                // Redirect to edit page with question data
-                // For now, we'll use a simple prompt-based edit
-                const newText = prompt('Enter new question text:', question.questionText);
-                if (newText && newText !== question.questionText) {
-                    updateQuestion(id, {
-                        id: id,
-                        questionText: newText,
-                        questionType: question.questionType,
-                        points: question.points,
-                        quiz: question.quiz
-                    });
-                }
-            } else {
-                showError('Question not found.');
-            }
-        }
+        if (question) {
+            // Simple edit for key fields
+            const newText = prompt('Enter new question text:', question.questionText);
+            const newAnswer = prompt('Enter new correct answer:', question.correctAnswer || '');
+            const newIsActive = confirm(`Is active? (OK for Yes, Cancel for No): Current: ${question.isActive ? 'Yes' : 'No'}`);
 
-        async function updateQuestion(id, updateData) {
-            try {
-                const response = await fetch(`http://localhost:8080/question/Update`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(updateData)
+            if (newText !== null) {
+                updateQuestion(id, {
+                    id: id,
+                    questionText: newText,
+                    correctAnswer: newAnswer,
+                    isActive: newIsActive,
+                    quiz: question.quiz
                 });
-
-                if (response.ok) {
-                    showSuccess(`Question #${id} updated successfully!`);
-                    loadQuestions(); // Reload the list
-                } else {
-                    const errorText = await response.text();
-                    showError(`Failed to update question #${id}. ${errorText}`);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showError('Network error. Please check your connection and try again.');
             }
+        } else {
+            showError('Question not found.');
         }
+    }
 
-        // Search functionality
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-
-            if (!searchTerm) {
-                displayQuestions(allQuestions);
-                return;
-            }
-
-            const filtered = allQuestions.filter(question => {
-                const questionText = question.questionText ? question.questionText.toLowerCase() : '';
-                const questionType = question.questionType ? question.questionType.toLowerCase() : '';
-                const quizId = question.quiz && question.quiz.id ? question.quiz.id.toString() : '';
-
-                return questionText.includes(searchTerm) ||
-                       questionType.includes(searchTerm) ||
-                       quizId.includes(searchTerm);
+    async function updateQuestion(id, updateData) {
+        try {
+            const response = await fetch(`http://localhost:8080/question/Update`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updateData)
             });
 
-            displayQuestions(filtered);
+            if (response.ok) {
+                showSuccess(`Question #${id} updated successfully!`);
+                loadQuestions(); // Reload the list
+            } else {
+                const errorText = await response.text();
+                showError(`Failed to update question #${id}. ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showError('Network error. Please check your connection and try again.');
+        }
+    }
+
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+
+        if (!searchTerm) {
+            displayQuestions(allQuestions);
+            return;
+        }
+
+        const filtered = allQuestions.filter(question => {
+            const questionText = question.questionText ? question.questionText.toLowerCase() : '';
+            const correctAnswer = question.correctAnswer ? question.correctAnswer.toLowerCase() : '';
+            const quizId = question.quiz && question.quiz.id ? question.quiz.id.toString() : '';
+
+            return questionText.includes(searchTerm) ||
+                   correctAnswer.includes(searchTerm) ||
+                   quizId.includes(searchTerm);
         });
 
-        // Helper function to escape HTML
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-    </script>
+        displayQuestions(filtered);
+    });
+
+    // Helper function to escape HTML
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+</script>
 </body>
 </html>
+```

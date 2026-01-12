@@ -40,7 +40,7 @@ public class QuestionService {
         Question question = new Question();
         question.setQuestionText(request.getQuestionText());
         question.setCorrectAnswer(request.getCorrectAnswer());
-        question.setIsActive(true);
+        question.setIsActive(Boolean.TRUE);
         question.setCreatedAt(new Date());
 
         // QUIZ
