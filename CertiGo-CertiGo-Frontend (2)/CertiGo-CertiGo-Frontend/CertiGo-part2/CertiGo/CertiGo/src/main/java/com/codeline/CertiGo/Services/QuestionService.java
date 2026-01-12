@@ -1,5 +1,6 @@
 package com.codeline.CertiGo.Services;
 
+import com.codeline.CertiGo.DTOCreateRequest.OptionCreateRequest;  // Added import
 import com.codeline.CertiGo.DTOCreateRequest.QuestionCreateRequestDTO;
 import com.codeline.CertiGo.DTOResponse.OptionResponse;
 import com.codeline.CertiGo.DTOResponse.QuestionResponse;
@@ -25,7 +26,6 @@ import java.util.stream.Collectors;
 @Service
 public class QuestionService {
     @Autowired
-
     private QuestionRepository questionRepository;
 
     @Autowired
@@ -36,6 +36,8 @@ public class QuestionService {
 
     // ---------------- SAVE ----------------
     public QuestionResponse saveQuestion(QuestionCreateRequestDTO request) throws CustomException {
+        // Validate the entire request (including options)
+        QuestionCreateRequestDTO.validateQuestion(request);
 
         Question question = new Question();
         question.setQuestionText(request.getQuestionText());
@@ -48,9 +50,23 @@ public class QuestionService {
                 .orElseThrow(() -> new CustomException(Constants.QUIZ_ID_NOT_VALID, 404));
         question.setQuiz(quiz);
 
+        // Save the question first
         Question savedQuestion = questionRepository.save(question);
+
+        // Now save the options, linking them to the saved question
+        if (request.getOptions() != null && !request.getOptions().isEmpty()) {
+            for (OptionCreateRequest optionRequest : request.getOptions()) {
+                Option option = OptionCreateRequest.convertToOption(optionRequest);
+                option.setQuestion(savedQuestion);  // Link to the saved question
+                option.setIsActive(Boolean.TRUE);    // Assuming Option has isActive; set to true
+                option.setCreatedAt(new Date());     // Assuming Option has createdAt
+                optionRepository.save(option);
+            }
+        }
+
         return QuestionResponse.fromEntity(savedQuestion);
     }
+
 
     public List<QuestionResponse> getAllQuestions() {
 
