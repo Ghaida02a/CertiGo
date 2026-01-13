@@ -17,6 +17,7 @@ public class UserAnswerBulkCreateRequest {
     private Integer quizResultId;
     private List<UserAnswerItem> answers;
 
+
     @Data
     @Builder
     @NoArgsConstructor

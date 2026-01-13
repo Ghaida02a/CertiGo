@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CertiGo | Certificate</title>
+    <title>CertiGo | Official Certificate</title>
     <link rel="stylesheet" href="style.css">
     <style>
         /* Custom CSS for Certificate Page */
@@ -26,7 +26,12 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             position: fixed;
             top: 0;
+            left: 0;
             z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
         }
 
         .navbar .logo {
@@ -35,238 +40,196 @@
         }
 
         .navbar .logo img {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             margin-right: 10px;
-        }
-
-        .navbar .logo span {
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
         }
 
         .certificate-container {
             background-color: #fff;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            padding: 40px;
-            max-width: 800px;
+            border: 15px double #1a3c6d;
+            border-radius: 5px;
+            padding: 60px;
+            max-width: 850px;
             width: 90%;
             text-align: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-top: 80px; /* To account for fixed navbar */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            margin-top: 100px;
+            margin-bottom: 40px;
             position: relative;
-        }
-
-        .certificate-header {
-            margin-bottom: 30px;
-        }
-
-        .certificate-logo {
-            width: 100px;
-            height: 100px;
-            margin-bottom: 20px;
+            /* Subtle classic pattern for professional feel */
+            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
         }
 
         .certificate-header h1 {
-            font-size: 36px;
-            color: #333;
-            margin: 0;
-            font-weight: bold;
-        }
-
-        .certificate-body {
-            margin-bottom: 30px;
-        }
-
-        .certificate-body p {
-            font-size: 18px;
-            color: #666;
+            font-size: 42px;
+            color: #1a3c6d;
             margin: 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         .certificate-body h2 {
-            font-size: 28px;
-            color: #333;
+            font-size: 38px;
+            color: #222;
             margin: 20px 0;
-            font-weight: bold;
+            font-family: 'Times New Roman', serif;
+            border-bottom: 2px solid #eee;
+            display: inline-block;
+            padding: 0 40px;
         }
 
         .certificate-body h3 {
-            font-size: 24px;
-            color: #555;
-            margin: 20px 0;
-            font-style: italic;
-        }
-
-        .certificate-body .date {
-            font-size: 16px;
-            color: #777;
-            margin-top: 20px;
+            font-size: 28px;
+            color: #1a3c6d;
+            margin: 15px 0;
         }
 
         .certificate-footer {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-top: 40px;
+            align-items: flex-end;
+            margin-top: 60px;
+            padding: 0 40px;
         }
 
-        .certificate-footer .signature img {
-            width: 150px;
-            height: auto;
+        .signature-box {
+            text-align: center;
+            border-top: 1px solid #333;
+            width: 220px;
         }
 
-        .certificate-footer .signature p {
-            font-size: 14px;
-            color: #999;
-            margin-top: 10px;
+        .actions {
+            margin-bottom: 50px;
+            display: flex;
+            gap: 15px;
         }
 
-        .certificate-footer .website {
+        .btn {
+            padding: 12px 25px;
             font-size: 16px;
-            color: #333;
-            font-weight: bold;
-        }
-
-        .download-btn {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 30px;
-            transition: background-color 0.3s;
+            border: none;
+            font-weight: bold;
+            transition: 0.3s;
         }
 
-        .download-btn:hover {
-            background-color: #0056b3;
-        }
-
-        .download-btn:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .certificate-container {
-                padding: 20px;
-                margin-top: 60px;
-            }
-
-            .certificate-header h1 {
-                font-size: 28px;
-            }
-
-            .certificate-body h2 {
-                font-size: 24px;
-            }
-
-            .certificate-body h3 {
-                font-size: 20px;
-            }
-
-            .certificate-footer {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .certificate-footer .signature {
-                margin-bottom: 20px;
-            }
-        }
+        .download-btn { background-color: #28a745; color: #fff; }
+        .back-btn { background-color: #6c757d; color: white; }
     </style>
 </head>
 <body>
 
 <header class="navbar">
     <div class="logo">
-        <img src="images\CertiGo.png" alt="CertiGo Logo">
-        <span>CertiGo</span>
+        <img src="images/CertiGo.png" alt="CertiGo Logo" onerror="this.src='https://via.placeholder.com/40'">
+        <span style="font-weight: bold; font-size: 20px;">CertiGo</span>
     </div>
+    <nav>
+        <a href="trainee-dashboard.html" style="text-decoration: none; color: #1a3c6d; font-weight: bold;">My Dashboard</a>
+    </nav>
 </header>
 
-<div class="certificate-container">
+<div class="certificate-container" id="certificate-area">
     <div class="certificate-header">
-        <img src="images\CertiGo.png" alt="CertiGo Logo" class="certificate-logo">
-        <h1>Certificate of Completion</h1>
+        <img src="images/CertiGo.png" alt="CertiGo Logo" style="width: 80px;" onerror="this.style.display='none'">
+        <h1>Certificate</h1>
+        <p style="font-weight: bold; color: #1a3c6d;">OF ACHIEVEMENT</p>
     </div>
 
     <div class="certificate-body">
-        <p>This is to certify that</p>
-        <h2 id="user-name">[User Name]</h2>
-        <p>has successfully completed the course</p>
-        <h3 id="course-name">[Course Name]</h3>
-        <p class="date">Date: <span id="completion-date"></span></p>
+        <p style="font-size: 20px;">This certificate is proudly presented to</p>
+        <h2 id="user-name">Loading...</h2>
+        <p style="font-size: 20px;">for the successful completion of the</p>
+        <h3 id="course-name">Course Name</h3>
+        <p class="date" style="margin-top: 30px; color: #777;">Issued on: <span id="completion-date"></span></p>
     </div>
 
     <div class="certificate-footer">
-        <div class="signature">
-            <img src="https://codeline.om/images/codeline%20by%20rihal%20logo.png" alt="Company Signature">
-            <p>Company Signature</p>
+        <div class="signature-box">
+            <p style="font-family: 'Cursive', sans-serif; font-size: 24px; margin-bottom: 0;">CertiGo Team</p>
+            <p style="font-size: 14px; margin-top: 5px;">Authorized Signature</p>
         </div>
         <div class="website">
-            <p>www.certigo.com</p>
+            <p style="font-size: 11px; color: #999; margin: 0;">Verification ID: <span id="cert-id">N/A</span></p>
+            <p style="font-weight: bold; color: #1a3c6d; margin: 5px 0;">www.certigo.com</p>
         </div>
     </div>
-
-    <button class="download-btn" id="generate-cert-btn">Download Certification</button>
 </div>
 
-<!-- JS Libraries -->
+<div class="actions">
+    <button class="btn back-btn" onclick="window.location.href='trainee-dashboard.html'">Back to Dashboard</button>
+    <button class="btn download-btn" id="generate-cert-btn">Download Certificate (PDF)</button>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
-    // Fill in dynamic info from sessionStorage (unchanged)
-    const userName = sessionStorage.getItem('certUserName') || 'Ahmed';
-    const courseName = sessionStorage.getItem('certCourseName') || 'Full Stack Developer';
-    const today = new Date().toLocaleDateString();
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. Fetch data from localStorage using your auth.js key 'currentUser'
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        const quizData = JSON.parse(localStorage.getItem('quizResultData'));
 
-    document.getElementById('user-name').innerText = userName;
-    document.getElementById('course-name').innerText = courseName;
-    document.getElementById('completion-date').innerText = today;
+        // 2. Set Username
+        if (user && user.username) {
+            document.getElementById('user-name').innerText = user.username;
+        } else {
+            document.getElementById('user-name').innerText = "Trainee";
+        }
 
-    // Generate & DOWNLOAD certificate directly
+        // 3. Set Quiz/Course Info
+        if (quizData) {
+            document.getElementById('course-name').innerText = quizData.quizTitle || "Professional Certification";
+            document.getElementById('cert-id').innerText = `CG-${quizData.quizResultId || '0000'}`;
+        }
+
+        // 4. Set Date
+        const today = new Date().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        document.getElementById('completion-date').innerText = today;
+    });
+
+    // 5. Generate and Download PDF Logic
     document.getElementById('generate-cert-btn').addEventListener('click', async () => {
-        const certElement = document.querySelector('.certificate-container');
+        const certElement = document.getElementById('certificate-area');
         const button = document.getElementById('generate-cert-btn');
+        const userName = document.getElementById('user-name').innerText;
 
-        // Prevent double-clicks
         button.disabled = true;
-        button.innerText = 'Downloading...';
+        button.innerText = 'Converting to PDF...';
 
-        // Hide button from PDF
-        button.style.display = 'none';
+        try {
+            const canvas = await html2canvas(certElement, {
+                scale: 3, // High quality scale
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            });
 
-        const canvas = await html2canvas(certElement, {
-            scale: 2,
-            useCORS: true,
-            backgroundColor: '#ffffff'
-        });
+            const imgData = canvas.toDataURL('image/png');
+            const { jsPDF } = window.jspdf;
 
-        const imgData = canvas.toDataURL('image/png');
+            // Define landscape orientation for the PDF
+            const pdf = new jsPDF({
+                orientation: 'landscape',
+                unit: 'px',
+                format: [canvas.width, canvas.height]
+            });
 
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF({
-            orientation: 'landscape',
-            unit: 'px',
-            format: [canvas.width, canvas.height]
-        });
+            pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+            pdf.save(`CertiGo_Certificate_${userName.replace(/\s+/g, '_')}.pdf`);
 
-        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-
-        // 🔽 FORCE DOWNLOAD
-        pdf.save(`${userName}-Certificate.pdf`);
-
-        // Restore button
-        button.style.display = 'block';
-        button.disabled = false;
-        button.innerText = 'Generate Certificate';
+        } catch (error) {
+            console.error("PDF Generation Error:", error);
+            alert("Error creating PDF. Please try again.");
+        } finally {
+            button.disabled = false;
+            button.innerText = 'Download Certificate (PDF)';
+        }
     });
 </script>
 

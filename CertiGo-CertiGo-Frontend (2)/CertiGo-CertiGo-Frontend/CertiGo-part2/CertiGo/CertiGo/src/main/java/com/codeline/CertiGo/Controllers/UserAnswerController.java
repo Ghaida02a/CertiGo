@@ -59,7 +59,7 @@ public class UserAnswerController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/createBulk")
-    public List<UserAnswerCreateResponse> createAnswersBulk(@RequestBody UserAnswerBulkCreateRequest requestObj) throws CustomException {
-        return userAnswerService.saveAnswersBulk(requestObj);
+    public List<UserAnswerCreateResponse> createBulk(@RequestBody UserAnswerBulkCreateRequest request) throws CustomException {
+        return userAnswerService.saveAnswersBulk(request);
     }
 }
