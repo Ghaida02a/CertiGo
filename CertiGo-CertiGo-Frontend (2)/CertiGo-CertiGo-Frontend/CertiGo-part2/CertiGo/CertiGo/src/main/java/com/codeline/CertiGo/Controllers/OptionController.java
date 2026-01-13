@@ -28,7 +28,6 @@ public class OptionController {
         return option;
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @GetMapping("/getAll")
     public List<Option> getAllOptions() throws CustomException {
         List<Option> options= optionService.getAllOptions();
