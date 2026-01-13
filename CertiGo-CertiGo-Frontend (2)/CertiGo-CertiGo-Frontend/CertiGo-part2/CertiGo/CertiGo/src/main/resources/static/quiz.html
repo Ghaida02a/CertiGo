@@ -1,9 +1,271 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title> Take a Quiz - CertiGo</title>-->
+<!--    <link rel="stylesheet" href="style.css">-->
+<!--    <script src="auth.js"></script>-->
+<!--</head>-->
+<!--<body class="certificates-page">-->
+
+<!--<div class="navbar">-->
+<!--    <div class="logo">-->
+<!--        <img src="images\CertiGo.png" alt="CertiGo Logo">-->
+<!--        <h2>CertiGo</h2>-->
+<!--    </div>-->
+<!--    <nav>-->
+<!--        <a href="trainee-dashboard.html">Trainee Dashboard</a>-->
+<!--    </nav>-->
+<!--    <div class="dropdown">-->
+<!--        <button class="dropbtn" id="accountBtn">Account</button>-->
+<!--        <div class="dropdown-content" id="accountDropdown">-->
+<!--            <a href="#" onclick="showUserProfile(); return false;">Profile</a>-->
+<!--            <a href="#" onclick="logout(); return false;">Logout</a>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<div class="certificates-container">-->
+<!--    <div class="certificates-header">-->
+<!--        <h1> Take a Quiz</h1>-->
+<!--        <p>Select a quiz to test your knowledge!</p>-->
+<!--    </div>-->
+
+<!--    <div id="loading" class="certificates-loading">-->
+<!--        <div class="certificates-spinner"></div>-->
+<!--        <p style="color: #666; font-size: 16px;">Loading quizzes...</p>-->
+<!--    </div>-->
+
+<!--    <div id="quizSelection" style="display: none;">-->
+<!--        <h3>Available Quizzes</h3>-->
+<!--        <div id="quizList"></div>-->
+<!--    </div>-->
+
+<!--    <div id="quizContainer" style="display: none;">-->
+<!--        <div id="questionContainer">-->
+<!--            <h3 id="questionText"></h3>-->
+<!--            <div id="optionsContainer"></div>-->
+<!--        </div>-->
+<!--        <div style="margin-top: 20px;">-->
+<!--            <button id="prevBtn" class="cert-btn" onclick="prevQuestion()" disabled>Previous</button>-->
+<!--            <button id="nextBtn" class="cert-btn cert-btn-primary" onclick="nextQuestion()">Next</button>-->
+<!--            <button id="submitBtn" class="cert-btn cert-btn-success" onclick="submitQuiz()" style="display: none;">Submit Quiz</button>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div id="emptyState" class="certificates-empty-state" style="display: none;">-->
+<!--        <div class="certificates-empty-state-icon">❓</div>-->
+<!--        <h3>No Quizzes Available</h3>-->
+<!--        <button class="cert-btn" onclick="goBack()">Back to Lessons</button>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--    let allQuizzes = [];-->
+<!--    let currentQuiz = null;-->
+<!--    let currentQuestionIndex = 0;-->
+<!--    let userAnswers = [];-->
+
+<!--    window.addEventListener('DOMContentLoaded', () => {-->
+<!--        if (!requireAuth()) return;-->
+<!--        loadQuizzes();-->
+<!--    });-->
+
+<!--    async function loadQuizzes() {-->
+<!--        showLoading(true);-->
+<!--        try {-->
+<!--            const response = await fetch('http://localhost:8080/quiz/getAll');-->
+<!--            if (response.ok) {-->
+<!--                allQuizzes = await response.json();-->
+<!--                const activeQuizzes = allQuizzes.filter(quiz => quiz.isActive);-->
+<!--                activeQuizzes.length > 0 ? displayQuizSelection(activeQuizzes) : showEmptyState();-->
+<!--            }-->
+<!--            showLoading(false);-->
+<!--        } catch (error) {-->
+<!--            showLoading(false);-->
+<!--            console.error('Load Quizzes Error:', error);-->
+<!--        }-->
+<!--    }-->
+
+<!--    function displayQuizSelection(quizzes) {-->
+<!--        const quizList = document.getElementById('quizList');-->
+<!--        quizList.innerHTML = '';-->
+<!--        quizzes.forEach(quiz => {-->
+<!--            const quizCard = document.createElement('div');-->
+<!--            quizCard.className = 'quiz-card';-->
+<!--            quizCard.innerHTML = `-->
+<!--                <h4>${escapeHtml(quiz.quizTitle || 'Quiz')}</h4>-->
+<!--                <p>Passing Score: ${quiz.passingScore}%</p>-->
+<!--                <button class="cert-btn cert-btn-primary" onclick="startQuiz(${quiz.id})">Start Quiz</button>-->
+<!--            `;-->
+<!--            quizList.appendChild(quizCard);-->
+<!--        });-->
+<!--        document.getElementById('quizSelection').style.display = 'block';-->
+<!--    }-->
+
+<!--    async function startQuiz(quizId) {-->
+<!--        currentQuiz = allQuizzes.find(q => q.id === quizId);-->
+<!--        try {-->
+<!--            const response = await fetch(`http://localhost:8080/question/getByQuizId?quizId=${quizId}`);-->
+<!--            if (response.ok) {-->
+<!--                const questions = await response.json();-->
+<!--                currentQuiz.questions = questions;-->
+<!--                userAnswers = new Array(questions.length).fill(null);-->
+<!--                currentQuestionIndex = 0;-->
+<!--                document.getElementById('quizSelection').style.display = 'none';-->
+<!--                document.getElementById('quizContainer').style.display = 'block';-->
+<!--                displayQuestion();-->
+<!--            }-->
+<!--        } catch (error) {-->
+<!--            console.error('Start Quiz Error:', error);-->
+<!--        }-->
+<!--    }-->
+
+<!--    function displayQuestion() {-->
+<!--        const question = currentQuiz.questions[currentQuestionIndex];-->
+<!--        document.getElementById('questionText').textContent = `Question ${currentQuestionIndex + 1}: ${question.questionText}`;-->
+<!--        const optionsContainer = document.getElementById('optionsContainer');-->
+<!--        optionsContainer.innerHTML = '';-->
+
+<!--        question.options.forEach(option => {-->
+<!--            const isChecked = userAnswers[currentQuestionIndex] && userAnswers[currentQuestionIndex].selectedOptionId === option.id;-->
+<!--            const div = document.createElement('div');-->
+<!--            div.className = 'quiz-option';-->
+<!--            div.innerHTML = `-->
+<!--                <input type="radio" id="opt${option.id}" name="quizOption" value="${option.id}" ${isChecked ? 'checked' : ''}>-->
+<!--                <label for="opt${option.id}">${escapeHtml(option.optionText)}</label>-->
+<!--            `;-->
+<!--            optionsContainer.appendChild(div);-->
+<!--        });-->
+
+<!--        document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;-->
+<!--        document.getElementById('nextBtn').style.display = currentQuestionIndex < currentQuiz.questions.length - 1 ? 'inline-block' : 'none';-->
+<!--        document.getElementById('submitBtn').style.display = currentQuestionIndex === currentQuiz.questions.length - 1 ? 'inline-block' : 'none';-->
+<!--    }-->
+
+<!--    function saveCurrentAnswer() {-->
+<!--        const selected = document.querySelector('input[name="quizOption"]:checked');-->
+<!--        if (selected) {-->
+<!--            userAnswers[currentQuestionIndex] = {-->
+<!--                questionId: currentQuiz.questions[currentQuestionIndex].id,-->
+<!--                selectedOptionId: parseInt(selected.value)-->
+<!--            };-->
+<!--        }-->
+<!--    }-->
+
+<!--    function nextQuestion() { saveCurrentAnswer(); currentQuestionIndex++; displayQuestion(); }-->
+<!--    function prevQuestion() { saveCurrentAnswer(); currentQuestionIndex&#45;&#45;; displayQuestion(); }-->
+
+<!-- async function submitQuiz() {-->
+<!--    saveCurrentAnswer();-->
+
+<!--    try {-->
+<!--        // 1. Calculate Score FIRST-->
+<!--        let correctCount = 0;-->
+<!--        currentQuiz.questions.forEach((q, idx) => {-->
+<!--            const ans = userAnswers[idx];-->
+<!--            if (ans) {-->
+<!--                const opt = q.options.find(o => o.id === ans.selectedOptionId);-->
+<!--                // Check if option exists and is marked as correct-->
+<!--                if (opt && opt.isCorrect) {-->
+<!--                    correctCount++;-->
+<!--                }-->
+<!--            }-->
+<!--        });-->
+
+<!--        // Define the score variable clearly-->
+<!--        const score = Math.round((correctCount / currentQuiz.questions.length) * 100);-->
+<!--        const isPassed = score >= (currentQuiz.passingScore || 70);-->
+
+<!--        // 2. Get User Data (using 'currentUser' from your auth.js)-->
+<!--        const rawUser = localStorage.getItem('currentUser');-->
+<!--        const user = JSON.parse(rawUser);-->
+
+<!--        if (!user || !user.id) {-->
+<!--            alert("No valid user session found. Please log in again.");-->
+<!--            window.location.href = 'signin.html';-->
+<!--            return;-->
+<!--        }-->
+
+<!--        // 3. Get Course ID-->
+<!--        const courseId = currentQuiz.course ? currentQuiz.course.id : currentQuiz.courseId;-->
+
+<!--        if (!courseId) {-->
+<!--            alert("Error: This quiz is not linked to a course. Result cannot be saved.");-->
+<!--            return;-->
+<!--        }-->
+
+<!--        // 4. Prepare Payload-->
+<!--        const resultPayload = {-->
+<!--            score: score, // Now score is defined!-->
+<!--            isPassed: isPassed,-->
+<!--            userId: user.id,-->
+<!--            quizId: currentQuiz.id,-->
+<!--            courseId: courseId-->
+<!--        };-->
+
+<!--        console.log("Submitting Result:", resultPayload);-->
+
+<!--        // 5. Send Quiz Result to Backend-->
+<!--        const resultRes = await fetch('http://localhost:8080/quizResult/create', {-->
+<!--            method: 'POST',-->
+<!--            headers: { 'Content-Type': 'application/json' },-->
+<!--            body: JSON.stringify(resultPayload)-->
+<!--        });-->
+
+<!--        if (!resultRes.ok) {-->
+<!--            const errorText = await resultRes.text();-->
+<!--            throw new Error(errorText);-->
+<!--        }-->
+
+<!--        const savedResult = await resultRes.json();-->
+
+<!--        // 6. Bulk Save Individual Answers-->
+<!--        const bulkData = {-->
+<!--            userId: user.id,-->
+<!--            quizId: currentQuiz.id,-->
+<!--            quizResultId: savedResult.id,-->
+<!--            answers: userAnswers.filter(a => a !== null)-->
+<!--        };-->
+
+<!--        await fetch('http://localhost:8080/UserAnswer/createBulk', {-->
+<!--            method: 'POST',-->
+<!--            headers: { 'Content-Type': 'application/json' },-->
+<!--            body: JSON.stringify(bulkData)-->
+<!--        });-->
+
+<!--        // 7. Save for Certification Page-->
+<!--        localStorage.setItem('quizResultData', JSON.stringify({-->
+<!--            quizTitle: currentQuiz.quizTitle || "Course Completion",-->
+<!--            quizResultId: savedResult.id,-->
+<!--            score: score-->
+<!--        }));-->
+
+<!--        // Move to Certification-->
+<!--        window.location.href = 'Certification.html';-->
+
+<!--    } catch (error) {-->
+<!--        console.error("Submission Error:", error);-->
+<!--        alert('Failed to save: ' + error.message);-->
+<!--    }-->
+<!--}-->
+
+<!--    function showLoading(show) { document.getElementById('loading').style.display = show ? 'block' : 'none'; }-->
+<!--    function showEmptyState() { document.getElementById('emptyState').style.display = 'block'; }-->
+<!--    function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }-->
+<!--    function goBack() { window.location.href = 'trainee-dashboard.html'; }-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Take a Quiz - CertiGo</title>
+    <title>Take a Quiz - CertiGo</title>
     <link rel="stylesheet" href="style.css">
     <script src="auth.js"></script>
 </head>
@@ -11,15 +273,13 @@
 
 <div class="navbar">
     <div class="logo">
-        <img src="images\CertiGo.png" alt="CertiGo Logo">
+        <img src="images/CertiGo.png" alt="CertiGo Logo" crossorigin="anonymous">
         <h2>CertiGo</h2>
     </div>
-    <nav>
-        <a href="trainee-dashboard.html">Trainee Dashboard</a>
-    </nav>
+    <nav><a href="trainee-dashboard.html">Trainee Dashboard</a></nav>
     <div class="dropdown">
         <button class="dropbtn" id="accountBtn">Account</button>
-        <div class="dropdown-content" id="accountDropdown">
+        <div class="dropdown-content">
             <a href="#" onclick="showUserProfile(); return false;">Profile</a>
             <a href="#" onclick="logout(); return false;">Logout</a>
         </div>
@@ -27,17 +287,7 @@
 </div>
 
 <div class="certificates-container">
-    <div class="certificates-header">
-        <h1> Take a Quiz</h1>
-        <p>Select a quiz to test your knowledge!</p>
-    </div>
-
-    <div id="loading" class="certificates-loading">
-        <div class="certificates-spinner"></div>
-        <p style="color: #666; font-size: 16px;">Loading quizzes...</p>
-    </div>
-
-    <div id="quizSelection" style="display: none;">
+    <div id="quizSelection">
         <h3>Available Quizzes</h3>
         <div id="quizList"></div>
     </div>
@@ -48,16 +298,10 @@
             <div id="optionsContainer"></div>
         </div>
         <div style="margin-top: 20px;">
-            <button id="prevBtn" class="cert-btn" onclick="prevQuestion()" disabled>Previous</button>
+            <button id="prevBtn" class="cert-btn" onclick="prevQuestion()">Previous</button>
             <button id="nextBtn" class="cert-btn cert-btn-primary" onclick="nextQuestion()">Next</button>
             <button id="submitBtn" class="cert-btn cert-btn-success" onclick="submitQuiz()" style="display: none;">Submit Quiz</button>
         </div>
-    </div>
-
-    <div id="emptyState" class="certificates-empty-state" style="display: none;">
-        <div class="certificates-empty-state-icon">❓</div>
-        <h3>No Quizzes Available</h3>
-        <button class="cert-btn" onclick="goBack()">Back to Lessons</button>
     </div>
 </div>
 
@@ -73,71 +317,47 @@
     });
 
     async function loadQuizzes() {
-        showLoading(true);
         try {
             const response = await fetch('http://localhost:8080/quiz/getAll');
             if (response.ok) {
                 allQuizzes = await response.json();
-                const activeQuizzes = allQuizzes.filter(quiz => quiz.isActive);
-                activeQuizzes.length > 0 ? displayQuizSelection(activeQuizzes) : showEmptyState();
+                displayQuizSelection(allQuizzes.filter(q => q.isActive));
             }
-            showLoading(false);
-        } catch (error) {
-            showLoading(false);
-            console.error('Load Quizzes Error:', error);
-        }
+        } catch (error) { console.error('Error:', error); }
     }
 
     function displayQuizSelection(quizzes) {
         const quizList = document.getElementById('quizList');
-        quizList.innerHTML = '';
-        quizzes.forEach(quiz => {
-            const quizCard = document.createElement('div');
-            quizCard.className = 'quiz-card';
-            quizCard.innerHTML = `
-                <h4>${escapeHtml(quiz.quizTitle || 'Quiz')}</h4>
-                <p>Passing Score: ${quiz.passingScore}%</p>
+        quizList.innerHTML = quizzes.map(quiz => `
+            <div class="quiz-card">
+                <h4>${quiz.quizTitle}</h4>
                 <button class="cert-btn cert-btn-primary" onclick="startQuiz(${quiz.id})">Start Quiz</button>
-            `;
-            quizList.appendChild(quizCard);
-        });
-        document.getElementById('quizSelection').style.display = 'block';
+            </div>
+        `).join('');
     }
 
     async function startQuiz(quizId) {
         currentQuiz = allQuizzes.find(q => q.id === quizId);
-        try {
-            const response = await fetch(`http://localhost:8080/question/getByQuizId?quizId=${quizId}`);
-            if (response.ok) {
-                const questions = await response.json();
-                currentQuiz.questions = questions;
-                userAnswers = new Array(questions.length).fill(null);
-                currentQuestionIndex = 0;
-                document.getElementById('quizSelection').style.display = 'none';
-                document.getElementById('quizContainer').style.display = 'block';
-                displayQuestion();
-            }
-        } catch (error) {
-            console.error('Start Quiz Error:', error);
+        const response = await fetch(`http://localhost:8080/question/getByQuizId?quizId=${quizId}`);
+        if (response.ok) {
+            currentQuiz.questions = await response.json();
+            userAnswers = new Array(currentQuiz.questions.length).fill(null);
+            document.getElementById('quizSelection').style.display = 'none';
+            document.getElementById('quizContainer').style.display = 'block';
+            displayQuestion();
         }
     }
 
     function displayQuestion() {
         const question = currentQuiz.questions[currentQuestionIndex];
         document.getElementById('questionText').textContent = `Question ${currentQuestionIndex + 1}: ${question.questionText}`;
-        const optionsContainer = document.getElementById('optionsContainer');
-        optionsContainer.innerHTML = '';
-
-        question.options.forEach(option => {
-            const isChecked = userAnswers[currentQuestionIndex] && userAnswers[currentQuestionIndex].selectedOptionId === option.id;
-            const div = document.createElement('div');
-            div.className = 'quiz-option';
-            div.innerHTML = `
-                <input type="radio" id="opt${option.id}" name="quizOption" value="${option.id}" ${isChecked ? 'checked' : ''}>
-                <label for="opt${option.id}">${escapeHtml(option.optionText)}</label>
-            `;
-            optionsContainer.appendChild(div);
-        });
+        document.getElementById('optionsContainer').innerHTML = question.options.map(opt => `
+            <div class="quiz-option">
+                <input type="radio" id="opt${opt.id}" name="quizOption" value="${opt.id}"
+                ${userAnswers[currentQuestionIndex]?.selectedOptionId === opt.id ? 'checked' : ''}>
+                <label for="opt${opt.id}">${opt.optionText}</label>
+            </div>
+        `).join('');
 
         document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
         document.getElementById('nextBtn').style.display = currentQuestionIndex < currentQuiz.questions.length - 1 ? 'inline-block' : 'none';
@@ -157,104 +377,45 @@
     function nextQuestion() { saveCurrentAnswer(); currentQuestionIndex++; displayQuestion(); }
     function prevQuestion() { saveCurrentAnswer(); currentQuestionIndex--; displayQuestion(); }
 
- async function submitQuiz() {
-    saveCurrentAnswer();
-
-    try {
-        // 1. Calculate Score FIRST
-        let correctCount = 0;
-        currentQuiz.questions.forEach((q, idx) => {
-            const ans = userAnswers[idx];
-            if (ans) {
-                const opt = q.options.find(o => o.id === ans.selectedOptionId);
-                // Check if option exists and is marked as correct
-                if (opt && opt.isCorrect) {
-                    correctCount++;
+    async function submitQuiz() {
+        saveCurrentAnswer();
+        try {
+            let correctCount = 0;
+            currentQuiz.questions.forEach((q, idx) => {
+                const ans = userAnswers[idx];
+                if (ans) {
+                    const opt = q.options.find(o => o.id === ans.selectedOptionId);
+                    if (opt && opt.isCorrect) correctCount++;
                 }
-            }
-        });
+            });
 
-        // Define the score variable clearly
-        const score = Math.round((correctCount / currentQuiz.questions.length) * 100);
-        const isPassed = score >= (currentQuiz.passingScore || 70);
+            const score = Math.round((correctCount / currentQuiz.questions.length) * 100);
+            const user = JSON.parse(localStorage.getItem('currentUser'));
 
-        // 2. Get User Data (using 'currentUser' from your auth.js)
-        const rawUser = localStorage.getItem('currentUser');
-        const user = JSON.parse(rawUser);
+            const resultRes = await fetch('http://localhost:8080/quizResult/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    score: score,
+                    isPassed: score >= (currentQuiz.passingScore || 70),
+                    userId: user.id,
+                    quizId: currentQuiz.id,
+                    courseId: currentQuiz.course?.id || currentQuiz.courseId
+                })
+            });
 
-        if (!user || !user.id) {
-            alert("No valid user session found. Please log in again.");
-            window.location.href = 'signin.html';
-            return;
-        }
+            const savedResult = await resultRes.json();
 
-        // 3. Get Course ID
-        const courseId = currentQuiz.course ? currentQuiz.course.id : currentQuiz.courseId;
+            // FIXED: Saving the correct Quiz Title for the certificate
+            localStorage.setItem('quizResultData', JSON.stringify({
+                quizTitle: currentQuiz.quizTitle,
+                quizResultId: savedResult.id,
+                score: score
+            }));
 
-        if (!courseId) {
-            alert("Error: This quiz is not linked to a course. Result cannot be saved.");
-            return;
-        }
-
-        // 4. Prepare Payload
-        const resultPayload = {
-            score: score, // Now score is defined!
-            isPassed: isPassed,
-            userId: user.id,
-            quizId: currentQuiz.id,
-            courseId: courseId
-        };
-
-        console.log("Submitting Result:", resultPayload);
-
-        // 5. Send Quiz Result to Backend
-        const resultRes = await fetch('http://localhost:8080/quizResult/create', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(resultPayload)
-        });
-
-        if (!resultRes.ok) {
-            const errorText = await resultRes.text();
-            throw new Error(errorText);
-        }
-
-        const savedResult = await resultRes.json();
-
-        // 6. Bulk Save Individual Answers
-        const bulkData = {
-            userId: user.id,
-            quizId: currentQuiz.id,
-            quizResultId: savedResult.id,
-            answers: userAnswers.filter(a => a !== null)
-        };
-
-        await fetch('http://localhost:8080/UserAnswer/createBulk', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(bulkData)
-        });
-
-        // 7. Save for Certification Page
-        localStorage.setItem('quizResultData', JSON.stringify({
-            quizTitle: currentQuiz.quizTitle || "Course Completion",
-            quizResultId: savedResult.id,
-            score: score
-        }));
-
-        // Move to Certification
-        window.location.href = 'Certification.html';
-
-    } catch (error) {
-        console.error("Submission Error:", error);
-        alert('Failed to save: ' + error.message);
+            window.location.href = 'Certification.html';
+        } catch (error) { alert('Save failed: ' + error.message); }
     }
-}
-
-    function showLoading(show) { document.getElementById('loading').style.display = show ? 'block' : 'none'; }
-    function showEmptyState() { document.getElementById('emptyState').style.display = 'block'; }
-    function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-    function goBack() { window.location.href = 'trainee-dashboard.html'; }
 </script>
 </body>
 </html>
