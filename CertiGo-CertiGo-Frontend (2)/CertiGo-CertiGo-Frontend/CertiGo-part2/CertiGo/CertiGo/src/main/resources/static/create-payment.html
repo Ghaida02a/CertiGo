@@ -1,3 +1,423 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Payment - CertiGo</title>-->
+
+<!--    <link rel="stylesheet" href="style.css">-->
+<!--    <script src="auth.js"></script>-->
+
+<!--    <style>-->
+<!--        .payment-container {-->
+<!--            max-width: 800px;-->
+<!--            margin: 40px auto;-->
+<!--            padding: 20px;-->
+<!--        }-->
+
+<!--        .payment-header {-->
+<!--            background: linear-gradient(135deg, #6a2c70 0%, #b83b5e 100%);-->
+<!--            color: white;-->
+<!--            padding: 40px;-->
+<!--            border-radius: 15px;-->
+<!--            margin-bottom: 30px;-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        .payment-header h1 {-->
+<!--            font-size: 32px;-->
+<!--            margin-bottom: 10px;-->
+<!--        }-->
+
+<!--        .payment-section {-->
+<!--            background: white;-->
+<!--            padding: 30px;-->
+<!--            border-radius: 15px;-->
+<!--            box-shadow: 0 4px 15px rgba(0,0,0,0.1);-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+
+<!--        .section-title {-->
+<!--            font-size: 20px;-->
+<!--            color: #333;-->
+<!--            margin-bottom: 20px;-->
+<!--            padding-bottom: 10px;-->
+<!--            border-bottom: 2px solid #f0f0f0;-->
+<!--        }-->
+
+<!--        .payment-summary {-->
+<!--            background: #f8f9fa;-->
+<!--            padding: 20px;-->
+<!--            border-radius: 8px;-->
+<!--        }-->
+
+<!--        .summary-row {-->
+<!--            display: flex;-->
+<!--            justify-content: space-between;-->
+<!--            margin-bottom: 15px;-->
+<!--        }-->
+
+<!--        .total-row {-->
+<!--            display: flex;-->
+<!--            justify-content: space-between;-->
+<!--            padding-top: 15px;-->
+<!--            border-top: 2px solid #e0e0e0;-->
+<!--            font-size: 24px;-->
+<!--            font-weight: bold;-->
+<!--            color: #6a2c70;-->
+<!--        }-->
+
+<!--        .payment-methods {-->
+<!--            display: grid;-->
+<!--            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));-->
+<!--            gap: 15px;-->
+<!--            margin-bottom: 30px;-->
+<!--        }-->
+
+<!--        .payment-method {-->
+<!--            padding: 20px;-->
+<!--            border: 2px solid #e0e0e0;-->
+<!--            border-radius: 8px;-->
+<!--            text-align: center;-->
+<!--            cursor: pointer;-->
+<!--            transition: 0.3s;-->
+<!--        }-->
+
+<!--        .payment-method:hover {-->
+<!--            border-color: #6a2c70;-->
+<!--            transform: translateY(-2px);-->
+<!--        }-->
+
+<!--        .payment-method.selected {-->
+<!--            border-color: #6a2c70;-->
+<!--            background: rgba(106, 44, 112, 0.05);-->
+<!--        }-->
+
+<!--        .action-buttons {-->
+<!--            display: flex;-->
+<!--            gap: 15px;-->
+<!--        }-->
+
+<!--        .btn {-->
+<!--            flex: 1;-->
+<!--            padding: 15px;-->
+<!--            border: none;-->
+<!--            border-radius: 8px;-->
+<!--            font-size: 16px;-->
+<!--            font-weight: 600;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+
+<!--        .btn-primary {-->
+<!--            background: linear-gradient(135deg, #6a2c70 0%, #b83b5e 100%);-->
+<!--            color: white;-->
+<!--        }-->
+
+<!--        .btn-secondary {-->
+<!--            background: #6c757d;-->
+<!--            color: white;-->
+<!--        }-->
+
+<!--        .error-message {-->
+<!--            background: #e74c3c;-->
+<!--            color: white;-->
+<!--            padding: 15px;-->
+<!--            border-radius: 8px;-->
+<!--            margin-bottom: 20px;-->
+<!--            text-align: center;-->
+<!--            display: none;-->
+<!--        }-->
+
+<!--        .success-message {-->
+<!--            background: #27ae60;-->
+<!--            color: white;-->
+<!--            padding: 15px;-->
+<!--            border-radius: 8px;-->
+<!--            margin-bottom: 20px;-->
+<!--            text-align: center;-->
+<!--            display: none;-->
+<!--        }-->
+
+<!--        .loading-overlay {-->
+<!--            position: fixed;-->
+<!--            inset: 0;-->
+<!--            background: rgba(0,0,0,0.7);-->
+<!--            display: none;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            z-index: 9999;-->
+<!--        }-->
+
+<!--        .loading-content {-->
+<!--            background: white;-->
+<!--            padding: 40px;-->
+<!--            border-radius: 15px;-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        .spinner {-->
+<!--            border: 4px solid #f3f3f3;-->
+<!--            border-top: 4px solid #6a2c70;-->
+<!--            border-radius: 50%;-->
+<!--            width: 50px;-->
+<!--            height: 50px;-->
+<!--            animation: spin 1s linear infinite;-->
+<!--            margin: 0 auto 20px;-->
+<!--        }-->
+
+<!--        @keyframes spin {-->
+<!--            to { transform: rotate(360deg); }-->
+<!--        }-->
+
+<!--        .card-container {-->
+<!--            max-width: 450px;-->
+<!--            margin: 20px auto;-->
+<!--            padding: 25px;-->
+<!--            background: #fff;-->
+<!--            border-radius: 12px;-->
+<!--            border: 1px solid #eee;-->
+<!--        }-->
+
+<!--        .card-container .header {-->
+<!--            text-align: center;-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+
+<!--        .form-group {-->
+<!--            margin-bottom: 15px;-->
+<!--        }-->
+
+<!--        .form-group label {-->
+<!--            display: block;-->
+<!--            margin-bottom: 5px;-->
+<!--            font-weight: bold;-->
+<!--            font-size: 14px;-->
+<!--        }-->
+
+<!--        .form-group input {-->
+<!--            width: 100%;-->
+<!--            padding: 12px;-->
+<!--            border: 1px solid #ccc;-->
+<!--            border-radius: 4px;-->
+<!--            box-sizing: border-box;-->
+<!--        }-->
+
+<!--        .row {-->
+<!--            display: flex;-->
+<!--            gap: 10px;-->
+<!--        }-->
+
+<!--        .row .form-group {-->
+<!--            flex: 1;-->
+<!--        }-->
+
+<!--        /* This hides the CVC text while keeping it a 'text' field to avoid browser popups */-->
+<!--        .secure-input {-->
+<!--            -webkit-text-security: disc;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+
+<!--<body>-->
+
+<!--<header class="navbar">-->
+<!--    <div class="logo">-->
+<!--        <img src="images/CertiGo.png" alt="CertiGo Logo">-->
+<!--        <span>CertiGo</span>-->
+<!--    </div>-->
+<!--    <nav>-->
+<!--        <a href="index.html">Home</a>-->
+<!--        <a href="trainee-dashboard.html">Dashboard</a>-->
+<!--    </nav>-->
+<!--</header>-->
+
+<!--<div class="payment-container">-->
+
+<!--    <div class="payment-header">-->
+<!--        <h1>💳 Complete Payment</h1>-->
+<!--        <p>Secure payment processing</p>-->
+<!--    </div>-->
+
+<!--    <div id="errorMessage" class="error-message"></div>-->
+<!--    <div id="successMessage" class="success-message"></div>-->
+
+<!--    <div class="payment-section">-->
+<!--        <h2 class="section-title">Payment Summary</h2>-->
+<!--        <div class="payment-summary">-->
+<!--            <div class="summary-row"><span>Course:</span><span id="courseName"></span></div>-->
+<!--            <div class="summary-row"><span>Company:</span><span id="companyName"></span></div>-->
+<!--            <div class="summary-row"><span>Student:</span><span id="studentEmail"></span></div>-->
+<!--            <div class="summary-row"><span>Enrollment ID:</span><span id="enrollmentId"></span></div>-->
+<!--            <div class="total-row">-->
+<!--                <span>Total:</span>-->
+<!--                <span id="totalAmount"></span>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="payment-section">-->
+<!--        <h2 class="section-title">Select Payment Method</h2>-->
+
+<!--        <div class="payment-methods">-->
+<!--            <div class="payment-method" id="method-CREDIT_CARD" onclick="selectPaymentMethod('CREDIT_CARD')">Credit Card</div>-->
+<!--            <div class="payment-method" id="method-PAYPAL" onclick="selectPaymentMethod('PAYPAL')">PayPal</div>-->
+<!--            <div class="payment-method" id="method-BANK_TRANSFER" onclick="selectPaymentMethod('BANK_TRANSFER')">Bank Transfer</div>-->
+<!--        </div>-->
+
+<!--        <div id="cardDetailsForm" style="display:none;">-->
+<!--            <div class="card-container">-->
+<!--                <div class="header">-->
+<!--                    <h3>Card Details</h3>-->
+<!--                </div>-->
+<!--                <form id="ccForm" autocomplete="off">-->
+<!--                    <div class="form-group">-->
+<!--                        <label>Card Number</label>-->
+<!--                        <input type="text" id="cardNumber" name="v_1" placeholder="1234 5678 9012 3456" maxlength="19" autocomplete="one-time-code">-->
+<!--                    </div>-->
+<!--                    <div class="form-group">-->
+<!--                        <label>Card Holder Name</label>-->
+<!--                        <input type="text" id="cardName" name="v_2" placeholder="Full Name on Card" autocomplete="one-time-code">-->
+<!--                    </div>-->
+<!--                    <div class="row">-->
+<!--                        <div class="form-group">-->
+<!--                            <label>Month</label>-->
+<!--                            <input type="text" id="expMonth" name="v_3" placeholder="MM" maxlength="2" autocomplete="one-time-code">-->
+<!--                        </div>-->
+<!--                        <div class="form-group">-->
+<!--                            <label>Year</label>-->
+<!--                            <input type="text" id="expYear" name="v_4" placeholder="YYYY" maxlength="4" autocomplete="one-time-code">-->
+<!--                        </div>-->
+<!--                        <div class="form-group">-->
+<!--                            <label>CVC</label>-->
+<!--                            <input type="text" id="cvc" name="v_5" placeholder="123" maxlength="3" autocomplete="one-time-code" class="secure-input">-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--                <button type="button" class="btn btn-primary" style="width:100%; margin-top: 10px;" onclick="processPayment()">Pay Now</button>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div class="action-buttons" id="initialButtons">-->
+<!--            <button class="btn btn-secondary" onclick="goBack()">Back</button>-->
+<!--            <button class="btn btn-primary" id="selectMethodBtn" disabled onclick="showConfirmation()">Confirm Selection</button>-->
+<!--        </div>-->
+
+<!--        <div class="action-buttons" id="confirmationButtons" style="display:none;">-->
+<!--            <button class="btn btn-secondary" onclick="cancelPayment()">Cancel</button>-->
+<!--            <button class="btn btn-primary" onclick="processPayment()">Proceed to Pay</button>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<div id="loadingOverlay" class="loading-overlay">-->
+<!--    <div class="loading-content">-->
+<!--        <div class="spinner"></div>-->
+<!--        <p>Processing payment securely...</p>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<footer>-->
+<!--    <p>© 2026 CertiGo</p>-->
+<!--</footer>-->
+
+<!--<script>-->
+<!--    let paymentData, selectedPaymentMethod, currentUser;-->
+
+<!--    window.onload = () => {-->
+<!--        if (typeof isLoggedIn === "function" && !isLoggedIn()) {-->
+<!--            window.location.href = 'signin.html';-->
+<!--            return;-->
+<!--        }-->
+
+<!--        currentUser = typeof getCurrentUser === "function" ? getCurrentUser() : { email: "trainee@example.com" };-->
+<!--        paymentData = JSON.parse(sessionStorage.getItem('paymentData')) || { courseName: "N/A", companyName: "N/A", enrollmentId: "000", price: 0 };-->
+
+<!--        document.getElementById('courseName').textContent = paymentData.courseName;-->
+<!--        document.getElementById('companyName').textContent = paymentData.companyName;-->
+<!--        document.getElementById('studentEmail').textContent = currentUser.email;-->
+<!--        document.getElementById('enrollmentId').textContent = paymentData.enrollmentId;-->
+<!--        document.getElementById('totalAmount').textContent = `$${paymentData.price.toFixed(2)}`;-->
+<!--    };-->
+
+<!--    function selectPaymentMethod(method) {-->
+<!--        document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('selected'));-->
+<!--        document.getElementById(`method-${method}`).classList.add('selected');-->
+<!--        selectedPaymentMethod = method;-->
+<!--        document.getElementById('selectMethodBtn').disabled = false;-->
+<!--        document.getElementById('errorMessage').style.display = 'none';-->
+
+<!--        if (method === 'CREDIT_CARD') {-->
+<!--            document.getElementById('cardDetailsForm').style.display = 'block';-->
+<!--            document.getElementById('initialButtons').style.display = 'none';-->
+<!--            document.getElementById('confirmationButtons').style.display = 'none';-->
+<!--        } else {-->
+<!--            document.getElementById('cardDetailsForm').style.display = 'none';-->
+<!--            document.getElementById('initialButtons').style.display = 'flex';-->
+<!--            document.getElementById('confirmationButtons').style.display = 'none';-->
+<!--        }-->
+<!--    }-->
+
+<!--    function showConfirmation() {-->
+<!--        document.getElementById('initialButtons').style.display = 'none';-->
+<!--        document.getElementById('confirmationButtons').style.display = 'flex';-->
+<!--        showSuccess('Please confirm your payment for ' + selectedPaymentMethod);-->
+<!--    }-->
+
+<!--    function cancelPayment() {-->
+<!--        document.getElementById('initialButtons').style.display = 'flex';-->
+<!--        document.getElementById('confirmationButtons').style.display = 'none';-->
+<!--        document.getElementById('successMessage').style.display = 'none';-->
+<!--    }-->
+
+<!--    async function processPayment() {-->
+<!--        document.getElementById('errorMessage').style.display = 'none';-->
+
+<!--        if (selectedPaymentMethod === 'CREDIT_CARD') {-->
+<!--            const cardNumber = document.getElementById('cardNumber').value.trim();-->
+<!--            const cardName = document.getElementById('cardName').value.trim();-->
+<!--            const expMonth = document.getElementById('expMonth').value.trim();-->
+<!--            const expYear = document.getElementById('expYear').value.trim();-->
+<!--            const cvc = document.getElementById('cvc').value.trim();-->
+
+<!--            if (!cardNumber || !cardName || !expMonth || !expYear || !cvc) {-->
+<!--                showError("Please fill in all card details.");-->
+<!--                return;-->
+<!--            }-->
+<!--        }-->
+
+<!--        document.getElementById('loadingOverlay').style.display = 'flex';-->
+
+<!--        setTimeout(() => {-->
+<!--            if (currentUser) {-->
+<!--                sessionStorage.setItem('currentUser', JSON.stringify(currentUser));-->
+<!--            }-->
+<!--            sessionStorage.removeItem('paymentData');-->
+<!--            window.location.href = 'get-all-lessons.html';-->
+<!--        }, 2500);-->
+<!--    }-->
+
+<!--    function goBack() {-->
+<!--        window.history.back();-->
+<!--    }-->
+
+<!--    function showSuccess(msg) {-->
+<!--        const el = document.getElementById('successMessage');-->
+<!--        el.textContent = msg;-->
+<!--        el.style.display = 'block';-->
+<!--    }-->
+
+<!--    function showError(msg) {-->
+<!--        const el = document.getElementById('errorMessage');-->
+<!--        el.textContent = msg;-->
+<!--        el.style.display = 'block';-->
+<!--        el.scrollIntoView({ behavior: 'smooth' });-->
+<!--    }-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -211,7 +631,6 @@
             flex: 1;
         }
 
-        /* This hides the CVC text while keeping it a 'text' field to avoid browser popups */
         .secure-input {
             -webkit-text-security: disc;
         }
@@ -241,7 +660,7 @@
     <div id="errorMessage" class="error-message"></div>
     <div id="successMessage" class="success-message"></div>
 
-    <div class="payment-section">
+    <div class="payment-section" id="summarySection">
         <h2 class="section-title">Payment Summary</h2>
         <div class="payment-summary">
             <div class="summary-row"><span>Course:</span><span id="courseName"></span></div>
@@ -255,10 +674,10 @@
         </div>
     </div>
 
-    <div class="payment-section">
+    <div class="payment-section" id="methodSection">
         <h2 class="section-title">Select Payment Method</h2>
 
-        <div class="payment-methods">
+        <div class="payment-methods" id="paymentMethodsList">
             <div class="payment-method" id="method-CREDIT_CARD" onclick="selectPaymentMethod('CREDIT_CARD')">Credit Card</div>
             <div class="payment-method" id="method-PAYPAL" onclick="selectPaymentMethod('PAYPAL')">PayPal</div>
             <div class="payment-method" id="method-BANK_TRANSFER" onclick="selectPaymentMethod('BANK_TRANSFER')">Bank Transfer</div>
@@ -272,24 +691,24 @@
                 <form id="ccForm" autocomplete="off">
                     <div class="form-group">
                         <label>Card Number</label>
-                        <input type="text" id="cardNumber" name="v_1" placeholder="1234 5678 9012 3456" maxlength="19" autocomplete="one-time-code">
+                        <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
                     </div>
                     <div class="form-group">
                         <label>Card Holder Name</label>
-                        <input type="text" id="cardName" name="v_2" placeholder="Full Name on Card" autocomplete="one-time-code">
+                        <input type="text" id="cardName" placeholder="Full Name on Card">
                     </div>
                     <div class="row">
                         <div class="form-group">
                             <label>Month</label>
-                            <input type="text" id="expMonth" name="v_3" placeholder="MM" maxlength="2" autocomplete="one-time-code">
+                            <input type="text" id="expMonth" placeholder="MM" maxlength="2">
                         </div>
                         <div class="form-group">
                             <label>Year</label>
-                            <input type="text" id="expYear" name="v_4" placeholder="YYYY" maxlength="4" autocomplete="one-time-code">
+                            <input type="text" id="expYear" placeholder="YYYY" maxlength="4">
                         </div>
                         <div class="form-group">
                             <label>CVC</label>
-                            <input type="text" id="cvc" name="v_5" placeholder="123" maxlength="3" autocomplete="one-time-code" class="secure-input">
+                            <input type="text" id="cvc" placeholder="123" maxlength="3" class="secure-input">
                         </div>
                     </div>
                 </form>
@@ -360,7 +779,7 @@
     function showConfirmation() {
         document.getElementById('initialButtons').style.display = 'none';
         document.getElementById('confirmationButtons').style.display = 'flex';
-        showSuccess('Please confirm your payment for ' + selectedPaymentMethod);
+        showSuccess('Please confirm your payment for ' + selectedPaymentMethod.replace('_', ' '));
     }
 
     function cancelPayment() {
@@ -372,6 +791,7 @@
     async function processPayment() {
         document.getElementById('errorMessage').style.display = 'none';
 
+        // 1. Logic for Credit Card validation
         if (selectedPaymentMethod === 'CREDIT_CARD') {
             const cardNumber = document.getElementById('cardNumber').value.trim();
             const cardName = document.getElementById('cardName').value.trim();
@@ -385,15 +805,31 @@
             }
         }
 
+        // 2. Start Processing UI
         document.getElementById('loadingOverlay').style.display = 'flex';
 
+        // 3. Simulate Payment Logic
         setTimeout(() => {
+            // Hide everything related to payment inputs
+            document.getElementById('loadingOverlay').style.display = 'none';
+            document.getElementById('methodSection').style.display = 'none';
+            document.getElementById('summarySection').style.opacity = '0.5'; // Fade the summary
+
+            // Show final success message
+            showSuccess("🎉 Payment Successful! Your enrollment is complete. Redirecting to your lessons...");
+
+            // Cleanup session
             if (currentUser) {
                 sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
             }
             sessionStorage.removeItem('paymentData');
-            window.location.href = 'get-all-lessons.html';
-        }, 2500);
+
+            // 4. Redirect after 2.5 seconds
+            setTimeout(() => {
+                window.location.href = 'get-all-lessons.html';
+            }, 2500);
+
+        }, 2000);
     }
 
     function goBack() {
@@ -404,6 +840,7 @@
         const el = document.getElementById('successMessage');
         el.textContent = msg;
         el.style.display = 'block';
+        el.scrollIntoView({ behavior: 'smooth' });
     }
 
     function showError(msg) {
