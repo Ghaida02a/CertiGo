@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Users - CertiGo</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="auth.js"></script>
+</head>
+<body class="certificates-page">
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">
+        <img src="images\CertiGo.png" alt="CertiGo Logo">
+        <h2>CertiGo</h2>
+    </div>
+    <nav>
+        <a href="admin-index.html">Admin Dashboard</a>
+    </nav>
+    <div class="dropdown">
+        <button class="dropbtn" id="accountBtn">Account</button>
+        <div class="dropdown-content" id="accountDropdown">
+            <a href="#" onclick="showUserProfile(); return false;">Profile</a>
+            <a href="#" onclick="logout(); return false;">Logout</a>
+        </div>
+    </div>
+</div>
+
+    <div class="certificates-container">
+        <div class="certificates-header">
+            <h1>All Users</h1>
+            <p>View and manage all users in the system</p>
+        </div>
+
+        <div id="successMessage" class="certificates-success-message" style="display: none;">
+            Operation completed successfully!
+        </div>
+
+        <div id="errorAlert" class="certificates-error-alert" style="display: none;">
+            Failed to load users. Please try again.
+        </div>
+
+        <div class="certificates-stats" id="stats" style="display: none;">
+            <div class="certificates-stat-card">
+                <h3>Total Users</h3>
+                <p id="totalCount">0</p>
+            </div>
+            <div class="certificates-stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <h3>Admin Users</h3>
+                <p id="adminCount">0</p>
+            </div>
+            <div class="certificates-stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                <h3>Regular Users</h3>
+                <p id="regularCount">0</p>
+            </div>
+            <div class="certificates-stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <h3>Active Users</h3>
+                <p id="activeCount">0</p>
+            </div>
+        </div>
+
+        <div class="certificates-controls">
+            <div class="certificates-search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Search by name, email, or role...">
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="cert-btn cert-btn-refresh" onclick="loadUsers()">🔄 Refresh</button>
+                <a href="add-user.html" class="cert-btn cert-btn-primary admin-only">➕ Add User</a>
+            </div>
+        </div>
+
+        <div id="loading" class="certificates-loading">
+            <div class="certificates-spinner"></div>
+            <p style="color: #666; font-size: 16px;">Loading users...</p>
+        </div>
+
+        <div id="tableContainer" class="certificates-table-container" style="display: none;">
+            <table class="certificates-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <!-- Data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="emptyState" class="certificates-empty-state" style="display: none;">
+            <div class="certificates-empty-state-icon">👥</div>
+            <h3>No Users Found</h3>
+            <p>There are no users in the system yet.</p>
+            <a href="add-user.html" class="cert-btn cert-btn-primary admin-only">Create Your First User</a>
+        </div>
+    </div>
+
+    <script>
+        let allUsers = [];
+
+        // Check authentication on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Require admin access for this page
+            requireAdmin();
+            loadUsers();
+        });
+
+        async function loadUsers() {
+            showLoading(true);
+            hideError();
+
+            try {
+                const response = await fetch('http://localhost:8080/users', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    allUsers = await response.json();
+                    displayUsers(allUsers);
+                    updateStats(allUsers);
+                    showLoading(false);
+                } else {
+                    showLoading(false);
+                    showError('Failed to load users. Server returned an error.');
+                }
+            } catch (error) {
+                showLoading(false);
+                console.error('Error:', error);
+                showError('Network error. Please check your connection and try again.');
+            }
+        }
+
+        function displayUsers(users) {
+            const tbody = document.getElementById('usersTableBody');
+            const tableContainer = document.getElementById('tableContainer');
+            const emptyState = document.getElementById('emptyState');
+
+            if (!users || users.length === 0) {
+                tableContainer.style.display = 'none';
+                emptyState.style.display = 'block';
+                document.getElementById('stats').style.display = 'none';
+                return;
+            }
+
+            tableContainer.style.display = 'block';
+            emptyState.style.display = 'none';
+            document.getElementById('stats').style.display = 'flex';
+
+            tbody.innerHTML = '';
+
+            users.forEach(user => {
+                const row = document.createElement('tr');
+
+                // Determine role badge
+                let roleBadge = '';
+                const role = user.role ? user.role.toLowerCase() : 'user';
+
+                if (role === 'admin' || role === 'administrator') {
+                    roleBadge = '<span class="cert-badge" style="background: #667eea;">Admin</span>';
+                } else if (role === 'instructor' || role === 'teacher') {
+                    roleBadge = '<span class="cert-badge" style="background: #4facfe;">Instructor</span>';
+                } else {
+                    roleBadge = '<span class="cert-badge" style="background: #43e97b;">User</span>';
+                }
+
+                // Determine status badge
+                const statusBadge = user.isActive
+                    ? '<span class="cert-badge cert-badge-active">Active</span>'
+                    : '<span class="cert-badge cert-badge-inactive">Inactive</span>';
+
+                const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'N/A';
+                const email = user.email || 'N/A';
+                const phone = user.phoneNumber || 'N/A';
+                const createdAt = user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A';
+
+                row.innerHTML = `
+                    <td><strong>#${user.id}</strong></td>
+                    <td><strong>${escapeHtml(fullName)}</strong></td>
+                    <td>${escapeHtml(email)}</td>
+                    <td>${escapeHtml(phone)}</td>
+                    <td>${roleBadge}</td>
+                    <td>${statusBadge}</td>
+                    <td class="date-cell">${createdAt}</td>
+                    <td>
+                        <div class="cert-action-buttons">
+                            <button class="cert-btn cert-btn-view" onclick="viewUser(${user.id})">👁️ View</button>
+                            <button class="cert-btn cert-btn-edit" onclick="editUser(${user.id})">✏️ Edit</button>
+                            <button class="cert-btn cert-btn-delete" onclick="deleteUser(${user.id})">🗑️ Delete</button>
+                        </div>
+                    </td>
+                `;
+
+                tbody.appendChild(row);
+            });
+        }
+
+        function updateStats(users) {
+            const total = users.length;
+            let adminCount = 0;
+            let regularCount = 0;
+            let activeCount = 0;
+
+            users.forEach(user => {
+                const role = user.role ? user.role.toLowerCase() : 'user';
+
+                if (role === 'admin' || role === 'administrator') {
+                    adminCount++;
+                } else {
+                    regularCount++;
+                }
+
+                if (user.isActive) {
+                    activeCount++;
+                }
+            });
+
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('adminCount').textContent = adminCount;
+            document.getElementById('regularCount').textContent = regularCount;
+            document.getElementById('activeCount').textContent = activeCount;
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        function showError(message) {
+            const errorAlert = document.getElementById('errorAlert');
+            errorAlert.textContent = message;
+            errorAlert.style.display = 'block';
+            setTimeout(() => {
+                errorAlert.style.display = 'none';
+            }, 5000);
+        }
+
+        function hideError() {
+            document.getElementById('errorAlert').style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        }
+
+        async function deleteUser(id) {
+            // Check if user has permission to delete
+            if (!hasPermission('delete_user')) {
+                alert('Access Denied: Only administrators can delete users.');
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to delete user #${id}? This action cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:8080/users/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok || response.status === 204) {
+                    showSuccess(`User #${id} deleted successfully!`);
+                    loadUsers(); // Reload the list
+                } else {
+                    const errorText = await response.text();
+                    showError(`Failed to delete user #${id}. ${errorText}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Network error. Please check your connection and try again.');
+            }
+        }
+
+        function viewUser(id) {
+            // Find the user in the loaded data
+            const user = allUsers.find(u => u.id === id);
+
+            if (user) {
+                // Create a detailed view modal or alert
+                const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'N/A';
+
+                const details = `
+User Details:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ID: ${user.id}
+
+Personal Information:
+First Name: ${user.firstName || 'N/A'}
+Last Name: ${user.lastName || 'N/A'}
+Email: ${user.email || 'N/A'}
+Phone: ${user.phoneNumber || 'N/A'}
+
+Account Information:
+Role: ${user.role || 'N/A'}
+Status: ${user.isActive ? 'Active' : 'Inactive'}
+
+Created: ${user.createdAt ? new Date(user.createdAt).toLocaleString() : 'N/A'}
+Updated: ${user.updatedAt ? new Date(user.updatedAt).toLocaleString() : 'N/A'}
+                `;
+                alert(details);
+            } else {
+                showError('User not found.');
+            }
+        }
+
+        function editUser(id) {
+            // Find the user in the loaded data
+            const user = allUsers.find(u => u.id === id);
+
+            if (user) {
+                // Redirect to edit page with user data
+                // For now, we'll use a simple prompt-based edit
+                const newFirstName = prompt('Enter new first name:', user.firstName);
+                if (newFirstName && newFirstName !== user.firstName) {
+                    updateUser(id, {
+                        id: id,
+                        firstName: newFirstName,
+                        lastName: user.lastName,
+                        email: user.email,
+                        phoneNumber: user.phoneNumber,
+                        role: user.role,
+                        isActive: user.isActive
+                    });
+                }
+            } else {
+                showError('User not found.');
+            }
+        }
+
+        async function updateUser(id, updateData) {
+            try {
+                const response = await fetch(`http://localhost:8080/users`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                if (response.ok) {
+                    showSuccess(`User #${id} updated successfully!`);
+                    loadUsers(); // Reload the list
+                } else {
+                    const errorText = await response.text();
+                    showError(`Failed to update user #${id}. ${errorText}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Network error. Please check your connection and try again.');
+            }
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+
+            if (!searchTerm) {
+                displayUsers(allUsers);
+                return;
+            }
+
+            const filtered = allUsers.filter(user => {
+                const fullName = `${user.firstName || ''} ${user.lastName || ''}`.toLowerCase();
+                const email = user.email ? user.email.toLowerCase() : '';
+                const phone = user.phoneNumber ? user.phoneNumber.toLowerCase() : '';
+                const role = user.role ? user.role.toLowerCase() : '';
+
+                return fullName.includes(searchTerm) ||
+                       email.includes(searchTerm) ||
+                       phone.includes(searchTerm) ||
+                       role.includes(searchTerm);
+            });
+
+            displayUsers(filtered);
+        });
+
+        // Helper function to escape HTML
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Companies - CertiGo</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="auth.js"></script>
+    <style>
+        /* Table styling for better visibility */
+        .certificates-table-container { margin-top: 20px; overflow-x: auto; }
+        .cert-badge-active { background-color: #d4edda; color: #155724; padding: 5px 10px; border-radius: 4px; font-size: 12px; }
+        .cert-action-buttons { display: flex; gap: 8px; }
+        .cert-btn-edit { background-color: #ffc107; color: #000; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+        .cert-btn-delete { background-color: #dc3545; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+        .certificates-loading { text-align: center; padding: 20px; display: none; }
+    </style>
+</head>
+<body class="certificates-page">
+
+<div class="navbar">
+    <div class="logo">
+        <img src="images\CertiGo.png" alt="CertiGo Logo">
+        <h2>CertiGo</h2>
+    </div>
+    <nav>
+        <a href="admin-index.html">Admin Dashboard</a>
+
+    </nav>
+    <div class="dropdown">
+        <button class="dropbtn" id="accountBtn">Account</button>
+        <div class="dropdown-content" id="accountDropdown">
+            <a href="#" onclick="showUserProfile(); return false;">Profile</a>
+            <a href="#" onclick="logout(); return false;">Logout</a>
+        </div>
+    </div>
+</div>
+
+<div class="certificates-container">
+    <div class="certificates-header">
+        <h1>All Companies</h1>
+        <p>View and manage all active company partners</p>
+    </div>
+
+    <div id="errorAlert" class="certificates-error-alert" style="display: none; background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 4px; margin-bottom: 20px;"></div>
+
+    <div class="certificates-controls">
+        <div class="certificates-search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Search by company name...">
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="cert-btn cert-btn-refresh" onclick="loadCompanies()">🔄 Refresh</button>
+            <a href="add-company.html" class="cert-btn cert-btn-primary admin-only">➕ Add Company</a>
+        </div>
+    </div>
+
+    <div id="loading" class="certificates-loading">
+        <p>Connecting to database...</p>
+    </div>
+
+    <div id="tableContainer" class="certificates-table-container">
+        <table class="certificates-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Company Name</th>
+                <th>Email</th>
+                <th>Industry</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="companiesTableBody">
+            </tbody>
+        </table>
+    </div>
+
+    <div id="emptyState" style="display: none; text-align: center; margin-top: 50px;">
+        <h3>No Companies Found</h3>
+        <p>Check if the database has active companies.</p>
+    </div>
+</div>
+
+<script>
+    let allCompanies = [];
+    const API_URL = 'http://localhost:8080/company/getAll';
+
+    window.addEventListener('DOMContentLoaded', () => {
+        // Run admin check from auth.js
+        if (typeof requireAdmin === "function") {
+            requireAdmin();
+        }
+        loadCompanies();
+    });
+
+    async function loadCompanies() {
+        const loading = document.getElementById('loading');
+        const errorAlert = document.getElementById('errorAlert');
+        const tableContainer = document.getElementById('tableContainer');
+        const emptyState = document.getElementById('emptyState');
+
+        loading.style.display = 'block';
+        errorAlert.style.display = 'none';
+
+        try {
+            const response = await fetch(API_URL);
+
+            if (!response.ok) {
+                throw new Error(`Server Error: ${response.status}`);
+            }
+
+            allCompanies = await response.json();
+            console.log("Response Data:", allCompanies);
+
+            if (!allCompanies || allCompanies.length === 0) {
+                tableContainer.style.display = 'none';
+                emptyState.style.display = 'block';
+            } else {
+                tableContainer.style.display = 'block';
+                emptyState.style.display = 'none';
+                displayCompanies(allCompanies);
+            }
+        } catch (error) {
+            console.error('Fetch Error:', error);
+            errorAlert.textContent = "Could not load companies. Ensure the Spring Boot backend is running.";
+            errorAlert.style.display = 'block';
+        } finally {
+            loading.style.display = 'none';
+        }
+    }
+
+    function displayCompanies(companies) {
+        const tbody = document.getElementById('companiesTableBody');
+        tbody.innerHTML = '';
+
+        companies.forEach(company => {
+            const row = document.createElement('tr');
+
+            // MAPPING: These names must match your CompanyResponse.java fields exactly
+            const name = company.companyName || 'N/A';
+            const email = company.contactEmail || 'N/A';
+            const industry = company.industry || 'N/A';
+            const location = company.location || 'N/A';
+
+            row.innerHTML = `
+                <td>#${company.id}</td>
+                <td><strong>${name}</strong></td>
+                <td>${email}</td>
+                <td>${industry}</td>
+                <td>${location}</td>
+                <td><span class="cert-badge-active">Active</span></td>
+                <td>
+                    <div class="cert-action-buttons">
+                        <button class="cert-btn-edit" onclick="goToEdit(${company.id})">✏️ Edit</button>
+                        <button class="cert-btn-delete" onclick="goToDelete(${company.id})">🗑️ Delete</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // Navigation functions
+    function goToEdit(id) {
+        window.location.href = `update-company.html?companyId=${id}`;
+    }
+
+    function goToDelete(id) {
+        window.location.href = `delete-company.html?companyId=${id}`;
+    }
+
+    // Search filter
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const term = e.target.value.toLowerCase();
+        const filtered = allCompanies.filter(c =>
+            (c.companyName && c.companyName.toLowerCase().includes(term)) ||
+            (c.industry && c.industry.toLowerCase().includes(term))
+        );
+        displayCompanies(filtered);
+    });
+</script>
+</body>
+</html>

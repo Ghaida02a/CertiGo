@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Certificates - CertiGo</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="auth.js"></script>
+</head>
+<body class="certificates-page">
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">
+        <img src="images\CertiGo.png" alt="CertiGo Logo">
+        <h2>CertiGo</h2>
+    </div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="get-all-certificates.html">Certificates</a>
+        <a href="add-certificate.html" class="admin-only">Add Certificate</a>
+    </nav>
+    <div class="dropdown">
+        <button class="dropbtn" id="accountBtn">Account</button>
+        <div class="dropdown-content" id="accountDropdown">
+            <a href="create-account.html">Create Account</a>
+            <a href="signin.html">Sign In</a>
+        </div>
+    </div>
+</div>
+
+    <div class="certificates-container">
+        <div class="certificates-header">
+            <h1> All Certificates</h1>
+            <p>View and manage all certificates in the system</p>
+        </div>
+
+        <div id="successMessage" class="certificates-success-message" style="display: none;">
+            Operation completed successfully!
+        </div>
+
+        <div id="errorAlert" class="certificates-error-alert" style="display: none;">
+            Failed to load certificates. Please try again.
+        </div>
+
+        <div class="certificates-stats" id="stats" style="display: none;">
+            <div class="certificates-stat-card">
+                <h3>Total Certificates</h3>
+                <p id="totalCount">0</p>
+            </div>
+            <div class="certificates-stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <h3>Active Certificates</h3>
+                <p id="activeCount">0</p>
+            </div>
+            <div class="certificates-stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <h3>Inactive Certificates</h3>
+                <p id="inactiveCount">0</p>
+            </div>
+        </div>
+
+        <div class="certificates-controls">
+            <div class="certificates-search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Search by certificate name, course, or user...">
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="cert-btn cert-btn-refresh" onclick="loadCertificates()">🔄 Refresh</button>
+                <a href="add-certificate.html" class="cert-btn cert-btn-primary admin-only">➕ Add Certificate</a>
+            </div>
+        </div>
+
+        <div id="loading" class="certificates-loading">
+            <div class="certificates-spinner"></div>
+            <p style="color: #666; font-size: 16px;">Loading certificates...</p>
+        </div>
+
+        <div id="tableContainer" class="certificates-table-container" style="display: none;">
+            <table class="certificates-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Certificate Name</th>
+                        <th>Description</th>
+                        <th>Course</th>
+                        <th>User</th>
+                        <th>Quiz Result</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="certificatesTableBody">
+                    <!-- Data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="emptyState" class="certificates-empty-state" style="display: none;">
+            <div class="certificates-empty-state-icon">📜</div>
+            <h3>No Certificates Found</h3>
+            <p>There are no certificates in the system yet.</p>
+            <a href="add-certificate.html" class="cert-btn cert-btn-primary admin-only">Create Your First Certificate</a>
+        </div>
+    </div>
+
+    <script>
+        let allCertificates = [];
+
+        // Check authentication on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Optional: Uncomment to require login for this page
+            // requireAuth();
+
+            loadCertificates();
+        });
+
+        async function loadCertificates() {
+            showLoading(true);
+            hideError();
+
+            try {
+                const response = await fetch('http://localhost:8080/certificates', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    allCertificates = await response.json();
+                    displayCertificates(allCertificates);
+                    updateStats(allCertificates);
+                    showLoading(false);
+                } else {
+                    showLoading(false);
+                    showError('Failed to load certificates. Server returned an error.');
+                }
+            } catch (error) {
+                showLoading(false);
+                console.error('Error:', error);
+                showError('Network error. Please check your connection and try again.');
+            }
+        }
+
+        function displayCertificates(certificates) {
+            const tbody = document.getElementById('certificatesTableBody');
+            const tableContainer = document.getElementById('tableContainer');
+            const emptyState = document.getElementById('emptyState');
+
+            if (!certificates || certificates.length === 0) {
+                tableContainer.style.display = 'none';
+                emptyState.style.display = 'block';
+                document.getElementById('stats').style.display = 'none';
+                return;
+            }
+
+            tableContainer.style.display = 'block';
+            emptyState.style.display = 'none';
+            document.getElementById('stats').style.display = 'flex';
+
+            tbody.innerHTML = '';
+
+            certificates.forEach(cert => {
+                const row = document.createElement('tr');
+
+                const statusBadge = cert.isActive
+                    ? '<span class="cert-badge cert-badge-active">Active</span>'
+                    : '<span class="cert-badge cert-badge-inactive">Inactive</span>';
+
+                const courseName = cert.course ? cert.course.courseName || `Course #${cert.course.id}` : 'N/A';
+                const userName = cert.user ? cert.user.userName || `User #${cert.user.id}` : 'N/A';
+                const quizResultId = cert.quizResult ? cert.quizResult.id : 'N/A';
+
+                const createdAt = cert.createdAt ? new Date(cert.createdAt).toLocaleDateString() : 'N/A';
+
+                row.innerHTML = `
+                    <td><strong>#${cert.id}</strong></td>
+                    <td><strong>${escapeHtml(cert.certificateName)}</strong></td>
+                    <td><div class="certificate-description" title="${escapeHtml(cert.description)}">${escapeHtml(cert.description)}</div></td>
+                    <td>${escapeHtml(courseName)}</td>
+                    <td>${escapeHtml(userName)}</td>
+                    <td>${quizResultId}</td>
+                    <td>${statusBadge}</td>
+                    <td class="date-cell">${createdAt}</td>
+                    <td>
+                        <div class="cert-action-buttons">
+                            <button class="cert-btn cert-btn-view" onclick="viewCertificate(${cert.id})">👁️ View</button>
+<!--                            <button class="cert-btn cert-btn-delete" onclick="deleteCertificate(${cert.id})">🗑️ Delete</button>-->
+                        </div>
+                    </td>
+                `;
+
+                tbody.appendChild(row);
+            });
+        }
+
+        function updateStats(certificates) {
+            const total = certificates.length;
+            const active = certificates.filter(c => c.isActive).length;
+            const inactive = total - active;
+
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('activeCount').textContent = active;
+            document.getElementById('inactiveCount').textContent = inactive;
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        function showError(message) {
+            const errorAlert = document.getElementById('errorAlert');
+            errorAlert.textContent = message;
+            errorAlert.style.display = 'block';
+            setTimeout(() => {
+                errorAlert.style.display = 'none';
+            }, 5000);
+        }
+
+        function hideError() {
+            document.getElementById('errorAlert').style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        }
+
+        async function deleteCertificate(id) {
+            // Check if user has permission to delete
+            if (!hasPermission('delete_certificate')) {
+                alert('Access Denied: Only administrators can delete certificates.');
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to delete certificate #${id}? This action cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:8080/certificates/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok || response.status === 204) {
+                    showSuccess(`Certificate #${id} deleted successfully!`);
+                    loadCertificates(); // Reload the list
+                } else {
+                    showError(`Failed to delete certificate #${id}. Please try again.`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Network error. Please check your connection and try again.');
+            }
+        }
+
+        function viewCertificate(id) {
+            // Find the certificate in the loaded data
+            const certificate = allCertificates.find(c => c.id === id);
+
+            if (certificate) {
+                // Create a detailed view modal or alert
+                const details = `
+Certificate Details:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ID: ${certificate.id}
+Name: ${certificate.certificateName}
+Description: ${certificate.description}
+Status: ${certificate.isActive ? 'Active' : 'Inactive'}
+
+Course: ${certificate.course ? certificate.course.courseName || `Course #${certificate.course.id}` : 'N/A'}
+User: ${certificate.user ? certificate.user.userName || `User #${certificate.user.id}` : 'N/A'}
+Quiz Result ID: ${certificate.quizResult ? certificate.quizResult.id : 'N/A'}
+
+Created: ${certificate.createdAt ? new Date(certificate.createdAt).toLocaleString() : 'N/A'}
+Updated: ${certificate.updatedAt ? new Date(certificate.updatedAt).toLocaleString() : 'N/A'}
+                `;
+                alert(details);
+            } else {
+                showError('Certificate not found.');
+            }
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+
+            if (!searchTerm) {
+                displayCertificates(allCertificates);
+                return;
+            }
+
+            const filtered = allCertificates.filter(cert => {
+                const certName = cert.certificateName ? cert.certificateName.toLowerCase() : '';
+                const description = cert.description ? cert.description.toLowerCase() : '';
+                const courseName = cert.course && cert.course.courseName ? cert.course.courseName.toLowerCase() : '';
+                const userName = cert.user && cert.user.userName ? cert.user.userName.toLowerCase() : '';
+
+                return certName.includes(searchTerm) ||
+                       description.includes(searchTerm) ||
+                       courseName.includes(searchTerm) ||
+                       userName.includes(searchTerm);
+            });
+
+            displayCertificates(filtered);
+        });
+
+        // Helper function to escape HTML
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

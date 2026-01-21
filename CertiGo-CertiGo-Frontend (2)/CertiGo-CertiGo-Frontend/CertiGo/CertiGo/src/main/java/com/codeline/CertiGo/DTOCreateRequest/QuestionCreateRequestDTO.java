@@ -1,0 +1,67 @@
+package com.codeline.CertiGo.DTOCreateRequest;
+
+import com.codeline.CertiGo.Entity.Option;
+import com.codeline.CertiGo.Entity.Question;
+import com.codeline.CertiGo.Entity.UserAnswer;
+import com.codeline.CertiGo.Exceptions.CustomException;
+import com.codeline.CertiGo.Helper.Constants;
+import com.codeline.CertiGo.Helper.Utils;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class QuestionCreateRequestDTO {
+    private String questionText;
+    private String correctAnswer;
+    private Integer quiz_id;
+    private List<Option> options;
+
+    // convert DTO → Entity
+    public static Question convertToQuestion(QuestionCreateRequestDTO request) {
+
+        Question question = new Question();
+        question.setQuestionText(request.getQuestionText());
+        question.setCorrectAnswer(request.getCorrectAnswer());
+
+        List<Option> managedOptions = new ArrayList<>();
+
+        if (request.getOptions() != null) {
+            for (Option incomingOption : request.getOptions()) {
+
+                Option option = new Option();
+                option.setOptionText(incomingOption.getOptionText());
+                option.setIsCorrect(incomingOption.getIsCorrect());
+
+                option.setQuestion(question);
+
+                managedOptions.add(option);
+            }
+        }
+
+        question.setOptions(managedOptions);
+        return question;
+    }
+
+
+    // validation
+    public static void validateQuestion(QuestionCreateRequestDTO request) throws CustomException {
+
+        if (Utils.isNull(request) || Utils.isNull(request.getQuiz_id())) {
+            throw new CustomException(Constants.QUIZ_ID_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
+        }
+        if (Utils.isBlank(request.getQuestionText()) || Utils.isNull(request.getQuestionText())) {
+            throw new CustomException(Constants.QUESTION_TEXT_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
+        }
+        if (Utils.isBlank(request.getCorrectAnswer()) || Utils.isNull(request.getCorrectAnswer())) {
+            throw new CustomException(Constants.CORRECT_ANSWER_NOT_VALID, Constants.HTTP_STATUS_IS_NULL);
+        }
+    }
+}

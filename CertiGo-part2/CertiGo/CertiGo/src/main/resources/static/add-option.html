@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Option - CertiGo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .header h1::before {
+            content: "✅";
+            font-size: 32px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group label .required {
+            color: #e74c3c;
+            margin-left: 3px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="number"]:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #fcb69f;
+            box-shadow: 0 0 0 3px rgba(252, 182, 159, 0.2);
+        }
+
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon input,
+        .input-icon textarea {
+            padding-left: 40px;
+        }
+
+        .input-icon::before {
+            position: absolute;
+            left: 12px;
+            top: 15px;
+            font-size: 18px;
+            color: #999;
+            z-index: 1;
+        }
+
+        .input-icon.option::before {
+            content: "📝";
+        }
+
+        .input-icon.question::before {
+            content: "❓";
+        }
+
+        .correct-toggle {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .toggle-options {
+            display: flex;
+            gap: 15px;
+        }
+
+        .toggle-option {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 600;
+            user-select: none;
+        }
+
+        .toggle-option.correct {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .toggle-option.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .toggle-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle-option.selected {
+            border-color: #fcb69f;
+            box-shadow: 0 0 0 3px rgba(252, 182, 159, 0.2);
+        }
+
+        .toggle-option .icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #333;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(252, 182, 159, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            background: #2ecc71;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+            animation: slideDown 0.3s ease;
+        }
+
+        .error-alert {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+            animation: slideDown 0.3s ease;
+        }
+
+        .form-hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #856404;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #fcb69f;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .input-valid {
+            border-color: #2ecc71 !important;
+        }
+
+        .input-invalid {
+            border-color: #e74c3c !important;
+        }
+
+        .char-counter {
+            font-size: 12px;
+            color: #999;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .toggle-options {
+                flex-direction: column;
+            }
+
+            .input-icon input,
+            .input-icon textarea {
+                padding-left: 15px;
+            }
+
+            .input-icon::before {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Add New Option</h1>
+            <p>Create an answer option for a quiz question</p>
+        </div>
+
+        <div id="successMessage" class="success-message">
+            Option created successfully!
+        </div>
+
+        <div id="errorAlert" class="error-alert">
+            Failed to create option. Please try again.
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 10px; color: #666;">Creating option...</p>
+        </div>
+
+        <div class="info-box">
+            💡 <strong>Note:</strong> Make sure the question ID exists before creating an option.
+        </div>
+
+        <form id="optionForm">
+            <!-- Option Text -->
+            <div class="form-group">
+                <label for="optionText">Option Text<span class="required">*</span></label>
+                <div class="input-icon option">
+                    <textarea id="optionText" name="optionText" placeholder="Enter the answer option text..." required></textarea>
+                </div>
+                <div class="char-counter" id="optionCounter">0 characters</div>
+                <div class="form-hint">The text content of this answer option</div>
+                <div class="error-message" id="optionTextError">Option text is required and cannot be blank</div>
+            </div>
+
+            <!-- Is Correct Toggle -->
+            <div class="correct-toggle">
+                <label class="toggle-label">Is This the Correct Answer?<span class="required">*</span></label>
+                <div class="toggle-options">
+                    <div class="toggle-option correct" onclick="selectCorrect(true)" id="correctTrue">
+                        <div class="icon">✅</div>
+                        <div>Correct Answer</div>
+                    </div>
+                    <div class="toggle-option incorrect" onclick="selectCorrect(false)" id="correctFalse">
+                        <div class="icon">❌</div>
+                        <div>Incorrect Answer</div>
+                    </div>
+                </div>
+                <div class="error-message" id="isCorrectError">Please select whether this is the correct answer</div>
+            </div>
+
+            <!-- Question ID -->
+            <div class="form-group">
+                <label for="questionId">Question ID<span class="required">*</span></label>
+                <div class="input-icon question">
+                    <input type="number" id="questionId" name="questionId" placeholder="Enter question ID" min="1" required>
+                </div>
+                <div class="form-hint">ID of the question this option belongs to</div>
+                <div class="error-message" id="questionIdError">Valid question ID is required (must be greater than 0)</div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-group">
+                <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                <button type="submit" class="btn btn-primary" id="submitBtn">Create Option</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let isCorrectValue = null;
+
+        // Character counter for option text
+        const optionTextarea = document.getElementById('optionText');
+        const optionCounter = document.getElementById('optionCounter');
+
+        optionTextarea.addEventListener('input', function() {
+            const length = this.value.length;
+            optionCounter.textContent = `${length} characters`;
+        });
+
+        function selectCorrect(value) {
+            isCorrectValue = value;
+            hideError('isCorrectError');
+
+            // Update visual selection
+            document.getElementById('correctTrue').classList.remove('selected');
+            document.getElementById('correctFalse').classList.remove('selected');
+
+            if (value === true) {
+                document.getElementById('correctTrue').classList.add('selected');
+            } else {
+                document.getElementById('correctFalse').classList.add('selected');
+            }
+        }
+
+        function showError(elementId) {
+            document.getElementById(elementId).style.display = 'block';
+        }
+
+        function hideError(elementId) {
+            document.getElementById(elementId).style.display = 'none';
+        }
+
+        function hideAllErrors() {
+            const errors = document.querySelectorAll('.error-message');
+            errors.forEach(error => error.style.display = 'none');
+        }
+
+        function validateForm() {
+            hideAllErrors();
+            let isValid = true;
+
+            // Remove validation classes
+            document.querySelectorAll('input, textarea').forEach(el => {
+                el.classList.remove('input-valid', 'input-invalid');
+            });
+
+            const optionText = document.getElementById('optionText').value.trim();
+            if (!optionText || optionText === '') {
+                showError('optionTextError');
+                document.getElementById('optionText').classList.add('input-invalid');
+                isValid = false;
+            } else {
+                document.getElementById('optionText').classList.add('input-valid');
+            }
+
+            if (isCorrectValue === null) {
+                showError('isCorrectError');
+                isValid = false;
+            }
+
+            const questionId = parseInt(document.getElementById('questionId').value);
+            if (!questionId || questionId <= 0) {
+                showError('questionIdError');
+                document.getElementById('questionId').classList.add('input-invalid');
+                isValid = false;
+            } else {
+                document.getElementById('questionId').classList.add('input-valid');
+            }
+
+            return isValid;
+        }
+
+        function resetForm() {
+            document.getElementById('optionForm').reset();
+            hideAllErrors();
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('errorAlert').style.display = 'none';
+            optionCounter.textContent = '0 characters';
+            isCorrectValue = null;
+
+            // Clear toggle selection
+            document.getElementById('correctTrue').classList.remove('selected');
+            document.getElementById('correctFalse').classList.remove('selected');
+
+            // Remove validation classes
+            document.querySelectorAll('input, textarea').forEach(el => {
+                el.classList.remove('input-valid', 'input-invalid');
+            });
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            document.getElementById('optionForm').style.display = show ? 'none' : 'block';
+            document.getElementById('submitBtn').disabled = show;
+        }
+
+        document.getElementById('optionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!validateForm()) {
+                return;
+            }
+
+            const formData = {
+                optionText: document.getElementById('optionText').value.trim(),
+                isCorrect: isCorrectValue,
+                questionId: parseInt(document.getElementById('questionId').value)
+            };
+
+            showLoading(true);
+
+            try {
+                const response = await fetch('http://localhost:8080/Option/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                showLoading(false);
+
+                if (response.ok) {
+                    const result = await response.json();
+                    const correctText = isCorrectValue ? 'Correct' : 'Incorrect';
+                    document.getElementById('successMessage').textContent = `Option created successfully! (${correctText} answer)`;
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('errorAlert').style.display = 'none';
+
+                    // Scroll to top to show success message
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                    setTimeout(() => {
+                        resetForm();
+                    }, 3000);
+                } else {
+                    let errorMessage = 'Failed to create option. Please try again.';
+
+                    try {
+                        const error = await response.json();
+                        errorMessage = error.message || errorMessage;
+                    } catch (e) {
+                        // If response is not JSON, use default message
+                        if (response.status === 400) {
+                            errorMessage = 'Invalid option data. Please check all fields.';
+                        } else if (response.status === 404) {
+                            errorMessage = 'Question not found. Please verify the question ID.';
+                        }
+                    }
+
+                    document.getElementById('errorAlert').textContent = errorMessage;
+                    document.getElementById('errorAlert').style.display = 'block';
+                    document.getElementById('successMessage').style.display = 'none';
+
+                    // Scroll to top to show error message
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            } catch (error) {
+                showLoading(false);
+                console.error('Error:', error);
+                document.getElementById('errorAlert').textContent = 'Network error. Please check your connection and try again.';
+                document.getElementById('errorAlert').style.display = 'block';
+                document.getElementById('successMessage').style.display = 'none';
+
+                // Scroll to top to show error message
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // Real-time validation
+        document.getElementById('optionText').addEventListener('blur', function() {
+            const optionText = this.value.trim();
+            if (!optionText || optionText === '') {
+                showError('optionTextError');
+                this.classList.add('input-invalid');
+                this.classList.remove('input-valid');
+            } else {
+                hideError('optionTextError');
+                this.classList.add('input-valid');
+                this.classList.remove('input-invalid');
+            }
+        });
+
+        document.getElementById('questionId').addEventListener('blur', function() {
+            const questionId = parseInt(this.value);
+            if (!questionId || questionId <= 0) {
+                showError('questionIdError');
+                this.classList.add('input-invalid');
+                this.classList.remove('input-valid');
+            } else {
+                hideError('questionIdError');
+                this.classList.add('input-valid');
+                this.classList.remove('input-invalid');
+            }
+        });
+
+        // Auto-hide messages after 5 seconds
+        function autoHideMessage(elementId) {
+            setTimeout(() => {
+                const element = document.getElementById(elementId);
+                if (element.style.display === 'block') {
+                    element.style.display = 'none';
+                }
+            }, 5000);
+        }
+
+        // Watch for success/error messages and auto-hide them
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'style') {
+                    const target = mutation.target;
+                    if (target.style.display === 'block') {
+                        autoHideMessage(target.id);
+                    }
+                }
+            });
+        });
+
+        observer.observe(document.getElementById('successMessage'), { attributes: true });
+        observer.observe(document.getElementById('errorAlert'), { attributes: true });
+    </script>
+</body>
+</html>

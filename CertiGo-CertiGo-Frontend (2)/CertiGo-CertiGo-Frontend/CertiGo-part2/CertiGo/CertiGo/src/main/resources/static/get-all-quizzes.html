@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Quizzes - CertiGo</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="auth.js"></script>
+</head>
+<body class="certificates-page">
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">
+        <img src="images\CertiGo.png" alt="CertiGo Logo">
+        <h2>CertiGo</h2>
+    </div>
+    <nav>
+        <a href="admin-index.html">Admin Dashboard</a>
+    </nav>
+    <div class="dropdown">
+        <button class="dropbtn" id="accountBtn">Account</button>
+        <div class="dropdown-content" id="accountDropdown">
+            <a href="#" onclick="showUserProfile(); return false;">Profile</a>
+            <a href="#" onclick="logout(); return false;">Logout</a>
+        </div>
+    </div>
+</div>
+
+<div class="certificates-container">
+    <div class="certificates-header">
+        <h1>All Quizzes</h1>
+        <p>View and manage all quizzes in the system</p>
+    </div>
+
+    <div id="successMessage" class="certificates-success-message" style="display: none;">
+        Operation completed successfully!
+    </div>
+
+    <div id="errorAlert" class="certificates-error-alert" style="display: none;">
+        Failed to load quizzes. Please try again.
+    </div>
+
+    <div class="certificates-stats" id="stats" style="display: none;">
+        <div class="certificates-stat-card">
+            <h3>Total Quizzes</h3>
+            <p id="totalCount">0</p>
+        </div>
+        <div class="certificates-stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+            <h3>Active Quizzes</h3>
+            <p id="activeCount">0</p>
+        </div>
+        <div class="certificates-stat-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+            <h3>Inactive Quizzes</h3>
+            <p id="inactiveCount">0</p>
+        </div>
+        <div class="certificates-stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+            <h3>Total Questions</h3>
+            <p id="totalQuestions">0</p>
+        </div>
+    </div>
+
+    <div class="certificates-controls">
+        <div class="certificates-search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Search by quiz ID or course ID...">
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="cert-btn cert-btn-refresh" onclick="loadQuizzes()">🔄 Refresh</button>
+            <a href="add-quiz.html" class="cert-btn cert-btn-primary admin-only">➕ Add Quiz</a>
+        </div>
+    </div>
+
+    <div id="loading" class="certificates-loading">
+        <div class="certificates-spinner"></div>
+        <p style="color: #666; font-size: 16px;">Loading quizzes...</p>
+    </div>
+
+    <div id="tableContainer" class="certificates-table-container" style="display: none;">
+        <table class="certificates-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Total Questions</th>
+                <th>Passing Score</th>
+                <th>Course ID</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="quizzesTableBody">
+            <!-- Data will be populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <div id="emptyState" class="certificates-empty-state" style="display: none;">
+        <div class="certificates-empty-state-icon">📝</div>
+        <h3>No Quizzes Found</h3>
+        <p>There are no quizzes in the system yet.</p>
+        <a href="add-quiz.html" class="cert-btn cert-btn-primary admin-only">Create Your First Quiz</a>
+    </div>
+</div>
+
+<script>
+    let allQuizzes = [];
+
+    // Check authentication on page load
+    window.addEventListener('DOMContentLoaded', () => {
+        // Require admin access for this page
+        requireAdmin();
+        loadQuizzes();
+    });
+
+    async function loadQuizzes() {
+        showLoading(true);
+        hideError();
+
+        try {
+            const response = await fetch('http://localhost:8080/quiz/getAll', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.ok) {
+                allQuizzes = await response.json();
+                displayQuizzes(allQuizzes);
+                updateStats(allQuizzes);
+                showLoading(false);
+            } else {
+                showLoading(false);
+                showError('Failed to load quizzes. Server returned an error.');
+            }
+        } catch (error) {
+            showLoading(false);
+            console.error('Error:', error);
+            showError('Network error. Please check your connection and try again.');
+        }
+    }
+
+    function displayQuizzes(quizzes) {
+        const tbody = document.getElementById('quizzesTableBody');
+        const tableContainer = document.getElementById('tableContainer');
+        const emptyState = document.getElementById('emptyState');
+
+        if (!quizzes || quizzes.length === 0) {
+            tableContainer.style.display = 'none';
+            emptyState.style.display = 'block';
+            document.getElementById('stats').style.display = 'none';
+            return;
+        }
+
+        tableContainer.style.display = 'block';
+        emptyState.style.display = 'none';
+        document.getElementById('stats').style.display = 'flex';
+
+        tbody.innerHTML = '';
+
+        quizzes.forEach(quiz => {
+            const row = document.createElement('tr');
+
+            const statusBadge = quiz.isActive
+                ? '<span class="cert-badge cert-badge-active">Active</span>'
+                : '<span class="cert-badge cert-badge-inactive">Inactive</span>';
+
+            const courseId = quiz.course ? quiz.course.id : 'N/A';
+
+            const createdAt = quiz.createdAt ? new Date(quiz.createdAt).toLocaleDateString() : 'N/A';
+            const updatedAt = quiz.updatedAt ? new Date(quiz.updatedAt).toLocaleDateString() : 'N/A';
+
+            row.innerHTML = `
+                <td><strong>#${quiz.id}</strong></td>
+                <td>${quiz.totalQuestions || 0}</td>
+                <td>${quiz.passingScore || 0}</td>
+                <td>${courseId}</td>
+                <td>${statusBadge}</td>
+                <td class="date-cell">${createdAt}</td>
+                <td class="date-cell">${updatedAt}</td>
+                <td>
+                    <div class="cert-action-buttons">
+                        <button class="cert-btn cert-btn-view" onclick="viewQuiz(${quiz.id})">👁️ View</button>
+<!--                        <button class="cert-btn cert-btn-edit" onclick="editQuiz(${quiz.id})">✏️ Edit</button>-->
+<!--                        <button class="cert-btn cert-btn-delete" onclick="deleteQuiz(${quiz.id})">🗑️ Delete</button>-->
+                    </div>
+                </td>
+            `;
+
+            tbody.appendChild(row);
+        });
+    }
+
+    function updateStats(quizzes) {
+        const total = quizzes.length;
+        const active = quizzes.filter(q => q.isActive).length;
+        const inactive = total - active;
+
+        let totalQuestions = 0;
+        quizzes.forEach(quiz => {
+            totalQuestions += quiz.totalQuestions || 0;
+        });
+
+        document.getElementById('totalCount').textContent = total;
+        document.getElementById('activeCount').textContent = active;
+        document.getElementById('inactiveCount').textContent = inactive;
+        document.getElementById('totalQuestions').textContent = totalQuestions;
+    }
+
+    function showLoading(show) {
+        document.getElementById('loading').style.display = show ? 'block' : 'none';
+    }
+
+    function showError(message) {
+        const errorAlert = document.getElementById('errorAlert');
+        errorAlert.textContent = message;
+        errorAlert.style.display = 'block';
+        setTimeout(() => {
+            errorAlert.style.display = 'none';
+        }, 5000);
+    }
+
+    function hideError() {
+        document.getElementById('errorAlert').style.display = 'none';
+    }
+
+    function showSuccess(message) {
+        const successMessage = document.getElementById('successMessage');
+        successMessage.textContent = message;
+        successMessage.style.display = 'block';
+        setTimeout(() => {
+            successMessage.style.display = 'none';
+        }, 3000);
+    }
+
+    async function deleteQuiz(id) {
+        // Check if user has permission to delete
+        if (!hasPermission('delete_quiz')) {
+            alert('Access Denied: Only administrators can delete quizzes.');
+            return;
+        }
+
+        if (!confirm(`Are you sure you want to delete quiz #${id}? This action cannot be undone.`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/quiz/delete/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.ok || response.status === 204) {
+                showSuccess(`Quiz #${id} deleted successfully!`);
+                loadQuizzes(); // Reload the list
+            } else {
+                const errorText = await response.text();
+                showError(`Failed to delete quiz #${id}. ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showError('Network error. Please check your connection and try again.');
+        }
+    }
+
+    function viewQuiz(id) {
+        // Find the quiz in the loaded data
+        const quiz = allQuizzes.find(q => q.id === id);
+
+        if (quiz) {
+            const courseId = quiz.course ? quiz.course.id : 'N/A';
+
+            const details = `
+Quiz Details:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ID: ${quiz.id}
+Total Questions: ${quiz.totalQuestions || 0}
+Passing Score: ${quiz.passingScore || 0}
+Course ID: ${courseId}
+Status: ${quiz.isActive ? 'Active' : 'Inactive'}
+
+Created: ${quiz.createdAt ? new Date(quiz.createdAt).toLocaleString() : 'N/A'}
+Updated: ${quiz.updatedAt ? new Date(quiz.updatedAt).toLocaleString() : 'N/A'}
+            `;
+            alert(details);
+        } else {
+            showError('Quiz not found.');
+        }
+    }
+
+    function editQuiz(id) {
+        // Find the quiz in the loaded data
+        const quiz = allQuizzes.find(q => q.id === id);
+
+        if (quiz) {
+            // Simple edit for key fields
+            const newTotalQuestions = prompt('Enter new total questions:', quiz.totalQuestions || 0);
+            const newPassingScore = prompt('Enter new passing score:', quiz.passingScore || 0);
+            const newIsActive = confirm(`Is active? (OK for Yes, Cancel for No): Current: ${quiz.isActive ? 'Yes' : 'No'}`);
+
+            if (newTotalQuestions !== null && newPassingScore !== null) {
+                updateQuiz(id, {
+                    id: id,
+                    totalQuestions: parseInt(newTotalQuestions),
+                    passingScore: parseInt(newPassingScore),
+                    isActive: newIsActive,
+                    course: quiz.course
+                });
+            }
+        } else {
+            showError('Quiz not found.');
+        }
+    }
+
+    async function updateQuiz(id, updateData) {
+        try {
+            const response = await fetch(`http://localhost:8080/quiz/update`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updateData)
+            });
+
+            if (response.ok) {
+                showSuccess(`Quiz #${id} updated successfully!`);
+                loadQuizzes(); // Reload the list
+            } else {
+                const errorText = await response.text();
+                showError(`Failed to update quiz #${id}. ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showError('Network error. Please check your connection and try again.');
+        }
+    }
+
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+
+        if (!searchTerm) {
+            displayQuizzes(allQuizzes);
+            return;
+        }
+
+        const filtered = allQuizzes.filter(quiz => {
+            const idStr = quiz.id.toString();
+            const courseIdStr = quiz.course && quiz.course.id ? quiz.course.id.toString() : '';
+
+            return idStr.includes(searchTerm) || courseIdStr.includes(searchTerm);
+        });
+
+        displayQuizzes(filtered);
+    });
+
+    // Helper function to escape HTML
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+</script>
+</body>
+</html>
+```
